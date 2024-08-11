@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import PrelineScript from "@/components/PrelineScript";
 import "./globals.css";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import AuthProvider from "@/context/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +20,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <AuthProvider>
+        <body className={inter.className}>
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </div>
+        </body>
+      </AuthProvider>
+
+      <PrelineScript />
     </html>
   );
 }
