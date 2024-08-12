@@ -3,6 +3,7 @@ import UserModel from "@/models/User.model";
 import dbConnect from "@/lib/dbConnect";
 import cloudinary from "@/lib/cloudinary";
 import bcrypt from "bcryptjs";
+import { handleFileUpload } from "@/lib/fileUpload";
 
 export const config = {
   api: {
@@ -14,11 +15,29 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    const data = await request.json();
-    console.log(data); // Add this line to debug the received data
-    const { username, email, password, role, avatar, bio } = data;
+    const data = await request.formData();
+    const username = data.get("username");
+    const email = data.get("email");
+    const password = data.get("password");
+    const role = data.get("role");
+    const bio = data.get("bio");
+    const images = data.getAll("images");
+    console.log(data);
+    
+    //   const images = await handleFileUpload(
+    //     data.getAll("images[]"),
+    //     "./public/uploads"
+    // );
+    // console.log(data);
+    
+    // const singleImage = await handleFileUpload(
+    //   data.getAll("images"),
+    //   "./public/uploads"
+    // );
 
-    if (!username || !email || !password || !role || !avatar) {
+    
+
+    if (!username || !email || !password || !role) {
       return new Response(
         JSON.stringify({
           success: false,
@@ -49,33 +68,33 @@ export async function POST(request: Request) {
       );
     }
 
-    let cloudinaryResponse;
-    try {
-      cloudinaryResponse = await cloudinary.uploader.upload(avatar, {
-        folder: "avatars",
-        transformation: [{ width: 500, height: 500, crop: "fill" }],
-        resource_type: "auto",
-      });
-    } catch (uploadError) {
-      console.error("Error uploading avatar to Cloudinary", uploadError);
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: "Error uploading avatar",
-        }),
-        { status: 500 }
-      );
-    }
+    // let cloudinaryResponse;
+    // try {
+    //   cloudinaryResponse = await cloudinary.uploader.upload(avatar, {
+    //     folder: "avatars",
+    //     transformation: [{ width: 500, height: 500, crop: "fill" }],
+    //     resource_type: "auto",
+    //   });
+    // } catch (uploadError) {
+    //   console.error("Error uploading avatar to Cloudinary", uploadError);
+    //   return new Response(
+    //     JSON.stringify({
+    //       success: false,
+    //       message: "Error uploading avatar",
+    //     }),
+    //     { status: 500 }
+    //   );
+    // }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password as string, 10);
 
     const newUser = new UserModel({
       username,
       email,
       password: hashedPassword,
       avatar: {
-        public_id: cloudinaryResponse.public_id,
-        url: cloudinaryResponse.secure_url,
+        public_id: "asdasd",
+        url: "imag.saas",
       },
       role,
     });
