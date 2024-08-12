@@ -4,10 +4,6 @@ export interface IArtist extends Document {
   userId: Schema.Types.ObjectId;
   bio: string;
   concerts: Schema.Types.ObjectId[]; // List of Concert IDs
-  socialLinks: {
-    platform: string;
-    url: string;
-  }[];
 }
 
 const ArtistSchema: Schema<IArtist> = new Schema({
@@ -24,16 +20,6 @@ const ArtistSchema: Schema<IArtist> = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: "Concert",
-    },
-  ],
-  socialLinks: [
-    {
-      platform: {
-        type: String,
-      },
-      url: {
-        type: String,
-      },
     },
   ],
 });

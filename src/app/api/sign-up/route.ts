@@ -4,12 +4,19 @@ import dbConnect from "@/lib/dbConnect";
 import cloudinary from "@/lib/cloudinary";
 import bcrypt from "bcryptjs";
 
+export const config = {
+  api: {
+    bodyParser: false, // Disable the default body parser to handle multipart/form-data
+  },
+};
+
 export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    const { username, email, password, role, avatar, bio, socialLinks } =
-      await request.json();
+    const data = await request.json();
+    console.log(data); // Add this line to debug the received data
+    const { username, email, password, role, avatar, bio } = data;
 
     if (!username || !email || !password || !role || !avatar) {
       return new Response(
@@ -79,7 +86,6 @@ export async function POST(request: Request) {
       const newArtist = new ArtistModel({
         userId: newUser._id,
         bio,
-        socialLinks,
       });
       await newArtist.save();
     }
