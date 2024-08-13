@@ -1,18 +1,41 @@
 "use client";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import {
+  HamburgerIcon,
+  CloseIcon,
+  HomeIcon,
+  ArtistListIcon,
+  DropdownIcon,
+  ConcertIcon,
+} from "./svgIcons";
+
+const categories = [
+  {
+    name: "Bollywood Celebrity",
+    href: "/",
+  },
+  {
+    name: "Singers",
+    href: "/",
+  },
+  {
+    name: "Anchor/Standup Comedy",
+    href: "/",
+  },
+];
 
 function Header() {
   const { data: session } = useSession();
   return (
-    <header className="flex flex-wrap  md:justify-start md:flex-nowrap z-50 w-full bg-white border-b border-gray-200">
-      <nav className="relative max-w-[85rem] w-full mx-auto md:flex md:items-center md:justify-between md:gap-3 py-2 px-4 sm:px-6 lg:px-8">
+    <header className="flex flex-wrap  md:justify-start md:flex-nowrap z-50 w-full bg-white border-b border-gray-200 shadow-lg">
+      <nav className="relative max-w-[85rem] w-full mx-auto md:flex md:items-center md:justify-between md:gap-3 py-2 lg:py-4 px-4 sm:px-6 lg:px-8 ">
         <div className="flex justify-between items-center gap-x-1">
           <Link
             className="flex-none font-semibold text-xl text-black focus:outline-none focus:opacity-80"
             href="/"
           >
-            Event Booking
+            Logo
           </Link>
           <button
             type="button"
@@ -23,37 +46,8 @@ function Header() {
             aria-label="Toggle navigation"
             data-hs-collapse="#hs-header-base"
           >
-            <svg
-              className="hs-collapse-open:hidden size-4"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="3" x2="21" y1="6" y2="6" />
-              <line x1="3" x2="21" y1="12" y2="12" />
-              <line x1="3" x2="21" y1="18" y2="18" />
-            </svg>
-            <svg
-              className="hs-collapse-open:block shrink-0 hidden size-4"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
+            <HamburgerIcon />
+            <CloseIcon />
           </button>
         </div>
 
@@ -68,24 +62,10 @@ function Header() {
                 <div className="flex flex-col md:flex-row md:justify-end md:items-center gap-0.5 md:gap-1">
                   <Link
                     className="p-2 flex items-center text-sm bg-gray-100 text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
-                    href="/home"
+                    href="/"
                     aria-current="page"
                   >
-                    <svg
-                      className="shrink-0 size-4 me-3 md:me-2 block md:hidden"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
-                      <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                    </svg>
+                    <HomeIcon />
                     Home
                   </Link>
 
@@ -98,39 +78,9 @@ function Header() {
                       aria-expanded="false"
                       aria-label="Dropdown"
                     >
-                      <svg
-                        className="shrink-0 size-4 me-3 md:me-2 block md:hidden"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path d="m3 10 2.5-2.5L3 5" />
-                        <path d="m3 19 2.5-2.5L3 14" />
-                        <path d="M10 6h11" />
-                        <path d="M10 12h11" />
-                        <path d="M10 18h11" />
-                      </svg>
+                      <ArtistListIcon />
                       Artists
-                      <svg
-                        className="hs-dropdown-open:-rotate-180 md:hs-dropdown-open:rotate-0 duration-300 shrink-0 size-4 ms-auto md:ms-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path d="m6 9 6 6 6-6" />
-                      </svg>
+                      <DropdownIcon />
                     </button>
 
                     <div
@@ -140,50 +90,24 @@ function Header() {
                       aria-labelledby="hs-header-base-dropdown"
                     >
                       <div className="py-1 md:px-1 space-y-0.5">
-                        <Link
-                          className="p-2 md:px-3 flex items-center text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-                          href="#"
-                        >
-                          About
-                        </Link>
-                        <Link
-                          className="p-2 md:px-3 flex items-center text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-                          href="#"
-                        >
-                          Downloads
-                        </Link>
-
-                        <Link
-                          className="p-2 md:px-3 flex items-center text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-                          href="#"
-                        >
-                          Team Account
-                        </Link>
+                        {categories.map((category, index) => (
+                          <Link
+                            key={index}
+                            className="p-2 md:px-3 flex items-center text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                            href={category.href}
+                          >
+                            {category.name}
+                          </Link>
+                        ))}
                       </div>
                     </div>
                   </div>
 
                   <Link
                     className="p-2 flex items-center text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
-                    href="#"
+                    href="/concerts"
                   >
-                    <svg
-                      className="shrink-0 size-4 me-3 md:me-2 block md:hidden"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
-                      <path d="M18 14h-8" />
-                      <path d="M15 18h-5" />
-                      <path d="M10 6h8v4h-8V6Z" />
-                    </svg>
+                    <ConcertIcon />
                     Concerts
                   </Link>
                 </div>
@@ -213,14 +137,19 @@ function Header() {
               ) : (
                 <>
                   <div className=" flex flex-wrap items-center gap-x-1.5">
-                    <img
-                      src={session.user?.image || "/default-avatar.png"}
-                      alt="Avatar"
-                      className="w-8 h-8 rounded-full"
-                    />
+                    <Link href="/profile">
+                      <img
+                        src={
+                          "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80"
+                        }
+                        alt="Avatar"
+                        className="w-8 h-8 rounded-full"
+                      />
+                    </Link>
+
                     <Link
                       className="py-2 px-2.5 inline-flex items-center font-medium text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-                      href="/"
+                      href="/sign-out"
                     >
                       Sign out
                     </Link>
