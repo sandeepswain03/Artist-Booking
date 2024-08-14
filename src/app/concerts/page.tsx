@@ -1,87 +1,107 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { OrangeLine, BlueLine, Search } from "../../components/svgIcons";
+import {
+  OrangeLine,
+  BlueLine,
+  Search,
+  SideArrow,
+} from "../../components/svgIcons";
 
 const concertData = [
   {
     name: "Summer Music Festival",
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQJgAE0k0gDSS-HtqJUOGFFR2y6oo_9JSzt58jK-gtDyiax8CVNrdyBVzppOvdW",
-    type: "Music Festival",
     date: "2024-08-15",
-    link: "concert_inquiry",
+    link: "/concert_enquiry",
+    description: "Join us for an unforgettable evening of music with John Smith.",
+    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
+    Pricing: "₹2,500",
   },
   {
     name: "Rock Legends Live",
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQJgAE0k0gDSS-HtqJUOGFFR2y6oo_9JSzt58jK-gtDyiax8CVNrdyBVzppOvdW",
-    type: "Rock",
     date: "2024-09-10",
-    link: "#",
+    link: "concert_enquiry",
+    description: "Join us for an unforgettable evening of music with John Smith.",
+    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
+    Pricing: "₹2,500",
   },
   {
     name: "Electronic Dance Night",
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRxYB4j9DVUnQtw0h5rXPXeHVXo1H40n_z0aNvTZMmIG-a0ZtevxuKXVxdxkYtV",
-    type: "Electronic",
     date: "2024-10-20",
-    link: "#",
+    link: "concert_enquiry",
+    description: "Join us for an unforgettable evening of music with John Smith.",
+    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
+    Pricing: "₹2,500",
   },
   {
     name: "Classical Harmony",
     imageUrl:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf6JNdh7NMTUZjc-lwuajcdNtoxeVHRAM3_2H04GxCPIPuoVinfsuVx_k8y4_W",
-    type: "Classical",
     date: "2024-11-05",
-    link: "#",
+    link: "concert_enquiry",
+    description: "Join us for an unforgettable evening of music with John Smith.",
+    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
+    Pricing: "₹2,500",
   },
   {
     name: "Jazz Under the Stars",
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSoH0QxDGjQkC2FB9PdGyB6N4_P8w0GyDhmktxNqHbo_2_jeJ3xe9vGTYxivBWe",
-    type: "Jazz",
     date: "2024-12-15",
-    link: "#",
+    link: "concert_enquiry",
+    description: "Join us for an unforgettable evening of music with John Smith.",
+    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
+    Pricing: "₹2,500",
   },
   {
     name: "Pop Extravaganza",
     imageUrl:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_1NLeWraoyI-qvf2r3I-24e1wktzEPn-7S5QY6sLUUcKc9dHETc4l_VnNFQZU",
-    type: "Pop",
     date: "2024-11-25",
-    link: "#",
+    link: "concert_enquiry",
+    description: "Join us for an unforgettable evening of music with John Smith.",
+    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
+    Pricing: "₹2,500",
   },
   {
     name: "Indie Rock Fest",
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSnG_c6zoch0NM1a4Sl3FsvrOG1DC6SvLaJP-Bgep4odRtpQYzpUUPdeFYwGE3Q",
-    type: "Indie Rock",
     date: "2024-09-22",
-    link: "#",
+    link: "concert_enquiry",
+    description: "Join us for an unforgettable evening of music with John Smith.",
+    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
+    Pricing: "₹2,500",
   },
   {
     name: "Country Music Gala",
     imageUrl:
       "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSqjBFzatVELzg4Q4fXNurmX0kXzvk6iR_nWTKFPxCTjY0BLYXs5wNMioUEjI5J",
-    type: "Country",
     date: "2024-08-30",
-    link: "#",
+    link: "concert_enquiry",
+    description: "Join us for an unforgettable evening of music with John Smith.",
+    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
+    Pricing: "₹2,500",
   },
 ];
 
-export default function page() {
-  const [filterType, setFilterType] = useState("All");
+export default function Page() {
   const [filterDate, setFilterDate] = useState("");
   const [filterName, setFilterName] = useState("");
 
   const filteredConcerts = concertData.filter(
     (concert) =>
-      (filterType === "All" || concert.type === filterType) &&
       (filterDate === "" || concert.date === filterDate) &&
       (filterName === "" ||
         concert.name.toLowerCase().includes(filterName.toLowerCase()))
   );
+
   return (
     <>
       {/* search Bar */}
@@ -110,6 +130,8 @@ export default function page() {
                       id="hs-search-article-1"
                       className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500"
                       placeholder="Search for a Concert"
+                      value={filterName}
+                      onChange={(e) => setFilterName(e.target.value)}
                     />
                   </div>
                   <div>
@@ -129,26 +151,9 @@ export default function page() {
                 <BlueLine />
               </div>
             </div>
-            <div className="mt-10 sm:mt-20">
-              {/* search type */}
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-              >
-                <option value="All">All</option>
-                <option value="Music Festival">Music Festival</option>
-                <option value="Rock">Rock</option>
-                <option value="Electronic">Electronic</option>
-                <option value="Classical">Classical</option>
-                <option value="Jazz">Jazz</option>
-                <option value="Pop">Pop</option>
-                <option value="Indie Rock">Indie Rock</option>
-                <option value="Country">Country</option>
-              </select>
-
+            <div className="mt-8">
               {/* search date */}
-              <div className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700">
+              <div className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700">
                 <input
                   type="date"
                   value={filterDate}
@@ -158,6 +163,33 @@ export default function page() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      {/* Concerts section */}
+      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredConcerts.map((event, index) => (
+            <div key={index}>
+              <Link
+                className="group relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl hover:shadow-lg focus:outline-none focus:shadow-lg transition"
+                href={event.link}
+                style={{ backgroundImage: `url(${event.imageUrl})` }}
+              >
+                <div className="flex-auto p-4 md:p-6">
+                  <h3 className="text-xl text-white/90 group-hover:text-black">
+                    <span className="font-bold">{event.name}</span> <br />
+                    {event.date}
+                  </h3>
+                </div>
+                <div className="pt-0 p-4 md:p-6">
+                  <div className="inline-flex items-center gap-2 text-sm font-medium text-white/90 group-hover:text-white/60">
+                    Explore
+                    <SideArrow />
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))}
         </div>
       </div>
     </>
