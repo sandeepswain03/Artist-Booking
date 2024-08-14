@@ -6,24 +6,8 @@ import {
   CloseIcon,
   HomeIcon,
   ArtistListIcon,
-  DropdownIcon,
   ConcertIcon,
 } from "./svgIcons";
-
-const categories = [
-  {
-    name: "Bollywood Celebrity",
-    href: "/",
-  },
-  {
-    name: "Singers",
-    href: "/",
-  },
-  {
-    name: "Anchor/Standup Comedy",
-    href: "/",
-  },
-];
 
 function Header() {
   const { data: session } = useSession();
@@ -61,47 +45,20 @@ function Header() {
               <div className="grow">
                 <div className="flex flex-col md:flex-row md:justify-end md:items-center gap-0.5 md:gap-1">
                   <Link
-                    className="p-2 flex items-center text-sm bg-gray-100 text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
+                    className="p-2 flex items-center text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
                     href="/"
-                    aria-current="page"
                   >
-                    <HomeIcon />
+                    <ConcertIcon />
                     Home
                   </Link>
 
-                  <div className="hs-dropdown [--strategy:static] md:[--strategy:fixed] [--adaptive:none] [--is-collapse:true] md:[--is-collapse:false] ">
-                    <button
-                      id="hs-header-base-dropdown"
-                      type="button"
-                      className="hs-dropdown-toggle w-full p-2 flex items-center text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
-                      aria-haspopup="menu"
-                      aria-expanded="false"
-                      aria-label="Dropdown"
-                    >
-                      <ArtistListIcon />
-                      Artists
-                      <DropdownIcon />
-                    </button>
-
-                    <div
-                      className="hs-dropdown-menu transition-[opacity,margin] duration-[0.1ms] md:duration-[150ms] hs-dropdown-open:opacity-100 opacity-0 relative w-full md:w-52 hidden z-10 top-full ps-7 md:ps-0 md:bg-white md:rounded-lg md:shadow-md before:absolute before:-top-4 before:start-0 before:w-full before:h-5 md:after:hidden after:absolute after:top-1 after:start-[18px] after:w-0.5 after:h-[calc(100%-0.25rem)] after:bg-gray-100"
-                      role="menu"
-                      aria-orientation="vertical"
-                      aria-labelledby="hs-header-base-dropdown"
-                    >
-                      <div className="py-1 md:px-1 space-y-0.5">
-                        {categories.map((category, index) => (
-                          <Link
-                            key={index}
-                            className="p-2 md:px-3 flex items-center text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-                            href={category.href}
-                          >
-                            {category.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  <Link
+                    className="p-2 flex items-center text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
+                    href="/artists"
+                  >
+                    <ConcertIcon />
+                    Artists
+                  </Link>
 
                   <Link
                     className="p-2 flex items-center text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"

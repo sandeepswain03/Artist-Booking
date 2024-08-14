@@ -14,8 +14,9 @@ const concertData = [
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQJgAE0k0gDSS-HtqJUOGFFR2y6oo_9JSzt58jK-gtDyiax8CVNrdyBVzppOvdW",
     date: "2024-08-15",
-    link: "/concert_enquiry",
-    description: "Join us for an unforgettable evening of music with John Smith.",
+    link: "/concert_inquiry",
+    description:
+      "Join us for an unforgettable evening of music with John Smith.",
     address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
     Pricing: "₹2,500",
   },
@@ -24,8 +25,9 @@ const concertData = [
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQJgAE0k0gDSS-HtqJUOGFFR2y6oo_9JSzt58jK-gtDyiax8CVNrdyBVzppOvdW",
     date: "2024-09-10",
-    link: "concert_enquiry",
-    description: "Join us for an unforgettable evening of music with John Smith.",
+    link: "concert_inquiry",
+    description:
+      "Join us for an unforgettable evening of music with John Smith.",
     address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
     Pricing: "₹2,500",
   },
@@ -34,8 +36,9 @@ const concertData = [
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRxYB4j9DVUnQtw0h5rXPXeHVXo1H40n_z0aNvTZMmIG-a0ZtevxuKXVxdxkYtV",
     date: "2024-10-20",
-    link: "concert_enquiry",
-    description: "Join us for an unforgettable evening of music with John Smith.",
+    link: "concert_inquiry",
+    description:
+      "Join us for an unforgettable evening of music with John Smith.",
     address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
     Pricing: "₹2,500",
   },
@@ -44,8 +47,9 @@ const concertData = [
     imageUrl:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf6JNdh7NMTUZjc-lwuajcdNtoxeVHRAM3_2H04GxCPIPuoVinfsuVx_k8y4_W",
     date: "2024-11-05",
-    link: "concert_enquiry",
-    description: "Join us for an unforgettable evening of music with John Smith.",
+    link: "concert_inquiry",
+    description:
+      "Join us for an unforgettable evening of music with John Smith.",
     address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
     Pricing: "₹2,500",
   },
@@ -54,8 +58,9 @@ const concertData = [
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSoH0QxDGjQkC2FB9PdGyB6N4_P8w0GyDhmktxNqHbo_2_jeJ3xe9vGTYxivBWe",
     date: "2024-12-15",
-    link: "concert_enquiry",
-    description: "Join us for an unforgettable evening of music with John Smith.",
+    link: "concert_inquiry",
+    description:
+      "Join us for an unforgettable evening of music with John Smith.",
     address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
     Pricing: "₹2,500",
   },
@@ -64,8 +69,9 @@ const concertData = [
     imageUrl:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_1NLeWraoyI-qvf2r3I-24e1wktzEPn-7S5QY6sLUUcKc9dHETc4l_VnNFQZU",
     date: "2024-11-25",
-    link: "concert_enquiry",
-    description: "Join us for an unforgettable evening of music with John Smith.",
+    link: "concert_inquiry",
+    description:
+      "Join us for an unforgettable evening of music with John Smith.",
     address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
     Pricing: "₹2,500",
   },
@@ -74,8 +80,9 @@ const concertData = [
     imageUrl:
       "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSnG_c6zoch0NM1a4Sl3FsvrOG1DC6SvLaJP-Bgep4odRtpQYzpUUPdeFYwGE3Q",
     date: "2024-09-22",
-    link: "concert_enquiry",
-    description: "Join us for an unforgettable evening of music with John Smith.",
+    link: "concert_inquiry",
+    description:
+      "Join us for an unforgettable evening of music with John Smith.",
     address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
     Pricing: "₹2,500",
   },
@@ -84,8 +91,9 @@ const concertData = [
     imageUrl:
       "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSqjBFzatVELzg4Q4fXNurmX0kXzvk6iR_nWTKFPxCTjY0BLYXs5wNMioUEjI5J",
     date: "2024-08-30",
-    link: "concert_enquiry",
-    description: "Join us for an unforgettable evening of music with John Smith.",
+    link: "concert_inquiry",
+    description:
+      "Join us for an unforgettable evening of music with John Smith.",
     address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
     Pricing: "₹2,500",
   },
@@ -106,7 +114,7 @@ export default function Page() {
     <>
       {/* search Bar */}
       <div className="relative overflow-hidden bg-slate-100">
-        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-24">
+        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
           <div className="text-center">
             <h1 className="text-4xl sm:text-6xl font-bold text-gray-800">
               Search Concerts
