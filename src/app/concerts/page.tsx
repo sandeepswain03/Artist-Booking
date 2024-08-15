@@ -113,8 +113,8 @@ export default function Page() {
   return (
     <>
       {/* search Bar */}
-      <div className="relative overflow-hidden bg-slate-100">
-        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+      <div className="relative overflow-hidden bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
+        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
           <div className="text-center">
             <h1 className="text-4xl sm:text-6xl font-bold text-gray-800">
               Search Concerts
@@ -144,7 +144,7 @@ export default function Page() {
                   </div>
                   <div>
                     <Link
-                      className="size-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                      className="size-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg bg-[#674188] text-white hover:bg-[#674188] disabled:opacity-50 disabled:pointer-events-none"
                       href="#"
                     >
                       <Search />
@@ -161,12 +161,12 @@ export default function Page() {
             </div>
             <div className="mt-8">
               {/* search date */}
-              <div className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700">
+              <div className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-white">
                 <input
                   type="date"
                   value={filterDate}
                   onChange={(e) => setFilterDate(e.target.value)}
-                  className="px-4 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out bg-white"
+                  className="px-4 py-2 block w-full border border-gray-300 rounded-md shadow-sm transition bg-white"
                 />
               </div>
             </div>
@@ -177,20 +177,23 @@ export default function Page() {
       <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredConcerts.map((event, index) => (
-            <div key={index}>
+            <div
+              key={index}
+              className="hover:scale-105 transition-all duration-300 ease-in-out"
+            >
               <Link
-                className="group relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl hover:shadow-lg focus:outline-none focus:shadow-lg transition"
+                className="relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl"
                 href={event.link}
                 style={{ backgroundImage: `url(${event.imageUrl})` }}
               >
                 <div className="flex-auto p-4 md:p-6">
-                  <h3 className="text-xl text-white/90 group-hover:text-black">
-                    <span className="font-bold">{event.name}</span> <br />
+                  <h3 className="text-xl text-white/90">
+                    <span className="font-bold">{event.name}</span>
                     {event.date}
                   </h3>
                 </div>
                 <div className="pt-0 p-4 md:p-6">
-                  <div className="inline-flex items-center gap-2 text-sm font-medium text-white/90 group-hover:text-white/60">
+                  <div className="inline-flex items-center gap-2 text-sm font-medium text-white/90">
                     Explore
                     <SideArrow />
                   </div>

@@ -67,11 +67,11 @@ function Page() {
         {/* Inquiry Form Section */}
         <div className="container mx-auto px-4 mt-12">
           <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">Inquire Now</h2>
-          <form className="bg-white shadow-md rounded-lg p-6">
+          <form className="bg-[#674188] shadow-md rounded-lg p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label className="block text-sm font-semibold mb-2" htmlFor="occasion">Select Occasion*</label>
-                <select id="occasion" name="occasion" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <select id="occasion" name="occasion" className="w-full px-3 py-2 rounded-lg bg-[#C8A1E0]">
                   <option value="">Select an occasion</option>
                   <option value="wedding">Wedding</option>
                   <option value="birthday">Birthday</option>
@@ -81,15 +81,15 @@ function Page() {
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" htmlFor="date">Date*</label>
-                <input type="date" id="date" name="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="date" id="date" name="date" className="w-full px-3 py-2 rounded-lg bg-[#C8A1E0]" />
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" htmlFor="city">City*</label>
-                <input type="text" id="city" name="city" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="text" id="city" name="city" className="w-full px-3 py-2 rounded-lg bg-[#C8A1E0]" />
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" htmlFor="budget">Select Budget*</label>
-                <select id="budget" name="budget" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <select id="budget" name="budget" className="w-full px-3 py-2 rounded-lg bg-[#C8A1E0]">
                   <option value="">Select a budget</option>
                   <option value="under-1000">$1000 and under</option>
                   <option value="1000-5000">$1000 - $5000</option>
@@ -99,23 +99,23 @@ function Page() {
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" htmlFor="guest-count">Guest Count</label>
-                <input type="number" id="guest-count" name="guest-count" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="number" id="guest-count" name="guest-count" className="w-full px-3 py-2 rounded-lg bg-[#C8A1E0]" />
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" htmlFor="name">Your Name*</label>
-                <input type="text" id="name" name="name" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="text" id="name" name="name" className="w-full px-3 py-2 rounded-lg bg-[#C8A1E0]" />
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" htmlFor="email">Email*</label>
-                <input type="email" id="email" name="email" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="email" id="email" name="email" className="w-full px-3 py-2 rounded-lg bg-[#C8A1E0]" />
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" htmlFor="contact-number">Contact Number*</label>
-                <input type="tel" id="contact-number" name="contact-number" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="tel" id="contact-number" name="contact-number" className="w-full px-3 py-2 rounded-lg bg-[#C8A1E0]" />
               </div>
             </div>
             <div className="text-center">
-              <button type="submit" className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <button type="submit" className="px-6 py-2 text-black rounded-lg bg-[#C8A1E0]">
                 Submit Inquiry
               </button>
             </div>

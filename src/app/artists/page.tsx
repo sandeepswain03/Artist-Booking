@@ -80,30 +80,24 @@ function page() {
   return (
     <>
       {/* search Bar */}
-      <div className="relative overflow-hidden bg-slate-100">
-        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+      <div className="relative overflow-hidden bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
+        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
           <div className="text-center">
             <h1 className="text-4xl sm:text-6xl font-bold text-gray-800">
-              Search Concerts
+              Search Artists
             </h1>
             <p className="mt-3 text-gray-600">
-              Search your favorite Concerts and enjoy!
+              Book The artist of your choice!
             </p>
             <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
               <form>
-                <div className="relative z-10 flex gap-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100">
+                <div className="relative z-10 flex gap-x-3 p-3 bg-white rounded-lg shadow-lg shadow-gray-100">
                   <div className="w-full">
-                    <label
-                      htmlFor="hs-search-article-1"
-                      className="block text-sm text-gray-700 font-medium"
-                    >
-                      <span className="sr-only">Search for a Concert</span>
-                    </label>
                     <input
                       type="text"
                       name="hs-search-article-1"
                       id="hs-search-article-1"
-                      className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500"
+                      className="py-2.5 px-4 block w-full rounded-lg "
                       placeholder="Search for a Concert"
                       value={filterName}
                       onChange={(e) => setFilterName(e.target.value)}
@@ -111,7 +105,7 @@ function page() {
                   </div>
                   <div>
                     <Link
-                      className="size-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                      className="size-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg bg-[#674188] text-white hover:bg-[#674188] disabled:opacity-50 disabled:pointer-events-none"
                       href="#"
                     >
                       <Search />
@@ -131,7 +125,7 @@ function page() {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+                className="m-1 py-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-white text-gray-800 shadow-sm"
               >
                 <option value="All">All</option>
                 <option value="Bollywood Celebrity">Bollywood Celebrity</option>
@@ -143,23 +137,26 @@ function page() {
           </div>
         </div>
       </div>
-      {/* Concerts section */}
+      {/* artists section */}
       <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredArtists.map((artist, index) => (
-            <div key={index}>
+            <div
+              key={index}
+              className="hover:scale-105 transition-all duration-300 ease-in-out"
+            >
               <Link
-                className="group relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl hover:shadow-lg focus:outline-none focus:shadow-lg transition"
+                className="relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl"
                 href={artist.link}
                 style={{ backgroundImage: `url(${artist.imageUrl})` }}
               >
                 <div className="flex-auto p-4 md:p-6">
-                  <h3 className="text-xl text-white/90 group-hover:text-black">
+                  <h3 className="text-xl text-white/90">
                     <span className="font-bold">{artist.name}</span>
                   </h3>
                 </div>
                 <div className="pt-0 p-4 md:p-6">
-                  <div className="inline-flex items-center gap-2 text-sm font-medium text-white/90 group-hover:text-white/60">
+                  <div className="inline-flex items-center gap-2 text-sm font-medium text-white/90">
                     Explore
                     <SideArrow />
                   </div>
