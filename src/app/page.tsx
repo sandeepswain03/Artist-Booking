@@ -101,19 +101,19 @@ function page() {
           className="flex absolute -top-96 start-1/2 transform -translate-x-1/2"
         >
           <div className="bg-gradient-to-r from-violet-300/50 to-purple-100 blur-3xl w-[25rem] h-[44rem] rotate-[-60deg] transform -translate-x-[10rem]"></div>
-          <div className="bg-gradient-to-tl from-blue-50 via-blue-100 to-blue-50 blur-3xl w-[90rem] h-[50rem] rounded-fulls origin-top-left -rotate-12 -translate-x-[15rem]"></div>
+          <div className="bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9] blur-3xl w-[90rem] h-[50rem] rounded-fulls origin-top-left -rotate-12 -translate-x-[15rem]"></div>
         </div>
 
         <div className="relative z-10">
           <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
             <div className="max-w-2xl text-center mx-auto">
-              <p className="inline-block text-sm font-medium bg-clip-text bg-gradient-to-l from-blue-600 to-violet-500 text-transparent">
+              <p className="inline-block text-sm font-medium bg-clip-text bg-gradient-to-l from-pink-500 to-violet-500 text-transparent">
                 Welcome to Artist Booking
               </p>
               <span>👋</span>
 
               <div className="mt-5 max-w-2xl">
-                <h1 className="block font-semibold text-gray-800 text-3xl md:text-5xl lg:text-6xl">
+                <h1 className="block font-bold text-gray-800 text-3xl md:text-5xl lg:text-6xl">
                   Explore Concerts 🎸
                 </h1>
               </div>
@@ -128,7 +128,7 @@ function page() {
 
               <div className="mt-8 gap-3 flex justify-center">
                 <Link
-                  className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                  className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-[#674188] text-white hover:bg-[#4e3366] focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
                   href="/concerts"
                 >
                   Explore
@@ -146,7 +146,7 @@ function page() {
           <div>
             <h1 className="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight text-center lg:text-left">
               About Artist Booking
-              <span className="text-blue-600"> Company</span>
+              <span className="text-[#674188]"> Company</span>
             </h1>
             <p className="mt-3 text-lg text-gray-800 text-justify">
               The Artist Booking Company (Artist Booking Company) is a
@@ -163,7 +163,7 @@ function page() {
 
             <div className="mt-7 grid gap-3 w-full sm:inline-flex">
               <Link
-                className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-[#674188] text-white hover:bg-[#4e3366] focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
                 href="/"
               >
                 Read More
@@ -180,7 +180,7 @@ function page() {
               width={700}
               height={800}
             />
-            <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 size-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6"></div>
+            <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-[#E2BFD9] via-[#F7EFE5] to-[#E2BFD9]  size-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6"></div>
           </div>
         </div>
       </div>
@@ -193,7 +193,7 @@ function page() {
               <h4 className="text-lg sm:text-xl font-bold text-gray-800">
                 {stat.title}
               </h4>
-              <p className="mt-2 sm:mt-3 text-4xl sm:text-6xl font-bold text-blue-600">
+              <p className="mt-2 sm:mt-3 text-4xl sm:text-6xl font-bold inline-block bg-clip-text bg-gradient-to-l from-pink-500 to-violet-500 text-transparent">
                 {stat.value}
               </p>
               <p className="mt-1 text-gray-500">{stat.description}</p>
@@ -203,8 +203,8 @@ function page() {
       </div>
 
       {/* our services */}
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-12 mx-auto">
-        <h1 className="flex justify-center mb-10 font-semibold text-gray-800 text-3xl md:text-4xl lg:text-5xl text-center">
+      <div className="max-w-[85rem] px-4 py-6 sm:px-6 lg:px-8 lg:py-12 mx-auto">
+        <h1 className="flex justify-center mb-10 font-bold text-[#674188] text-3xl md:text-4xl lg:text-5xl text-center">
           Our Event Management Services
         </h1>
         <div className="grid lg:grid-cols-2 lg:gap-y-16 gap-10">
@@ -229,7 +229,7 @@ function page() {
                     {item.title}
                   </h3>
                   <p className="mt-3 text-gray-600">{item.description}</p>
-                  <p className="mt-4 inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 group-hover:underline group-focus:underline font-medium">
+                  <p className="mt-4 inline-flex items-center gap-x-1 text-sm text-pink-400 decoration-2 group-hover:underline group-focus:underline font-medium">
                     Explore
                     <SideArrow />
                   </p>
@@ -251,12 +251,12 @@ function page() {
               width={700}
               height={800}
             />
-            <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 size-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6"></div>
+            <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-[#E2BFD9] via-[#F7EFE5] to-[#E2BFD9] size-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6"></div>
           </div>
           <div>
             <h1 className="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight text-center lg:text-left">
               What We Do
-              <span className="text-blue-600"> ?</span>
+              <span className="text-[#674188]"> ?</span>
             </h1>
             <p className="mt-3 text-lg text-gray-800 text-justify">
               At Artist Booking Company (Artist Booking Company), we take away
@@ -275,7 +275,7 @@ function page() {
 
             <div className="mt-7 grid gap-3 w-full sm:inline-flex">
               <Link
-                className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-[#674188] text-white hover:bg-[#4e3366] focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
                 href="/"
               >
                 Read More
@@ -288,14 +288,14 @@ function page() {
 
       {/* customer review */}
       <div className="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <h2 className="text-center text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+        <h2 className="text-center text-4xl font-bold tracking-tight text-[#674188] sm:text-5xl">
           Read trusted reviews from our customers
         </h2>
         <div className="mt-8 [column-fill:_balance] sm:columns-2 sm:gap-6 lg:columns-3 lg:gap-8">
           <div>
             {testimonials.map((testimonial, index) => (
               <div key={index} className="mb-8 sm:break-inside-avoid">
-                <blockquote className="rounded-lg bg-gray-50 p-6 shadow-sm sm:p-8">
+                <blockquote className="rounded-lg bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9] p-6 shadow-sm sm:p-8">
                   <div className="flex items-center gap-4">
                     <img
                       alt={testimonial.name}
@@ -303,7 +303,7 @@ function page() {
                       className="size-14 rounded-full object-cover"
                     />
                     <div>
-                      <div className="flex justify-center gap-0.5 text-green-500">
+                      <div className="flex justify-center gap-0.5 text-yellow-300">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star key={i} filled={i < testimonial.rating} />
                         ))}

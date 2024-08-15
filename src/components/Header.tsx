@@ -12,7 +12,7 @@ import {
 function Header() {
   const { data: session } = useSession();
   return (
-    <header className="flex flex-wrap  md:justify-start md:flex-nowrap z-50 w-full bg-white border-b border-gray-200 shadow-lg">
+    <header className="flex flex-wrap  md:justify-start md:flex-nowrap z-50 w-full bg-[#F7EFE5] border-b border-gray-200 shadow-lg">
       <nav className="relative max-w-[85rem] w-full mx-auto md:flex md:items-center md:justify-between md:gap-3 py-2 lg:py-4 px-4 sm:px-6 lg:px-8 ">
         <div className="flex justify-between items-center gap-x-1">
           <Link
@@ -45,23 +45,23 @@ function Header() {
               <div className="grow">
                 <div className="flex flex-col md:flex-row md:justify-end md:items-center gap-0.5 md:gap-1">
                   <Link
-                    className="p-2 flex items-center text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
+                    className="p-2 flex items-center text-sm text-gray-800 hover:bg-[#C8A1E0] rounded-lg focus:outline-none "
                     href="/"
                   >
-                    <ConcertIcon />
+                    <HomeIcon />
                     Home
                   </Link>
 
                   <Link
-                    className="p-2 flex items-center text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
+                    className="p-2 flex items-center text-sm text-gray-800 hover:bg-[#C8A1E0] rounded-lg focus:outline-none"
                     href="/artists"
                   >
-                    <ConcertIcon />
+                    <ArtistListIcon />
                     Artists
                   </Link>
 
                   <Link
-                    className="p-2 flex items-center text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
+                    className="p-2 flex items-center text-sm text-gray-800 hover:bg-[#C8A1E0] rounded-lg focus:outline-none"
                     href="/concerts"
                   >
                     <ConcertIcon />
@@ -71,7 +71,7 @@ function Header() {
               </div>
 
               <div className="my-2 md:my-0 md:mx-2">
-                <div className="w-full h-px md:w-px md:h-4 bg-gray-100 md:bg-gray-300"></div>
+                <div className="w-full h-px md:w-px md:h-4 bg-[#674188] "></div>
               </div>
 
               {!session ? (
@@ -88,7 +88,7 @@ function Header() {
                     </Link>
 
                     <Link
-                      className="py-2 px-2.5 inline-flex items-center font-medium text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                      className="py-2 px-2.5 inline-flex items-center font-medium text-sm rounded-lg bg-[#674188] text-white hover:bg-[#4e3366] focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
                       href="/sign-out"
                     >
                       Sign out
@@ -99,13 +99,13 @@ function Header() {
                 <>
                   <div className=" flex flex-wrap items-center gap-x-1.5">
                     <Link
-                      className="py-[7px] px-2.5 inline-flex items-center font-medium text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-100"
+                      className="py-[7px] px-2.5 inline-flex items-center font-medium text-sm rounded-lg bg-[#C8A1E0] text-gray-800 shadow-sm hover:bg-[#a383b7] disabled:opacity-50 disabled:pointer-events-none focus:outline-none"
                       href="/api/auth/sign-in"
                     >
                       Sign in
                     </Link>
                     <Link
-                      className="py-2 px-2.5 inline-flex items-center font-medium text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                      className="py-2 px-2.5 inline-flex items-center font-medium text-sm rounded-lg bg-[#674188] text-white hover:bg-[#4e3366] focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
                       href="/sign-up"
                     >
                       Sign up
