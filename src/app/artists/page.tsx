@@ -97,7 +97,7 @@ function page() {
                       type="text"
                       name="hs-search-article-1"
                       id="hs-search-article-1"
-                      className="py-2.5 px-4 block w-full rounded-lg "
+                      className="py-2.5 px-4 block w-full rounded-lg"
                       placeholder="Search for a Concert"
                       value={filterName}
                       onChange={(e) => setFilterName(e.target.value)}
@@ -125,7 +125,7 @@ function page() {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="m-1 py-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-white text-gray-800 shadow-sm"
+                className="m-1 py-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-[#BCA7E7] text-gray-800 shadow-sm focus:ring-2 focus:ring-[#8F75E5]"
               >
                 <option value="All">All</option>
                 <option value="Bollywood Celebrity">Bollywood Celebrity</option>

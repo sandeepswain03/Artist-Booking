@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-``;
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
@@ -19,123 +18,67 @@ export default function SignIn() {
   };
 
   return (
-    <div className="relative overflow-hidden">
-      <div className="mx-auto max-w-screen-md py-12 px-4 sm:px-6 md:max-w-screen-xl md:py-20 lg:py-32 md:px-8">
-        <div className="md:pe-8 md:w-1/2 xl:pe-0 xl:w-5/12">
-          <h1 className="text-3xl text-gray-800 font-bold md:text-4xl md:leading-tight lg:text-5xl lg:leading-tight">
-            Solving problems for every{" "}
-            <span className="text-blue-600">team</span>
-          </h1>
-          <p className="mt-3 text-base text-gray-500">
-            Built on standard web technology, teams use Preline to build
-            beautiful cross-platform hybrid apps in a fraction of the time.
+    <div className="container mx-auto px-4 m-12 max-w-md">
+      <h2 className="text-3xl font-bold mb-8 text-center text-[#4A3F6A]">
+        Sign In
+      </h2>
+      <div className="bg-[#5E4B88] shadow-lg rounded-xl p-8">
+        <div className="text-center">
+          <p className="text-sm text-[#EAD8FF] mb-6">
+            Don’t have an account?{" "}
+            <a
+              className="text-[#BCA7E7] underline hover:text-white"
+              href="/sign-up"
+            >
+              Sign up here
+            </a>
           </p>
-          <div className="p-4 sm:p-7">
-            <div className="text-center">
-              <h1 className="block text-2xl font-bold text-gray-800">
-                Sign in
-              </h1>
-              <p className="mt-2 text-sm text-gray-600">
-                Do not have an account?{" "}
-                <Link
-                  className="text-blue-600 decoration-2 hover:underline focus:outline-none focus:underline font-medium"
-                  href="/sign-up"
-                >
-                  Sign up here
-                </Link>
-              </p>
-            </div>
-
-            <div className="mt-5">
-              <form onSubmit={handleSubmit}>
-                <div className="grid gap-y-4">
-                  <div>
-                    <label htmlFor="email" className="block text-sm mb-2">
-                      Email address
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                        required
-                        aria-describedby="email-error"
-                      />
-                      <div className="hidden absolute inset-y-0 end-0 pointer-events-none pe-3">
-                        <svg
-                          className="size-5 text-red-500"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          viewBox="0 0 16 16"
-                          aria-hidden="true"
-                        >
-                          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                        </svg>
-                      </div>
-                    </div>
-                    <p
-                      className="hidden text-xs text-red-600 mt-2"
-                      id="email-error"
-                    >
-                      Please include a valid email address so we can get back to
-                      you
-                    </p>
-                  </div>
-
-                  <div>
-                    <label htmlFor="password" className="block text-sm mb-2">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                        required
-                        aria-describedby="password-error"
-                      />
-                      <div className="hidden absolute inset-y-0 end-0 pointer-events-none pe-3">
-                        <svg
-                          className="size-5 text-red-500"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          viewBox="0 0 16 16"
-                          aria-hidden="true"
-                        >
-                          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                        </svg>
-                      </div>
-                    </div>
-                    <p
-                      className="hidden text-xs text-red-600 mt-2"
-                      id="password-error"
-                    >
-                      8+ characters required
-                    </p>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="py-3 px-4 inline-flex justify-center items-center gap-x-3 text-center bg-blue-600 hover:bg-blue-700 border border-transparent text-sm text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:pointer-events-none"
-                  >
-                    Sign in
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
         </div>
+        <form onSubmit={handleSubmit}>
+          <div className="grid gap-y-6">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
+              >
+                Email address
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-8 py-3 text-white rounded-lg bg-gradient-to-r from-[#8F75E5] to-[#674188] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8F75E5]"
+            >
+              Sign In
+            </button>
+          </div>
+        </form>
       </div>
-
-      <div className="hidden md:block md:absolute md:top-0 md:start-1/2 md:end-0 h-full bg-[url('https://images.unsplash.com/photo-1606868306217-dbf5046868d2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80')] bg-no-repeat bg-center bg-cover"></div>
     </div>
   );
 }

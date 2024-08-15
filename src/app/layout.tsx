@@ -24,7 +24,7 @@ export default function RootLayout({
         <body className={`${inter.className} bg-[#F7EFE5]`}>
           <Header />
           <main>{children}</main>
-          <Footer/>
+          <Footer />
         </body>
       </AuthProvider>
 

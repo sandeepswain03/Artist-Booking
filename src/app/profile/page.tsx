@@ -37,7 +37,7 @@ export default function AccountSettings() {
           <div id="account-general" className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row items-center">
               <Image
-                src="/image.png"
+                src="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80"
                 alt="Profile"
                 width={80}
                 height={80}
