@@ -189,6 +189,7 @@ export default function Page() {
                 <div className="flex-auto p-4 md:p-6">
                   <h3 className="text-xl text-white/90">
                     <span className="font-bold">{event.name}</span>
+                    <br />
                     {event.date}
                   </h3>
                 </div>
