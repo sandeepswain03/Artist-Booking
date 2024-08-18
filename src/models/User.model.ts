@@ -15,6 +15,7 @@ export interface IUser extends Document {
   videoLink1?: string;
   videoLink2?: string;
   bio: string;
+  videoLink3:string
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -53,6 +54,9 @@ const UserSchema: Schema<IUser> = new Schema({
     type: String,
   },
   videoLink2: {
+    type: String,
+  },
+  videoLink3: {
     type: String,
   },
   bio: {

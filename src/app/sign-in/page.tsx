@@ -1,8 +1,7 @@
 "use client";
-import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
