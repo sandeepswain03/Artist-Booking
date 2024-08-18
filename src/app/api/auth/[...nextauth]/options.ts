@@ -22,24 +22,21 @@ export const authOptions: NextAuthOptions = {
               { username: credentials.identifier },
             ],
           });
-
           if (!user) {
-            throw new Error("No user found with this email");
+            throw new Error('No user found with this email');
           }
 
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password,
             user.password
           );
-
           if (isPasswordCorrect) {
             return user;
           } else {
-            throw new Error("Incorrect password");
+            throw new Error('Incorrect password');
           }
-        } catch (error: any) {
-            console.log("error in authorize", error);
-            throw new Error(error.message);
+        } catch (err: any) {
+          throw new Error(err);
         }
       },
     }),
