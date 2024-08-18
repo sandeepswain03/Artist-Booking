@@ -1,20 +1,32 @@
 "use client";
-import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: true,
-      callbackUrl: "/",
+    setError(""); // Clear any previous errors
+    const result = await signIn('credentials', {
+      redirect: false,
+      identifier: email,
+      password: password,
     });
+
+    if (result?.error) {
+      if (result.error === 'CredentialsSignin') {
+        setError('Incorrect username or password');
+      } else {
+        setError(result.error);
+      }
+    } else if (result?.url) {
+      router.replace('/dashboard');
+    }
   };
 
   return (
@@ -25,7 +37,7 @@ export default function SignIn() {
       <div className="bg-[#5E4B88] shadow-lg rounded-xl p-8">
         <div className="text-center">
           <p className="text-sm text-[#EAD8FF] mb-6">
-            Don’t have an account?{" "}
+            Don't have an account?{" "}
             <a
               className="text-[#BCA7E7] underline hover:text-white"
               href="/sign-up"
@@ -34,6 +46,11 @@ export default function SignIn() {
             </a>
           </p>
         </div>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="grid gap-y-6">
             <div>

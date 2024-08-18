@@ -1,4 +1,5 @@
 import { Schema, model, models, Model, Document } from "mongoose";
+import { IConcert } from "./Concert.model";
 
 export interface IUser extends Document {
   username: string;
@@ -8,7 +9,13 @@ export interface IUser extends Document {
     public_id: string;
     url: string;
   };
+  concerts: Schema.Types.ObjectId[]; 
+  enquiry: Schema.Types.ObjectId[];   
   role: "user" | "artist";
+  videoLink1?: string;
+  videoLink2?: string;
+  bio: string;
+  videoLink3:string
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -43,6 +50,31 @@ const UserSchema: Schema<IUser> = new Schema({
     enum: ["user", "artist"],
     default: "user",
   },
+  videoLink1: {
+    type: String,
+  },
+  videoLink2: {
+    type: String,
+  },
+  videoLink3: {
+    type: String,
+  },
+  bio: {
+    type: String,
+    trim: true,
+  },
+  concerts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Concert",
+    },
+  ],
+  enquiry: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Enquiry",
+    },
+  ],
 });
 
 const UserModel =
