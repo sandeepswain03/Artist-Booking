@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import {
   HamburgerIcon,
   CloseIcon,
@@ -11,8 +11,9 @@ import {
 
 function Header() {
   const { data: session } = useSession();
+  const user = session?.user ;
   return (
-    <header className="flex flex-wrap  md:justify-start md:flex-nowrap z-50 w-full bg-[#F7EFE5] border-b border-gray-200 shadow-lg">
+    <header className="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full bg-[#F7EFE5] border-b border-gray-200 shadow-lg">
       <nav className="relative max-w-[85rem] w-full mx-auto md:flex md:items-center md:justify-between md:gap-3 py-2 lg:py-4 px-4 sm:px-6 lg:px-8 ">
         <div className="flex justify-between items-center gap-x-1">
           <Link
@@ -76,7 +77,7 @@ function Header() {
 
               {!session ? (
                 <>
-                  <div className=" flex flex-wrap items-center gap-x-1.5">
+                  <div className="flex flex-wrap items-center gap-x-1.5">
                     <Link
                       className="py-[7px] px-2.5 inline-flex items-center font-medium text-sm rounded-lg bg-[#C8A1E0] text-gray-800 shadow-sm hover:bg-[#a383b7] disabled:opacity-50 disabled:pointer-events-none focus:outline-none"
                       href="/sign-in"
@@ -93,23 +94,21 @@ function Header() {
                 </>
               ) : (
                 <>
-                  <div className=" flex flex-wrap items-center gap-x-1.5">
+                  <div className="flex flex-wrap items-center gap-x-1.5">
                     <Link href="/profile">
                       <img
-                        src={
-                          "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80"
-                        }
+                         src={user?.avatar?.url || "/avatar.png"}
                         alt="Avatar"
                         className="w-8 h-8 rounded-full"
                       />
                     </Link>
 
-                    <Link
+                    <button
+                      onClick={() => signOut({ callbackUrl: "/" })}
                       className="py-2 px-2.5 inline-flex items-center font-medium text-sm rounded-lg bg-[#674188] text-white hover:bg-[#4e3366] focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
-                      href="/sign-out"
                     >
                       Sign out
-                    </Link>
+                    </button>
                   </div>
                 </>
               )}

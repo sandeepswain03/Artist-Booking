@@ -7,6 +7,14 @@ declare module "next-auth" {
       _id: string;
       username: string;
       role: string;
+      avatar: {
+        public_id: string;
+        url: string;
+      }
+      videoLink1: string;
+      videoLink2?: string;
+      videoLink3?: string;
+      bio: string;
     } & DefaultSession["user"];
   }
 
@@ -14,6 +22,14 @@ declare module "next-auth" {
     _id: string;
     username: string;
     role: string;
+    avatar: {
+      public_id: string;
+      url: string;
+    }
+    videoLink1: string;
+    videoLink2?: string;
+    videoLink3?: string;
+    bio: string;
   }
 }
 
@@ -22,5 +38,13 @@ declare module "next-auth/jwt" {
     _id: string;
     username: string;
     role: string;
+    avatar: {
+      public_id: string;
+      url: string;
+    }
+    videoLink1: string;
+    videoLink2?: string;
+    videoLink3?: string;
+    bio: string;
   }
 }

@@ -12,20 +12,21 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(""); // Clear any previous errors
-    const result = await signIn('credentials', {
+
+    const result = await signIn("credentials", {
       redirect: false,
       identifier: email,
       password: password,
     });
 
     if (result?.error) {
-      if (result.error === 'CredentialsSignin') {
-        setError('Incorrect username or password');
+      if (result.error === "CredentialsSignin") {
+        setError("Incorrect email or password");
       } else {
         setError(result.error);
       }
     } else if (result?.url) {
-      router.replace('/dashboard');
+      router.replace("/"); 
     }
   };
 
@@ -47,7 +48,10 @@ export default function SignIn() {
           </p>
         </div>
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+            role="alert"
+          >
             <span className="block sm:inline">{error}</span>
           </div>
         )}
