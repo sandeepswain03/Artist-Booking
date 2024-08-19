@@ -1,8 +1,8 @@
 import { Schema, model, models, Model, Document } from "mongoose";
 
 export interface IEnquiry extends Document {
+  _id: Schema.Types.ObjectId;
   userId: Schema.Types.ObjectId; // Reference to User (who made the enquiry)
-  artist: Schema.Types.ObjectId; // Reference to Concert
   occasion: string;
   date: Date;
   city: string;
@@ -38,11 +38,6 @@ const EnquirySchema: Schema<IEnquiry> = new Schema(
       type: String,
       required: [true, "Contact number is required"],
       trim: true,
-    },
-    artist: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
     },
     occasion: {
       type: String,
