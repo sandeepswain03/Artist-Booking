@@ -1,5 +1,4 @@
 import { Schema, model, models, Model, Document } from "mongoose";
-import { IConcert } from "./Concert.model";
 
 export interface IUser extends Document {
   username: string;
@@ -14,8 +13,8 @@ export interface IUser extends Document {
   role: "user" | "artist";
   videoLink1?: string;
   videoLink2?: string;
+  videoLink3?:string
   bio: string;
-  videoLink3:string
 }
 
 const UserSchema: Schema<IUser> = new Schema({

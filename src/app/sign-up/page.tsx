@@ -1,6 +1,8 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
+import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -10,11 +12,15 @@ export default function SignUp() {
     role: "user",
     avatar: null as File | null,
     bio: "",
+    videoLink1: "",
+    videoLink2: "",
+    videoLink3: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -35,10 +41,27 @@ export default function SignUp() {
     setError("");
     setSuccess("");
 
-    const { username, email, password, role, bio, avatar } = formData;
+    const {
+      username,
+      email,
+      password,
+      role,
+      bio,
+      avatar,
+      videoLink1,
+      videoLink2,
+      videoLink3,
+    } = formData;
 
     if (!username || !email || !password || !avatar || !role) {
       setError("All fields are required");
+      setLoading(false);
+      return;
+    }
+
+    // Additional validation for artists
+    if (role === "artist" && (!bio || !videoLink1)) {
+      setError("Bio and at least one video link are required for artists");
       setLoading(false);
       return;
     }
@@ -49,16 +72,23 @@ export default function SignUp() {
     formDataToSend.append("password", password);
     formDataToSend.append("role", role);
     formDataToSend.append("avatar", avatar);
+    if (role === "artist") {
+      formDataToSend.append("bio", bio);
+      formDataToSend.append("videolink1", videoLink1);
+      if (videoLink2) formDataToSend.append("videolink2", videoLink2);
+      if (videoLink3) formDataToSend.append("videolink3", videoLink3);
+    }
 
     try {
-      const response = await fetch("/api/sign-up", {
-        method: "POST",
-        body: formDataToSend,
+      const response = await axios.post("/api/user", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      const data = await response.json();
+      router.replace("/sign-in");
 
-      if (response.ok) {
+      if (response.data.success) {
         setSuccess("User registered successfully!");
         setFormData({
           username: "",
@@ -67,12 +97,15 @@ export default function SignUp() {
           role: "user",
           avatar: null,
           bio: "",
+          videoLink1: "",
+          videoLink2: "",
+          videoLink3: "",
         });
       } else {
-        setError(data.message || "Something went wrong");
+        setError(response.data.message || "Something went wrong");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error during sign-up:", err);
       setError("An error occurred during sign-up");
     }
 
@@ -89,12 +122,12 @@ export default function SignUp() {
           <div className="text-center mb-6">
             <p className="text-sm text-[#EAD8FF]">
               Already have an account?{" "}
-              <a
-                className="text-[#BCA7E7] underline hover:text-white"
+              <Link
                 href="/sign-in"
+                className="text-[#BCA7E7] underline hover:text-white"
               >
                 Sign in here
-              </a>
+              </Link>
             </p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -169,22 +202,73 @@ export default function SignUp() {
               </select>
             </div>
             {formData.role === "artist" && (
-              <div>
-                <label
-                  htmlFor="bio"
-                  className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-                >
-                  Bio
-                </label>
-                <textarea
-                  id="bio"
-                  name="bio"
-                  value={formData.bio}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                  required
-                />
-              </div>
+              <>
+                <div>
+                  <label
+                    htmlFor="bio"
+                    className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
+                  >
+                    Bio
+                  </label>
+                  <textarea
+                    id="bio"
+                    name="bio"
+                    value={formData.bio}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="videoLink1"
+                    className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
+                  >
+                    Video Link 1
+                  </label>
+                  <input
+                    type="url"
+                    id="videoLink1"
+                    name="videoLink1"
+                    value={formData.videoLink1}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="videoLink2"
+                    className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
+                  >
+                    Video Link 2
+                  </label>
+                  <input
+                    type="url"
+                    id="videoLink2"
+                    name="videoLink2"
+                    value={formData.videoLink2}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="videoLink3"
+                    className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
+                  >
+                    Video Link 3
+                  </label>
+                  <input
+                    type="url"
+                    id="videoLink3"
+                    name="videoLink3"
+                    value={formData.videoLink3}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  />
+                </div>
+              </>
             )}
             <div>
               <label
@@ -207,7 +291,7 @@ export default function SignUp() {
               className="w-full px-8 py-3 text-white rounded-lg bg-gradient-to-r from-[#8F75E5] to-[#674188] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8F75E5]"
               disabled={loading}
             >
-              Sign Up
+              {loading ? "Signing Up..." : "Sign Up"}
             </button>
             {error && <p className="text-red-600 mt-4 text-sm">{error}</p>}
             {success && (

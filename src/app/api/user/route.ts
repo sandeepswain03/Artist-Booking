@@ -9,7 +9,6 @@ import { isValidObjectId } from "mongoose";
 
 export async function POST(request: Request) {
   await dbConnect();
-
   try {
     // Check if the request is a multipart/form-data request
     const contentType = request.headers.get("content-type");
@@ -129,7 +128,6 @@ export async function POST(request: Request) {
     );
   }
 }
-
 
 export async function PATCH(request: Request) {
   await dbConnect();

@@ -22,7 +22,7 @@ const uploadOnCloudinary = async (localFilePath: string) => {
         });
         
         // Delete the local file
-        fs.unlinkSync(normalizedPath);
+        // fs.unlinkSync(normalizedPath);
         
         return res;
     } catch (error) {
