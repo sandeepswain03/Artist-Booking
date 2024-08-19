@@ -1,35 +1,47 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+interface Concert {
+  _id: string;
+  title: string;
+  location: string;
+  price: number;
+  concertImages: { url: string; public_id: string }[];
+}
 
 export default function ConcertList() {
-  const [concerts, setConcerts] = useState([
-    {
-      id: 1,
-      coverImage: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQJgAE0k0gDSS-HtqJUOGFFR2y6oo_9JSzt58jK-gtDyiax8CVNrdyBVzppOvdW",
-      description: "Live concert at Central Park.",
-      price: 40,
-      address: "Central Park, NYC",
-    },
-    {
-      id: 2,
-      coverImage: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQJgAE0k0gDSS-HtqJUOGFFR2y6oo_9JSzt58jK-gtDyiax8CVNrdyBVzppOvdW",
-      description: "Live concert at Central Park.",
-      price: 50,
-      address: "Central Park, NYC",
-    },
-    {
-      id: 3,
-      coverImage: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQJgAE0k0gDSS-HtqJUOGFFR2y6oo_9JSzt58jK-gtDyiax8CVNrdyBVzppOvdW",
-      description: "Live concert at Central Park.",
-      price: 30,
-      address: "Central Park, NYC",
-    },
-    
-  ]);
+  const [concerts, setConcerts] = useState<Concert[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const handleDelete = (id: number) => {
-    const updatedConcerts = concerts.filter((concert) => concert.id !== id);
-    setConcerts(updatedConcerts);
+  useEffect(() => {
+    const fetchConcerts = async () => {
+      try {
+        const response = await axios.get("/api/concert");
+        setConcerts(response.data.concerts);
+      } catch (error) {
+        console.error("Error fetching concerts:", error);
+      }
+    };
+
+    fetchConcerts();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    setLoading(true);
+    try {
+      await axios.delete(`/api/concert?id=${id}`);
+      setConcerts((prevConcerts) =>
+        prevConcerts.filter((concert) => concert._id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting concert:", error);
+    } finally {
+      setLoading(false);
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -37,23 +49,39 @@ export default function ConcertList() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {concerts.length > 0 ? (
           concerts.map((concert) => (
-            <div key={concert.id} className="bg-pink-100 rounded-lg shadow-md p-4">
+            <div
+              key={concert._id}
+              className="bg-pink-100 rounded-lg shadow-md p-4"
+            >
               <img
-                src={concert.coverImage}
+                src={concert.concertImages[0]?.url || ""}
                 alt="Concert Cover"
                 className="w-full h-40 object-cover rounded-lg"
               />
               <div className="mt-4">
-                <h5 className="text-lg font-semibold text-gray-800">{concert.description}</h5>
-                <p className="text-sm text-gray-600 mt-2">Price: ${concert.price}</p>
-                <p className="text-sm text-gray-600 mt-1">Address: {concert.address}</p>
+                <h5 className="text-lg font-semibold text-gray-800">
+                  {concert.title}
+                </h5>
+                <p className="text-sm text-gray-600 mt-2">
+                  Price: ${concert.price}
+                </p>
+                <p className="text-sm text-gray-600 mt-1">
+                  Address: {concert.location}
+                </p>
               </div>
               <div className="mt-4 text-right">
                 <button
-                  onClick={() => handleDelete(concert.id)}
-                  className="px-4 py-2 bg-red-500 text-white rounded-md shadow-sm hover:bg-red-600 transition duration-200"
+                  onClick={() => handleDelete(concert._id)}
+                  disabled={loading && deletingId === concert._id}
+                  className={`px-4 py-2 bg-red-500 text-white rounded-md shadow-sm hover:bg-red-600 transition duration-200 ${
+                    loading && deletingId === concert._id
+                      ? "cursor-not-allowed opacity-50"
+                      : ""
+                  }`}
                 >
-                  Delete
+                  {loading && deletingId === concert._id
+                    ? "Deleting..."
+                    : "Delete"}
                 </button>
               </div>
             </div>

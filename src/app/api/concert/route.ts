@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import { handleFileUpload } from "@/lib/fileUpload";
 import { uploadOnCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 import { ApiError } from "next/dist/server/api-utils";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { isValidObjectId } from "mongoose";
 import UserModel from "@/models/User.model";
 
@@ -11,16 +13,38 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    const contentType = request.headers.get("content-type");
-    if (!contentType || !(contentType.includes("multipart/form-data") || contentType.includes("application/x-www-form-urlencoded"))) {
+    // Get the authenticated user's session
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user) {
       return NextResponse.json(
-        { success: false, message: "Invalid Content-Type. Must be multipart/form-data or application/x-www-form-urlencoded" },
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const artistId = session.user._id; // Use the logged-in user's ID as the artistId
+
+    const contentType = request.headers.get("content-type");
+    if (
+      !contentType ||
+      !(
+        contentType.includes("multipart/form-data") ||
+        contentType.includes("application/x-www-form-urlencoded")
+      )
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Invalid Content-Type. Must be multipart/form-data or application/x-www-form-urlencoded",
+        },
         { status: 400 }
       );
     }
 
     const data = await request.formData();
-    const artistId = data.get("artistId") as string;
+    // const artistId = data.get("artistId") as string;
     const title = data.get("title") as string;
     const date = data.get("date") as string;
     const time = data.get("time") as string;
@@ -35,26 +59,25 @@ export async function POST(request: Request) {
 
     if (!artistId) errors.artistId = "Artist ID is required";
 
-     // Check if userId is a valid MongoDB ObjectId
-     if (!isValidObjectId(artistId)) {
-        return NextResponse.json(
-          { success: false, message: "Invalid user ID" },
-          { status: 400 }
-        );
-      }
+    // Check if userId is a valid MongoDB ObjectId
+    if (!isValidObjectId(artistId)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid user ID" },
+        { status: 400 }
+      );
+    }
 
-      const artistexist = await UserModel.findById(artistId);
+    const artistexist = await UserModel.findById(artistId);
 
+    // Check if userId is a valid MongoDB ObjectId
+    if (!artistexist) {
+      return NextResponse.json(
+        { success: false, message: "Invalid user ID" },
+        { status: 400 }
+      );
+    }
 
-     // Check if userId is a valid MongoDB ObjectId
-     if ( !artistexist) {
-        return NextResponse.json(
-          { success: false, message: "Invalid user ID" },
-          { status: 400 }
-        );
-      }
-           
-    // Validation  
+    // Validation
     if (!title) errors.title = "Title is required";
     if (!date) errors.date = "Date is required";
     if (!time) errors.time = "Time is required";
@@ -72,10 +95,7 @@ export async function POST(request: Request) {
 
     //Check images exist
     if (Object.keys(errors).length > 0) {
-      return NextResponse.json(
-        { success: false, errors },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, errors }, { status: 400 });
     }
 
     // Upload Images
@@ -84,11 +104,11 @@ export async function POST(request: Request) {
       "./public/uploads"
     );
 
-    // Uload Images to Cloudinary
+    // Upload Images to Cloudinary
     let uploadedImages = [];
     if (Array.isArray(concertImagesLocalPaths)) {
       for (const imagePath of concertImagesLocalPaths) {
-        const uploadedImage:any = await uploadOnCloudinary(imagePath);
+        const uploadedImage: any = await uploadOnCloudinary(imagePath);
         if (uploadedImage) {
           uploadedImages.push({
             public_id: uploadedImage.public_id,
@@ -113,7 +133,7 @@ export async function POST(request: Request) {
       location,
       city,
       description,
-      price, 
+      price,
       capacity,
       genre,
       concertImages: uploadedImages,
@@ -121,7 +141,7 @@ export async function POST(request: Request) {
 
     // Save Concert
     await newConcert.save();
-    
+
     // Add Concert to Artist
     artistexist.concerts.push(newConcert._id);
     artistexist.save();
@@ -130,7 +150,7 @@ export async function POST(request: Request) {
       {
         success: true,
         message: "Concert created successfully",
-        concert: newConcert
+        concert: newConcert,
       },
       { status: 201 }
     );
@@ -148,8 +168,17 @@ export async function DELETE(request: Request) {
   await dbConnect();
 
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, message: "Not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user._id;
     const { searchParams } = new URL(request.url);
-    const concertId = searchParams.get('id');
+    const concertId = searchParams.get("id");
 
     if (!isValidObjectId(concertId)) {
       return NextResponse.json(
@@ -158,32 +187,37 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const deletedConcert = await ConcertModel.findById(concertId);
+    const concert = await ConcertModel.findById(concertId);
 
-    if (!deletedConcert) {
+    if (!concert) {
       return NextResponse.json(
         { success: false, message: "Concert not found" },
         { status: 404 }
       );
     }
 
-    // Delete images from Cloudinary
-    for (const image of deletedConcert.concertImages) {
+    if (concert.artistId.toString() !== userId) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized to delete this concert" },
+        { status: 403 }
+      );
+    }
+
+    // Proceed with deleting images from Cloudinary and the concert
+    for (const image of concert.concertImages) {
       await deleteFromCloudinary(image.public_id);
     }
 
-    // Delete the concert from the database
     await ConcertModel.findByIdAndDelete(concertId);
 
-    // Remove concert from artist's concerts array
-    await UserModel.findByIdAndUpdate(deletedConcert.artistId, {
-      $pull: { concerts: concertId }
+    await UserModel.findByIdAndUpdate(userId, {
+      $pull: { concerts: concertId },
     });
 
     return NextResponse.json(
       {
         success: true,
-        message: "Concert and associated images deleted successfully"
+        message: "Concert deleted successfully",
       },
       { status: 200 }
     );
@@ -195,3 +229,40 @@ export async function DELETE(request: Request) {
     );
   }
 }
+
+// Get all concerts for an artist
+export async function GET(request: Request) {
+  await dbConnect();
+
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, message: "Not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user._id;
+
+    const user = await UserModel.findById(userId).populate("concerts");
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, concerts: user.concerts },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error fetching concerts", error);
+    return NextResponse.json(
+      { success: false, message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
