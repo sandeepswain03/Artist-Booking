@@ -79,7 +79,7 @@ function Header() {
                   <div className=" flex flex-wrap items-center gap-x-1.5">
                     <Link
                       className="py-[7px] px-2.5 inline-flex items-center font-medium text-sm rounded-lg bg-[#C8A1E0] text-gray-800 shadow-sm hover:bg-[#a383b7] disabled:opacity-50 disabled:pointer-events-none focus:outline-none"
-                      href="/api/auth/sign-in"
+                      href="/sign-in"
                     >
                       Sign in
                     </Link>
