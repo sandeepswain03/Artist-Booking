@@ -1,4 +1,3 @@
-// src/app/api/concerts/[id]/route.ts
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import ConcertModel from "@/models/Concert.model";

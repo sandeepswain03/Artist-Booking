@@ -1,6 +1,8 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import axios from "axios";
 import {
   OrangeLine,
   BlueLine,
@@ -8,78 +10,39 @@ import {
   SideArrow,
 } from "../../components/svgIcons";
 
-const artistsData = [
-  {
-    name: "Amitabh Bachchan",
-    imageUrl:
-      "https://artistbookingcompany.com/wp-content/uploads/2024/03/amitabh-bacchan-740x740.jpg",
-    category: "Singer",
-    link: "artist_inquiry",
-  },
-  {
-    name: "Shahrukh Khan",
-    imageUrl:
-      "https://artistbookingcompany.com/wp-content/uploads/2024/03/shahrukh-khan-740x740.png",
-    category: "Singer",
-    link: "artist_inquiry",
-  },
-  {
-    name: "Salman Khan",
-    imageUrl:
-      "https://artistbookingcompany.com/wp-content/uploads/2024/03/salman-khan-740x740.png",
-    category: "Bollywood Celebrity",
-    link: "artist_inquiry",
-  },
-  {
-    name: "Aishwarya Rai Bachchan",
-    imageUrl:
-      "https://artistbookingcompany.com/wp-content/uploads/2024/03/aishwarya-rai-740x740.png",
-    category: "Bollywood Celebrity",
-    link: "artist_inquiry",
-  },
-  {
-    name: "Aamir Khan",
-    imageUrl:
-      "https://artistbookingcompany.com/wp-content/uploads/2024/03/amir-khan-740x740.png",
-    category: "Bollywood Celebrity",
-    link: "artist_inquiry",
-  },
-  {
-    name: "Akshay Kumar",
-    imageUrl:
-      "https://artistbookingcompany.com/wp-content/uploads/2024/03/akshay-kumar-740x740.jpg",
-    category: "Bollywood Celebrity",
-    link: "artist_inquiry",
-  },
-  {
-    name: "Hrithik Roshan",
-    imageUrl:
-      "https://artistbookingcompany.com/wp-content/uploads/2024/03/hrithik-roshan-740x740.jpg",
-    category: "Bollywood Celebrity",
-    link: "artist_inquiry",
-  },
-  {
-    name: "Shahid Kapoor",
-    imageUrl:
-      "https://artistbookingcompany.com/wp-content/uploads/2024/03/shahid-kapoor-740x740.jpg",
-    category: "Anchor",
-    link: "artist_inquiry",
-  },
-];
+interface Artist {
+  _id: string;
+  username: string;
+  avatar: { url: string; public_id: string };
+}
 
-function page() {
-  const [filterType, setFilterType] = useState("All");
+export default function ArtistsPage() {
+  const [artists, setArtists] = useState<Artist[]>([]);
   const [filterName, setFilterName] = useState("");
 
-  const filteredArtists = artistsData.filter(
-    (concert) =>
-      (filterType === "All" || concert.category === filterType) &&
-      (filterName === "" ||
-        concert.name.toLowerCase().includes(filterName.toLowerCase()))
+  useEffect(() => {
+    const fetchArtists = async () => {
+      try {
+        const response = await axios.get("/api/artist");
+        if (response.data.success) {
+          setArtists(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching artists:", error);
+      }
+    };
+    fetchArtists();
+  }, []);
+
+  const filteredArtists = artists.filter((artist) =>
+    filterName === ""
+      ? true
+      : artist.username.toLowerCase().includes(filterName.toLowerCase())
   );
+
   return (
     <>
-      {/* search Bar */}
+      {/* Search Bar */}
       <div className="relative overflow-hidden bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
         <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
           <div className="text-center">
@@ -98,7 +61,7 @@ function page() {
                       name="hs-search-article-1"
                       id="hs-search-article-1"
                       className="py-2.5 px-4 block w-full rounded-lg"
-                      placeholder="Search for a Concert"
+                      placeholder="Search for an Artist"
                       value={filterName}
                       onChange={(e) => setFilterName(e.target.value)}
                     />
@@ -120,39 +83,25 @@ function page() {
                 <BlueLine />
               </div>
             </div>
-            <div className="mt-8">
-              {/* search category */}
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="m-1 py-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-[#BCA7E7] text-gray-800 shadow-sm focus:ring-2 focus:ring-[#8F75E5]"
-              >
-                <option value="All">All</option>
-                <option value="Bollywood Celebrity">Bollywood Celebrity</option>
-                <option value="Singer">Singer</option>
-                <option value="Anchor">Anchor</option>
-                <option value="Standup Comedy">Standup Comedy</option>
-              </select>
-            </div>
           </div>
         </div>
       </div>
-      {/* artists section */}
+      {/* Artists section */}
       <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredArtists.map((artist, index) => (
+          {filteredArtists.map((artist) => (
             <div
-              key={index}
+              key={artist._id}
               className="hover:scale-105 transition-all duration-300 ease-in-out"
             >
               <Link
                 className="relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl"
-                href={artist.link}
-                style={{ backgroundImage: `url(${artist.imageUrl})` }}
+                href={`/artists/${artist._id}`}
+                style={{ backgroundImage: `url(${artist.avatar?.url})` }}
               >
                 <div className="flex-auto p-4 md:p-6">
                   <h3 className="text-xl text-white/90">
-                    <span className="font-bold">{artist.name}</span>
+                    <span className="font-bold">{artist.username}</span>
                   </h3>
                 </div>
                 <div className="pt-0 p-4 md:p-6">
@@ -169,5 +118,3 @@ function page() {
     </>
   );
 }
-
-export default page;
