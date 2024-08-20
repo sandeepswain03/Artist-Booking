@@ -1,113 +1,40 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  OrangeLine,
-  BlueLine,
-  Search,
-  SideArrow,
-} from "../../components/svgIcons";
+import axios from "axios";
+import { OrangeLine, BlueLine, Search, SideArrow } from "@/components/svgIcons";
 
-const concertData = [
-  {
-    name: "Summer Music Festival",
-    imageUrl:
-      "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQJgAE0k0gDSS-HtqJUOGFFR2y6oo_9JSzt58jK-gtDyiax8CVNrdyBVzppOvdW",
-    date: "2024-08-15",
-    link: "/concert_inquiry",
-    description:
-      "Join us for an unforgettable evening of music with John Smith.",
-    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
-    Pricing: "₹2,500",
-  },
-  {
-    name: "Rock Legends Live",
-    imageUrl:
-      "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQJgAE0k0gDSS-HtqJUOGFFR2y6oo_9JSzt58jK-gtDyiax8CVNrdyBVzppOvdW",
-    date: "2024-09-10",
-    link: "concert_inquiry",
-    description:
-      "Join us for an unforgettable evening of music with John Smith.",
-    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
-    Pricing: "₹2,500",
-  },
-  {
-    name: "Electronic Dance Night",
-    imageUrl:
-      "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRxYB4j9DVUnQtw0h5rXPXeHVXo1H40n_z0aNvTZMmIG-a0ZtevxuKXVxdxkYtV",
-    date: "2024-10-20",
-    link: "concert_inquiry",
-    description:
-      "Join us for an unforgettable evening of music with John Smith.",
-    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
-    Pricing: "₹2,500",
-  },
-  {
-    name: "Classical Harmony",
-    imageUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf6JNdh7NMTUZjc-lwuajcdNtoxeVHRAM3_2H04GxCPIPuoVinfsuVx_k8y4_W",
-    date: "2024-11-05",
-    link: "concert_inquiry",
-    description:
-      "Join us for an unforgettable evening of music with John Smith.",
-    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
-    Pricing: "₹2,500",
-  },
-  {
-    name: "Jazz Under the Stars",
-    imageUrl:
-      "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSoH0QxDGjQkC2FB9PdGyB6N4_P8w0GyDhmktxNqHbo_2_jeJ3xe9vGTYxivBWe",
-    date: "2024-12-15",
-    link: "concert_inquiry",
-    description:
-      "Join us for an unforgettable evening of music with John Smith.",
-    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
-    Pricing: "₹2,500",
-  },
-  {
-    name: "Pop Extravaganza",
-    imageUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_1NLeWraoyI-qvf2r3I-24e1wktzEPn-7S5QY6sLUUcKc9dHETc4l_VnNFQZU",
-    date: "2024-11-25",
-    link: "concert_inquiry",
-    description:
-      "Join us for an unforgettable evening of music with John Smith.",
-    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
-    Pricing: "₹2,500",
-  },
-  {
-    name: "Indie Rock Fest",
-    imageUrl:
-      "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSnG_c6zoch0NM1a4Sl3FsvrOG1DC6SvLaJP-Bgep4odRtpQYzpUUPdeFYwGE3Q",
-    date: "2024-09-22",
-    link: "concert_inquiry",
-    description:
-      "Join us for an unforgettable evening of music with John Smith.",
-    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
-    Pricing: "₹2,500",
-  },
-  {
-    name: "Country Music Gala",
-    imageUrl:
-      "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSqjBFzatVELzg4Q4fXNurmX0kXzvk6iR_nWTKFPxCTjY0BLYXs5wNMioUEjI5J",
-    date: "2024-08-30",
-    link: "concert_inquiry",
-    description:
-      "Join us for an unforgettable evening of music with John Smith.",
-    address: "The Fillmore Auditorium, 1999 Mori Blvd, Delhi",
-    Pricing: "₹2,500",
-  },
-];
+interface Concert {
+  _id: string;
+  title: string;
+  date: string;
+  concertImages: { url: string; public_id: string }[];
+}
 
-export default function Page() {
+export default function ConcertsPage() {
+  const [concerts, setConcerts] = useState<Concert[]>([]);
   const [filterDate, setFilterDate] = useState("");
   const [filterName, setFilterName] = useState("");
 
-  const filteredConcerts = concertData.filter(
+  useEffect(() => {
+    const fetchConcerts = async () => {
+      try {
+        const response = await axios.get("/api/concert");
+        if (response.data.success) {
+          setConcerts(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching concerts:", error);
+      }
+    };
+    fetchConcerts();
+  }, []);
+
+  const filteredConcerts = concerts.filter(
     (concert) =>
       (filterDate === "" || concert.date === filterDate) &&
       (filterName === "" ||
-        concert.name.toLowerCase().includes(filterName.toLowerCase()))
+        concert.title.toLowerCase().includes(filterName.toLowerCase()))
   );
 
   return (
@@ -176,32 +103,36 @@ export default function Page() {
       {/* Concerts section */}
       <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredConcerts.map((event, index) => (
-            <div
-              key={index}
-              className="hover:scale-105 transition-all duration-300 ease-in-out"
-            >
-              <Link
-                className="relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl"
-                href={event.link}
-                style={{ backgroundImage: `url(${event.imageUrl})` }}
+          {filteredConcerts.length > 0 ? (
+            filteredConcerts.map((concert) => (
+              <div
+                key={concert._id}
+                className="hover:scale-105 transition-all duration-300 ease-in-out"
               >
-                <div className="flex-auto p-4 md:p-6">
-                  <h3 className="text-xl text-white/90">
-                    <span className="font-bold">{event.name}</span>
-                    <br />
-                    {event.date}
-                  </h3>
-                </div>
-                <div className="pt-0 p-4 md:p-6">
-                  <div className="inline-flex items-center gap-2 text-sm font-medium text-white/90">
-                    Explore
-                    <SideArrow />
+                <Link
+                  className="relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl"
+                  href={`/concerts/${concert._id}`}
+                  style={{ backgroundImage: `url(${concert.concertImages[0]?.url || ""})` }}
+                >
+                  <div className="flex-auto p-4 md:p-6">
+                    <h3 className="text-xl text-white/90">
+                      <span className="font-bold">{concert.title}</span>
+                      <br />
+                      {concert.date}
+                    </h3>
                   </div>
-                </div>
-              </Link>
-            </div>
-          ))}
+                  <div className="pt-0 p-4 md:p-6">
+                    <div className="inline-flex items-center gap-2 text-sm font-medium text-white/90">
+                      Explore
+                      <SideArrow />
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-600">No concerts found.</p>
+          )}
         </div>
       </div>
     </>

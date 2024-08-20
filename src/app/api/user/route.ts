@@ -6,6 +6,8 @@ import { handleFileUpload } from "@/lib/fileUpload";
 import { uploadOnCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 import { ApiError } from "next/dist/server/api-utils";
 import { isValidObjectId } from "mongoose";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { getServerSession } from "next-auth";
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -259,6 +261,42 @@ export async function DELETE(request: Request) {
     );
   } catch (error) {
     console.error("Error deleting user", error);
+    return NextResponse.json(
+      { success: false, message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+// Get all concerts for an artist
+export async function GET(request: Request) {
+  await dbConnect();
+
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, message: "Not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user._id;
+
+    const user = await UserModel.findById(userId).populate("concerts");
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, concerts: user.concerts },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error fetching concerts", error);
     return NextResponse.json(
       { success: false, message: "Internal Server Error" },
       { status: 500 }

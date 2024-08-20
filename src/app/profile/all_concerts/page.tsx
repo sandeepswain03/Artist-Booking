@@ -18,7 +18,7 @@ export default function ConcertList() {
   useEffect(() => {
     const fetchConcerts = async () => {
       try {
-        const response = await axios.get("/api/concert");
+        const response = await axios.get("/api/user");
         setConcerts(response.data.concerts);
       } catch (error) {
         console.error("Error fetching concerts:", error);

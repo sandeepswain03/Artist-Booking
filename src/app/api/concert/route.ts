@@ -230,39 +230,19 @@ export async function DELETE(request: Request) {
   }
 }
 
-// Get all concerts for an artist
-export async function GET(request: Request) {
+export async function GET() {
   await dbConnect();
 
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json(
-        { success: false, message: "Not authenticated" },
-        { status: 401 }
-      );
-    }
-
-    const userId = session.user._id;
-
-    const user = await UserModel.findById(userId).populate("concerts");
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: "User not found" },
-        { status: 404 }
-      );
-    }
-
+    const concerts = await ConcertModel.find({});
     return NextResponse.json(
-      { success: true, concerts: user.concerts },
+      { success: true, data: concerts },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching concerts", error);
     return NextResponse.json(
-      { success: false, message: "Internal Server Error" },
+      { success: false, message: "Failed to fetch concerts" },
       { status: 500 }
     );
   }
 }
-
