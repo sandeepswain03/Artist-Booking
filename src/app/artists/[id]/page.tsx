@@ -19,6 +19,21 @@ export default function ArtistDetailsPage({
   params: { id: string };
 }) {
   const [artist, setArtist] = useState<Artist | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    occasion: "",
+    date: "",
+    city: "",
+    budget: "",
+    guestCount: "",
+    name: "",
+    email: "",
+    contactNumber: "",
+    message: "",
+    artistId: params.id,
+  });
 
   useEffect(() => {
     const fetchArtist = async () => {
@@ -33,6 +48,55 @@ export default function ArtistDetailsPage({
     };
     fetchArtist();
   }, [params.id]);
+
+  // Handle input change
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await axios.post("/api/enquiry", formData);
+      if (response.data.success) {
+        setSuccess("Inquiry submitted successfully!");
+        // Optionally reset the form after successful submission
+        setFormData({
+          occasion: "",
+          date: "",
+          city: "",
+          budget: "",
+          guestCount: "",
+          name: "",
+          email: "",
+          contactNumber: "",
+          message: "",
+          artistId: params.id,
+        });
+      } else {
+        setError(response.data.message || "Failed to submit the inquiry.");
+      }
+    } catch (error: any) {
+      setError(
+        error.response?.data?.message ||
+          "An error occurred while submitting the inquiry."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!artist) {
     return <div>Loading...</div>;
@@ -106,8 +170,12 @@ export default function ArtistDetailsPage({
           <h2 className="text-3xl font-bold mb-8 text-center text-[#4A3F6A]">
             Inquire Now
           </h2>
-          <form className="bg-[#5E4B88] shadow-lg rounded-xl p-8">
+          <form
+            className="bg-[#5E4B88] shadow-lg rounded-xl p-8"
+            onSubmit={handleSubmit}
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              {/* Occasion Field */}
               <div>
                 <label
                   className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
@@ -118,7 +186,10 @@ export default function ArtistDetailsPage({
                 <select
                   id="occasion"
                   name="occasion"
+                  value={formData.occasion}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  required
                 >
                   <option value="">Select an occasion</option>
                   <option value="wedding">Wedding</option>
@@ -127,6 +198,8 @@ export default function ArtistDetailsPage({
                   <option value="other">Other</option>
                 </select>
               </div>
+
+              {/* Date Field */}
               <div>
                 <label
                   className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
@@ -138,9 +211,14 @@ export default function ArtistDetailsPage({
                   type="date"
                   id="date"
                   name="date"
+                  value={formData.date}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  required
                 />
               </div>
+
+              {/* City Field */}
               <div>
                 <label
                   className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
@@ -152,20 +230,28 @@ export default function ArtistDetailsPage({
                   type="text"
                   id="city"
                   name="city"
+                  value={formData.city}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  required
                 />
               </div>
+
+              {/* Budget Field */}
               <div>
                 <label
                   className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
                   htmlFor="budget"
                 >
-                  Select Budget*
+                  Budget*
                 </label>
                 <select
                   id="budget"
                   name="budget"
+                  value={formData.budget}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  required
                 >
                   <option value="">Select a budget</option>
                   <option value="under-1000">$1000 and under</option>
@@ -174,20 +260,26 @@ export default function ArtistDetailsPage({
                   <option value="over-10000">Over $10000</option>
                 </select>
               </div>
+
+              {/* Guest Count Field */}
               <div>
                 <label
                   className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-                  htmlFor="guest-count"
+                  htmlFor="guestCount"
                 >
                   Guest Count
                 </label>
                 <input
                   type="number"
-                  id="guest-count"
-                  name="guest-count"
+                  id="guestCount"
+                  name="guestCount"
+                  value={formData.guestCount}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
                 />
               </div>
+
+              {/* Name Field */}
               <div>
                 <label
                   className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
@@ -199,9 +291,14 @@ export default function ArtistDetailsPage({
                   type="text"
                   id="name"
                   name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  required
                 />
               </div>
+
+              {/* Email Field */}
               <div>
                 <label
                   className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
@@ -213,33 +310,73 @@ export default function ArtistDetailsPage({
                   type="email"
                   id="email"
                   name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  required
                 />
               </div>
+
+              {/* Contact Number Field */}
               <div>
                 <label
                   className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-                  htmlFor="contact-number"
+                  htmlFor="contactNumber"
                 >
                   Contact Number*
                 </label>
                 <input
                   type="tel"
-                  id="contact-number"
-                  name="contact-number"
+                  id="contactNumber"
+                  name="contactNumber"
+                  value={formData.contactNumber}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  required
                 />
               </div>
+
+              {/* Message Field */}
+              <div className="col-span-1 md:col-span-2">
+                <label
+                  className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
+                  htmlFor="message"
+                >
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
+                  rows={5}
+                />
+              </div>
+
+              <input
+                type="hidden"
+                id="artistId"
+                name="artistId"
+                value={formData.artistId}
+              />
             </div>
+
             <div className="text-center">
               <button
                 type="submit"
                 className="px-8 py-3 text-white rounded-lg bg-gradient-to-r from-[#8F75E5] to-[#674188] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8F75E5]"
+                disabled={loading}
               >
-                Submit Inquiry
+                {loading ? "Submitting..." : "Submit Inquiry"}
               </button>
             </div>
           </form>
+
+          {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+          {success && (
+            <p className="text-green-500 text-center mt-4">{success}</p>
+          )}
         </div>
       </section>
     </>

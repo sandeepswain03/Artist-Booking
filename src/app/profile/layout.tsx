@@ -34,6 +34,12 @@ export default function layout({
               >
                 All Concerts
               </Link>
+              <Link
+                className="block px-4 py-2 text-base font-medium hover:bg-[#8F75E5] rounded-lg transition-colors duration-200"
+                href="/profile/all_inquiry"
+              >
+                All Inquiries
+              </Link>
             </nav>
           </aside>
 

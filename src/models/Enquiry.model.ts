@@ -3,7 +3,8 @@ import { Schema, model, models, Model, Document } from "mongoose";
 export interface IEnquiry extends Document {
   _id: Schema.Types.ObjectId;
   userId: Schema.Types.ObjectId; // Reference to User (who made the enquiry)
-  occasion: string;
+  artistId: string;
+  occasion: string; 
   date: Date;
   city: string;
   budget: string;
@@ -12,7 +13,6 @@ export interface IEnquiry extends Document {
   email: string;
   contactNumber: string;
   message: string;
-  status: "pending" | "answered" | "closed";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,7 +23,8 @@ const EnquirySchema: Schema<IEnquiry> = new Schema(
       type: String,
       required: [true, "Name is required"],
       trim: true,
-    }, email: {
+    },
+    email: {
       type: String,
       required: [true, "Email is required"],
       trim: true,
@@ -33,6 +34,16 @@ const EnquirySchema: Schema<IEnquiry> = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    artistId: {
+      type: String,
+      required: [true, "Artist ID is required"],
+      trim: true,
+    },
+    guestCount: {
+      type: Number,
+      required: [true, "Guest count is required"],
+      trim: true,
     },
     contactNumber: {
       type: String,
@@ -58,8 +69,6 @@ const EnquirySchema: Schema<IEnquiry> = new Schema(
       required: [true, "Budget is required"],
       trim: true,
     },
-
-
     message: {
       type: String,
       required: [true, "Message is required"],

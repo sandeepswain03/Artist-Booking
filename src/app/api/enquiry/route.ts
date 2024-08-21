@@ -5,9 +5,7 @@ import UserModel from "@/models/User.model";
 import { isValidObjectId } from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-
-
-
+import mongoose from "mongoose";
 
 export async function GET(request: Request) {
   await dbConnect();
@@ -58,8 +56,6 @@ export async function GET(request: Request) {
   }
 }
 
-
-
 export async function POST(request: Request) {
   await dbConnect();
 
@@ -94,6 +90,7 @@ export async function POST(request: Request) {
     const email = data.email as string;
     const contactNumber = data.contactNumber as string;
     const message = data.message as string;
+    const artistId = data.artistId as string;
 
     const errors: { [key: string]: string } = {};
 
@@ -124,6 +121,7 @@ export async function POST(request: Request) {
     if (!email) errors.email = "Email is required";
     if (!contactNumber) errors.contactNumber = "Contact number is required";
     if (!message) errors.message = "Message is required";
+    if (!artistId || !isValidObjectId(artistId)) errors.artistId = "Valid artist ID is required";
 
     if (Object.keys(errors).length > 0) {
       return NextResponse.json(
@@ -135,6 +133,7 @@ export async function POST(request: Request) {
     // Create Enquiry
     const newEnquiry: IEnquiry = new EnquiryModel({
       userId,
+      artistId,
       occasion,
       date: new Date(date),
       city,
@@ -144,7 +143,6 @@ export async function POST(request: Request) {
       email,
       contactNumber,
       message,
-      status: "pending",
     });
 
     // Save Enquiry

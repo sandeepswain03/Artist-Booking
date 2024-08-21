@@ -125,11 +125,11 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error registering user", error);
     return NextResponse.json(
-      { success: false, message: "Internal Server Error" },
+      { success: false, message: "Internal 1 Server Error" },
       { status: 500 }
     );
   }
-}
+}//user not getting created
 
 export async function PATCH(request: Request) {
   await dbConnect();
@@ -220,7 +220,7 @@ export async function PATCH(request: Request) {
       { status: 500 }
     );
   }
-}
+}//how to get user id
 
 export async function DELETE(request: Request) {
   await dbConnect();
@@ -268,7 +268,7 @@ export async function DELETE(request: Request) {
   }
 }
 
-// Get all concerts for an artist
+// Get all concerts of an artist
 export async function GET(request: Request) {
   await dbConnect();
 
