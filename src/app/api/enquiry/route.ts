@@ -60,17 +60,6 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    // Get the authenticated user's session
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const userId = session.user._id; // Use the logged-in user's ID as the userId
 
     const contentType = request.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
@@ -82,6 +71,7 @@ export async function POST(request: Request) {
 
     const data = await request.json();
     const occasion = data.occasion as string;
+    const userId = data.userId as string;
     const date = data.date as string;
     const city = data.city as string;
     const budget = data.budget as string;

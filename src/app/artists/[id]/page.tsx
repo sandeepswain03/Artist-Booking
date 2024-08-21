@@ -32,7 +32,7 @@ export default function ArtistDetailsPage({
     email: "",
     contactNumber: "",
     message: "",
-    artistId: params.id,
+    userId: params.id,
   });
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export default function ArtistDetailsPage({
           email: "",
           contactNumber: "",
           message: "",
-          artistId: params.id,
+          userId: params.id,
         });
       } else {
         setError(response.data.message || "Failed to submit the inquiry.");
@@ -358,7 +358,7 @@ export default function ArtistDetailsPage({
                 type="hidden"
                 id="artistId"
                 name="artistId"
-                value={formData.artistId}
+                value={formData.userId}
               />
             </div>
 
