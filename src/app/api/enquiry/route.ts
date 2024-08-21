@@ -5,7 +5,6 @@ import UserModel from "@/models/User.model";
 import { isValidObjectId } from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
 
 export async function GET(request: Request) {
   await dbConnect();
