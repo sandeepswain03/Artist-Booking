@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   await dbConnect();
 
   try {
-    // Get the authenticated user's session
+    // // Get the authenticated user's session
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
@@ -19,7 +19,6 @@ export async function GET(request: Request) {
         { status: 401 }
       );
     }
-
     const userId = session.user._id; // Use the logged-in user's ID as the userId
 
     if (!isValidObjectId(userId)) {
@@ -59,7 +58,19 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
+    // Get the authenticated user's session
+    const session = await getServerSession(authOptions);
 
+    if (!session?.user) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const userId =  session.user._id; 
+
+    
     const contentType = request.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
       return NextResponse.json(
@@ -70,7 +81,6 @@ export async function POST(request: Request) {
 
     const data = await request.json();
     const occasion = data.occasion as string;
-    const userId = data.userId as string;
     const date = data.date as string;
     const city = data.city as string;
     const budget = data.budget as string;
@@ -79,8 +89,7 @@ export async function POST(request: Request) {
     const email = data.email as string;
     const contactNumber = data.contactNumber as string;
     const message = data.message as string;
-    const artistId = data.artistId as string;
-
+    const artistId = data.artistId as string
     const errors: { [key: string]: string } = {};
 
     // Check if userId is a valid MongoDB ObjectId
@@ -91,7 +100,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const userexist = await UserModel.findById(userId);
+    // artis id
+    const userexist = await UserModel.findById(artistId);
 
     // Check if userId is a valid MongoDB ObjectId
     if (!userexist) {
@@ -110,8 +120,7 @@ export async function POST(request: Request) {
     if (!email) errors.email = "Email is required";
     if (!contactNumber) errors.contactNumber = "Contact number is required";
     if (!message) errors.message = "Message is required";
-    if (!artistId || !isValidObjectId(artistId)) errors.artistId = "Valid artist ID is required";
-
+    if (!artistId) errors.artistId = "artistid is required";
     if (Object.keys(errors).length > 0) {
       return NextResponse.json(
         { success: false, errors },
@@ -122,7 +131,6 @@ export async function POST(request: Request) {
     // Create Enquiry
     const newEnquiry: IEnquiry = new EnquiryModel({
       userId,
-      artistId,
       occasion,
       date: new Date(date),
       city,
