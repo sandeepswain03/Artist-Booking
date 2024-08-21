@@ -1,15 +1,81 @@
-import { Schema, model, models, Model, Document } from "mongoose";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
-import { NextResponse } from "next/server";
-import { ApiError } from "next/dist/server/api-utils";
-import { isValidObjectId } from "mongoose";
-import UserModel from "@/models/User.model";
 import EnquiryModel, { IEnquiry } from "@/models/Enquiry.model";
+import UserModel from "@/models/User.model";
+import { isValidObjectId } from "mongoose";
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
+
+
+
+
+export async function GET(request: Request) {
+  await dbConnect();
+
+  try {
+    // Get the authenticated user's session
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user._id; // Use the logged-in user's ID as the userId
+
+    if (!isValidObjectId(userId)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid user ID" },
+        { status: 400 }
+      );
+    }
+
+    const user = await UserModel.findById(userId).populate('enquiry');
+
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Enquiries fetched successfully",
+        enquiries: user.enquiry
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error fetching enquiries", error);
+    return NextResponse.json(
+      { success: false, message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+
 
 export async function POST(request: Request) {
   await dbConnect();
 
   try {
+    // Get the authenticated user's session
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user._id; // Use the logged-in user's ID as the userId
+
     const contentType = request.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
       return NextResponse.json(
@@ -19,7 +85,6 @@ export async function POST(request: Request) {
     }
 
     const data = await request.json();
-    const userId = data.userId as string;
     const occasion = data.occasion as string;
     const date = data.date as string;
     const city = data.city as string;
@@ -32,28 +97,25 @@ export async function POST(request: Request) {
 
     const errors: { [key: string]: string } = {};
 
-    if (!userId) errors.userId = "User ID is required";
+    // Check if userId is a valid MongoDB ObjectId
+    if (!isValidObjectId(userId)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid user ID" },
+        { status: 400 }
+      );
+    }
 
-     // Check if userId is a valid MongoDB ObjectId
-     if (!isValidObjectId(userId)) {
-        return NextResponse.json(
-          { success: false, message: "Invalid user ID" },
-          { status: 400 }
-        );
-      }
+    const userexist = await UserModel.findById(userId);
 
-      const userexist = await UserModel.findById(userId);
+    // Check if userId is a valid MongoDB ObjectId
+    if (!userexist) {
+      return NextResponse.json(
+        { success: false, message: "Invalid user ID" },
+        { status: 400 }
+      );
+    }
 
-
-     // Check if userId is a valid MongoDB ObjectId
-     if ( !userexist) {
-        return NextResponse.json(
-          { success: false, message: "Invalid user ID" },
-          { status: 400 }
-        );
-      }
-           
-    // Validation  
+    // Validation
     if (!occasion) errors.occasion = "Occasion is required";
     if (!date) errors.date = "Date is required";
     if (!city) errors.city = "City is required";
@@ -87,7 +149,7 @@ export async function POST(request: Request) {
 
     // Save Enquiry
     await newEnquiry.save();
-    
+
     // Add Enquiry to User
     userexist.enquiry.push(newEnquiry._id);
     userexist.save();

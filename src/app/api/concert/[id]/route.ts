@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    const concert = await ConcertModel.findById(concertId);
+    const concert = await ConcertModel.findById(concertId).populate('artistId', 'username email');
     if (!concert) {
       return NextResponse.json({ success: false, message: "Concert not found" }, { status: 404 });
     }
