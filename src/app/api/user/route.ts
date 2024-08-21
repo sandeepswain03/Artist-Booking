@@ -129,7 +129,7 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}//user not getting created
+}
 
 export async function PATCH(request: Request) {
   await dbConnect();
