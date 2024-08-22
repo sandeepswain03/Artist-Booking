@@ -28,7 +28,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const user = await UserModel.findById(userId).populate('enquiry');
+    const user = await UserModel.findById(userId).populate("enquiry");
 
     if (!user) {
       return NextResponse.json(
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
       {
         success: true,
         message: "Enquiries fetched successfully",
-        enquiries: user.enquiry
+        enquiries: user.enquiry,
       },
       { status: 200 }
     );
@@ -67,12 +67,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const userId =  session.user._id; 
+    const userId = session.user._id;
 
     const contentType = request.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
       return NextResponse.json(
-        { success: false, message: "Invalid Content-Type. Must be application/json" },
+        {
+          success: false,
+          message: "Invalid Content-Type. Must be application/json",
+        },
         { status: 400 }
       );
     }
@@ -120,10 +123,7 @@ export async function POST(request: Request) {
     if (!message) errors.message = "Message is required";
     if (!artistId) errors.artistId = "artistid is required";
     if (Object.keys(errors).length > 0) {
-      return NextResponse.json(
-        { success: false, errors },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, errors }, { status: 400 });
     }
 
     // Create Enquiry
@@ -151,7 +151,7 @@ export async function POST(request: Request) {
       {
         success: true,
         message: "Enquiry created successfully",
-        enquiry: newEnquiry
+        enquiry: newEnquiry,
       },
       { status: 201 }
     );
@@ -163,14 +163,23 @@ export async function POST(request: Request) {
     );
   }
 }
-
 // Delete an enquiry from the database
 export async function DELETE(request: Request) {
   await dbConnect();
 
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+    const userId = session.user._id;
+
     const { searchParams } = new URL(request.url);
-    const enquiryId = searchParams.get('id');
+    const enquiryId = searchParams.get("id");
 
     if (!isValidObjectId(enquiryId)) {
       return NextResponse.json(
@@ -191,15 +200,14 @@ export async function DELETE(request: Request) {
     // Delete the enquiry from the database
     await EnquiryModel.findByIdAndDelete(enquiryId);
 
-    // Remove enquiry from user's enquiry array
-    await UserModel.findByIdAndUpdate(deletedEnquiry.userId, {
-      $pull: { enquiry: enquiryId }
+    await UserModel.findByIdAndUpdate(userId, {
+      $pull: { enquiry: enquiryId },
     });
 
     return NextResponse.json(
       {
         success: true,
-        message: "Enquiry deleted successfully"
+        message: "Enquiry deleted successfully",
       },
       { status: 200 }
     );
