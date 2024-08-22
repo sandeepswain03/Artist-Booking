@@ -131,11 +131,13 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PATCH(request: Request) {
+export async function PUT(request: Request) {
   await dbConnect();
 
   try {
     const data = await request.formData();
+    console.log(data);
+    
     const userId = data.get("userId") as string;
 
     // Check if userId is a valid MongoDB ObjectId
@@ -154,20 +156,16 @@ export async function PATCH(request: Request) {
       );
     }
 
-    // Check if user is an artist
-    if (user.role !== 'artist') {
-      return NextResponse.json(
-        { success: false, message: "Only artists can update bio and video links" },
-        { status: 403 }
-      );
-    }
-
+    const username = data.get("username") as string;
+    const email = data.get("email") as string;
     const bio = data.get("bio") as string;
     const videoLink1 = data.get("videolink1") as string;
     const videoLink2 = data.get("videolink2") as string;
     const videoLink3 = data.get("videolink3") as string;
 
     // Update user fields
+    if (username) user.username = username;
+    if (email) user.email = email;
     if (bio) user.bio = bio;
     if (videoLink1) user.videoLink1 = videoLink1;
     if (videoLink2) user.videoLink2 = videoLink2;
@@ -204,6 +202,8 @@ export async function PATCH(request: Request) {
         message: "User updated successfully",
         user: {
           _id: user._id,
+          username: user.username,
+          email: user.email,
           avatar: user.avatar,
           bio: user.bio,
           videoLink1: user.videoLink1,
@@ -220,7 +220,7 @@ export async function PATCH(request: Request) {
       { status: 500 }
     );
   }
-}//how to get user id
+}
 
 export async function DELETE(request: Request) {
   await dbConnect();
