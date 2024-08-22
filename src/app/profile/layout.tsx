@@ -9,10 +9,6 @@ export default function layout({
   return (
     <>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 my-8">
-        <h4 className="text-3xl font-bold mb-8 text-center text-[#4A3F6A]">
-          Account Settings
-        </h4>
-
         <div className="bg-gradient-to-br from-[#5E4B88] to-[#BCA7E7] shadow-lg rounded-lg flex flex-col lg:flex-row overflow-hidden">
           <aside className="w-full lg:w-1/4 p-6 bg-[#4A3F6A] text-[#EAD8FF]">
             <nav className="space-y-4">
