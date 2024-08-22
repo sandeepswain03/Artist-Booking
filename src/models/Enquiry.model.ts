@@ -35,11 +35,6 @@ const EnquirySchema: Schema<IEnquiry> = new Schema(
       ref: "User",
       required: true,
     },
-    artistId: {
-      type: String,
-      required: [true, "Artist ID is required"],
-      trim: true,
-    },
     guestCount: {
       type: Number,
       required: [true, "Guest count is required"],
