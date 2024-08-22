@@ -2,16 +2,15 @@ import { Schema, model, models, Model, Document } from "mongoose";
 
 export interface IEnquiry extends Document {
   _id: Schema.Types.ObjectId;
+  name: string;
+  email: string;
   userId: Schema.Types.ObjectId; // Reference to User (who made the enquiry)
-  artistId: string;
-  occasion: string; 
+  guestCount: number;
+  contactNumber: string;
+  occasion: string;
   date: Date;
   city: string;
   budget: string;
-  guestCount: number;
-  name: string;
-  email: string;
-  contactNumber: string;
   message: string;
   createdAt: Date;
   updatedAt: Date;
@@ -69,7 +68,6 @@ const EnquirySchema: Schema<IEnquiry> = new Schema(
       required: [true, "Message is required"],
       trim: true,
     },
-
   },
   {
     timestamps: true,

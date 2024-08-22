@@ -58,7 +58,6 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    // Get the authenticated user's session
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
@@ -70,7 +69,6 @@ export async function POST(request: Request) {
 
     const userId =  session.user._id; 
 
-    
     const contentType = request.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
       return NextResponse.json(
@@ -89,7 +87,7 @@ export async function POST(request: Request) {
     const email = data.email as string;
     const contactNumber = data.contactNumber as string;
     const message = data.message as string;
-    const artistId = data.artistId as string
+    const artistId = data.artistId as string;
     const errors: { [key: string]: string } = {};
 
     // Check if userId is a valid MongoDB ObjectId
@@ -100,7 +98,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // artis id
+    // artist id
     const userexist = await UserModel.findById(artistId);
 
     // Check if userId is a valid MongoDB ObjectId
