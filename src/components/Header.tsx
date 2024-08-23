@@ -14,7 +14,7 @@ function Header() {
   const { data: session } = useSession();
   const user = session?.user ;
   return (
-    <header className="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full shadow-lg">
+    <header className="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full shadow-lg border-b border-gray-200">
       <nav className="relative max-w-[85rem] w-full mx-auto md:flex md:items-center md:justify-between md:gap-3 py-2 lg:py-4 px-4 sm:px-6 lg:px-8 ">
         <div className="flex justify-between items-center gap-x-1">
           <Link
@@ -107,7 +107,7 @@ function Header() {
                       <img
                          src={user?.avatar?.url || "/avatar.png"}
                         alt="Avatar"
-                        className="w-8 h-8 rounded-full"
+                        className="w-10 h-10 rounded-full"
                       />
                     </Link>
 
