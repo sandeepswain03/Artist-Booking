@@ -1,8 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
 import axios from "axios";
+import { Upload } from "@/components/svgIcons";
+
+const MAX_TOTAL_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+const MAX_IMAGES = 3; // Maximum number of images allowed
 
 export default function CreateConcertForm() {
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
     concertImages: [] as File[],
     title: "",
@@ -15,243 +22,391 @@ export default function CreateConcertForm() {
     capacity: "",
     genre: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [totalImageSize, setTotalImageSize] = useState(0);
+  const [alert, setAlert] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
-  const [isLoading, setIsLoading] = useState(false); // State to manage loading
+  useEffect(() => {
+    // Recalculate total image size whenever concertImages changes
+    const newTotalSize = formData.concertImages.reduce((acc, file) => acc + file.size, 0);
+    setTotalImageSize(newTotalSize);
+  }, [formData.concertImages]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      setFormData({
-        ...formData,
-        concertImages: Array.from(files),
-      });
+      const fileArray = Array.from(files);
+      const newTotalSize = fileArray.reduce((acc, file) => acc + file.size, 0) + totalImageSize;
+      const totalImages = formData.concertImages.length + fileArray.length;
+
+      if (totalImages > MAX_IMAGES) {
+        setAlert({ type: 'error', message: `You can only upload a maximum of ${MAX_IMAGES} images.` });
+        return;
+      }
+
+      if (newTotalSize > MAX_TOTAL_SIZE) {
+        setAlert({ type: 'error', message: "Total image size exceeds 5MB limit. Please select smaller or fewer images." });
+        return;
+      }
+
+      setAlert(null);
+      setFormData((prev) => ({
+        ...prev,
+        concertImages: [...prev.concertImages, ...fileArray],
+      }));
+
+      // Generate image previews
+      const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
+      setImagePreviews((prev) => [...prev, ...previewUrls]);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true); // Set loading state to true
+  const handleRemoveImage = (index: number) => {
+    setFormData((prev) => {
+      const newConcertImages = [...prev.concertImages];
+      newConcertImages.splice(index, 1);
+      return { ...prev, concertImages: newConcertImages };
+    });
 
-    const form = new FormData();
-    for (const [key, value] of Object.entries(formData)) {
-      if (Array.isArray(value)) {
-        value.forEach((file) => form.append(key, file));
-      } else {
-        form.append(key, value);
-      }
-    }
+    setImagePreviews((prev) => {
+      const newPreviews = [...prev];
+      URL.revokeObjectURL(newPreviews[index]);
+      newPreviews.splice(index, 1);
+      return newPreviews;
+    });
+
+    setAlert(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      const response = await axios.post("/api/concert", form, {
+      const data = new FormData();
+      for (const [key, value] of Object.entries(formData)) {
+        if (Array.isArray(value)) {
+          value.forEach((file) => data.append(key, file));
+        } else {
+          data.append(key, value);
+        }
+      }
+
+      const response = await axios.post("/api/concert", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response.data);
 
-      // Reset form data after successful submission
-      setFormData({
-        concertImages: [],
-        title: "",
-        date: "",
-        time: "",
-        location: "",
-        city: "",
-        description: "",
-        price: "",
-        capacity: "",
-        genre: "",
-      });
+      if (response.data.success) {
+        setAlert({ type: 'success', message: "Concert created successfully!" });
+        // Reset form data after successful submission
+        setFormData({
+          concertImages: [],
+          title: "",
+          date: "",
+          time: "",
+          location: "",
+          city: "",
+          description: "",
+          price: "",
+          capacity: "",
+          genre: "",
+        });
+        setImagePreviews([]);
+        setTotalImageSize(0);
+      } else {
+        setAlert({ type: 'error', message: "Failed to create concert: " + response.data.message });
+      }
     } catch (error) {
       console.error("Error creating concert:", error);
+      setAlert({ type: 'error', message: "An error occurred while creating the concert." });
     } finally {
-      setIsLoading(false); // Reset loading state after request completion
+      setLoading(false);
     }
   };
 
   return (
-    <section className="w-full lg:w-3/4 p-4 sm:p-6">
-      <h4 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Create Concert
-      </h4>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Concert Images
-          </label>
-          <input
-            type="file"
-            id="concertImages"
-            name="concertImages"
-            onChange={handleFileChange}
-            multiple
-            className="block w-full mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5]"
-            required
-          />
+    <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 mx-auto">
+      <div className="bg-white rounded-sm shadow p-4 sm:p-7">
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-gray-800">Create Concert</h2>
+          <p className="text-sm text-gray-600">
+            Fill in the details to create a new concert.
+          </p>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            className="block w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5]"
-            placeholder="Enter concert title"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Date
-          </label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            className="block w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5]"
-            required
-          />
-        </div>
+        {alert && (
+          <div className={`mb-4 p-4 ${alert.type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700'} border rounded`}>
+            {alert.message}
+          </div>
+        )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Time
-          </label>
-          <input
-            type="time"
-            id="time"
-            name="time"
-            value={formData.time}
-            onChange={handleChange}
-            className="block w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5]"
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid sm:grid-cols-12 gap-2 sm:gap-6">
+            <div className="sm:col-span-3">
+              <label className="inline-block text-sm text-gray-800 mt-2.5">
+                Concert Images
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <div className="flex flex-col items-start gap-5">
+                <input
+                  type="file"
+                  id="concertImages"
+                  name="concertImages"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                  multiple
+                  disabled={formData.concertImages.length >= MAX_IMAGES}
+                />
+                <label
+                  htmlFor="concertImages"
+                  className={`py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 cursor-pointer ${
+                    formData.concertImages.length >= MAX_IMAGES ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  <Upload />
+                  Upload Images ({formData.concertImages.length}/{MAX_IMAGES})
+                </label>
+                <p className="text-sm text-gray-500">
+                  Total size: {(totalImageSize / 1024 / 1024).toFixed(2)} MB / 5 MB
+                </p>
+                {imagePreviews.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} className="relative">
+                        <Image
+                          src={preview}
+                          alt={`Preview ${index + 1}`}
+                          width={100}
+                          height={100}
+                          className="object-cover rounded-md"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Location
-          </label>
-          <input
-            type="text"
-            id="location"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="block w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5]"
-            placeholder="Enter concert location"
-            required
-          />
-        </div>
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="title"
+                className="inline-block text-sm text-gray-800 mt-2.5"
+              >
+                Title
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <input
+                id="title"
+                name="title"
+                type="text"
+                value={formData.title}
+                onChange={handleChange}
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            City
-          </label>
-          <input
-            type="text"
-            id="city"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            className="block w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5]"
-            placeholder="Enter city"
-            required
-          />
-        </div>
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="date"
+                className="inline-block text-sm text-gray-800 mt-2.5"
+              >
+                Date
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <input
+                id="date"
+                name="date"
+                type="date"
+                value={formData.date}
+                onChange={handleChange}
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5] bg-white"
-            placeholder="Enter concert description..."
-            required
-          />
-        </div>
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="time"
+                className="inline-block text-sm text-gray-800 mt-2.5"
+              >
+                Time
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <input
+                id="time"
+                name="time"
+                type="time"
+                value={formData.time}
+                onChange={handleChange}
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Price (USD)
-          </label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            className="block w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5]"
-            placeholder="Enter ticket price"
-            required
-          />
-        </div>
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="location"
+                className="inline-block text-sm text-gray-800 mt-2.5"
+              >
+                Location
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <input
+                id="location"
+                name="location"
+                type="text"
+                value={formData.location}
+                onChange={handleChange}
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Capacity
-          </label>
-          <input
-            type="number"
-            id="capacity"
-            name="capacity"
-            value={formData.capacity}
-            onChange={handleChange}
-            className="block w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5]"
-            placeholder="Enter concert capacity"
-            required
-          />
-        </div>
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="city"
+                className="inline-block text-sm text-gray-800 mt-2.5"
+              >
+                City
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <input
+                id="city"
+                name="city"
+                type="text"
+                value={formData.city}
+                onChange={handleChange}
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Genre
-          </label>
-          <input
-            type="text"
-            id="genre"
-            name="genre"
-            value={formData.genre}
-            onChange={handleChange}
-            className="block w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#8F75E5] focus:border-[#8F75E5]"
-            placeholder="Enter genre"
-            required
-          />
-        </div>
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="description"
+                className="inline-block text-sm text-gray-800 mt-2.5"
+              >
+                Description
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                className="py-2 px-3 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={3}
+                required
+              ></textarea>
+            </div>
 
-        <div className="text-right">
-          <button
-            type="submit"
-            className={`w-full sm:w-auto px-6 py-2 bg-[#8F75E5] text-white rounded-md shadow-sm transition duration-200 ${
-              isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-[#674188]"
-            }`}
-            disabled={isLoading} // Disable button while loading
-          >
-            {isLoading ? "Creating..." : "Create Concert"}
-          </button>
-        </div>
-      </form>
-    </section>
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="price"
+                className="inline-block text-sm text-gray-800 mt-2.5"
+              >
+                &#8377; Price
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <input
+                id="price"
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleChange}
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="capacity"
+                className="inline-block text-sm text-gray-800 mt-2.5"
+              >
+                Capacity
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <input
+                id="capacity"
+                name="capacity"
+                type="number"
+                value={formData.capacity}
+                onChange={handleChange}
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="genre"
+                className="inline-block text-sm text-gray-800 mt-2.5"
+              >
+                Genre
+              </label>
+            </div>
+            <div className="sm:col-span-9">
+              <input
+                id="genre"
+                name="genre"
+                type="text"
+                value={formData.genre}
+                onChange={handleChange}
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="mt-5 flex justify-end gap-x-2">
+            <button
+              type="button"
+              className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-[#D0204F] text-white hover:bg-[#B01C44] disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:ring-2 focus:ring-[#D0204F] focus:ring-offset-2 transition-all"
+            >
+              {loading ? "Creating..." : "Create Concert"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

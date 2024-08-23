@@ -54,54 +54,68 @@ export default function EnquiryList() {
   };
 
   return (
-    <section className="w-full lg:w-3/4 p-4 sm:p-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {enquiries.length > 0 ? (
-          enquiries.map((enquiry) => (
-            <div
-              key={enquiry._id}
-              className="bg-blue-100 rounded-lg shadow-md p-4"
-            >
-              <h5 className="text-lg font-semibold text-gray-800">
-                {enquiry.name} ({enquiry.occasion})
-              </h5>
-              <p className="text-sm text-gray-600 mt-2">
-                Email: {enquiry.email}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">
-                Contact: {enquiry.contactNumber}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">City: {enquiry.city}</p>
-              <p className="text-sm text-gray-600 mt-1">Date: {enquiry.date}</p>
-              <p className="text-sm text-gray-600 mt-1">
-                Guest Count: {enquiry.guestCount}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">
-                Budget: {enquiry.budget}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">
-                Message: {enquiry.message}
-              </p>
-              <div className="mt-4 text-right">
-                <button
-                  onClick={() => handleDelete(enquiry._id)}
-                  disabled={loading && deletingId === enquiry._id}
-                  className={`px-4 py-2 bg-red-500 text-white rounded-md shadow-sm hover:bg-red-600 transition duration-200 ${
-                    loading && deletingId === enquiry._id
-                      ? "cursor-not-allowed opacity-50"
-                      : ""
-                  }`}
-                >
-                  {loading && deletingId === enquiry._id
-                    ? "Deleting..."
-                    : "Delete"}
-                </button>
+    <section className="w-full p-4 sm:p-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-sm shadow p-4 sm:p-7">
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-gray-800">All Inquiries</h2>
+          <p className="text-sm text-gray-600">
+            View and manage all incoming inquiries.
+          </p>
+        </div>
+        <div className="space-y-6">
+          {enquiries.length > 0 ? (
+            enquiries.map((enquiry) => (
+              <div
+                key={enquiry._id}
+                className="bg-gray-50 rounded-sm p-4 hover:shadow-md transition-shadow duration-300"
+              >
+                <h5 className="text-lg font-semibold text-gray-800 mb-3">
+                  {enquiry.name} ({enquiry.occasion})
+                </h5>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold">Email:</span> {enquiry.email}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold">Contact:</span> {enquiry.contactNumber}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold">City:</span> {enquiry.city}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold">Date:</span> {enquiry.date}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold">Guest Count:</span> {enquiry.guestCount}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold">Budget:</span> {enquiry.budget}
+                  </p>
+                </div>
+                <p className="text-sm text-gray-600 mt-3">
+                  <span className="font-semibold">Message:</span> {enquiry.message}
+                </p>
+                <div className="mt-4 text-right">
+                  <button
+                    onClick={() => handleDelete(enquiry._id)}
+                    disabled={loading && deletingId === enquiry._id}
+                    className={`py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-[#D0204F] text-white hover:bg-[#B01C44] disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:ring-2 focus:ring-[#D0204F] focus:ring-offset-2 transition-all ${
+                      loading && deletingId === enquiry._id
+                        ? "cursor-not-allowed opacity-50"
+                        : ""
+                    }`}
+                  >
+                    {loading && deletingId === enquiry._id
+                      ? "Deleting..."
+                      : "Delete"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-600">No enquiries found.</p>
-        )}
+            ))
+          ) : (
+            <p className="text-center text-gray-600">No inquiries found.</p>
+          )}
+        </div>
       </div>
     </section>
   );

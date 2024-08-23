@@ -89,9 +89,9 @@ export default function AccountSettings() {
 
   return (
     <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 mx-auto">
-      <div className="bg-white rounded-xl shadow p-4 sm:p-7">
+      <div className="bg-white rounded-sm shadow p-4 sm:p-7">
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-800">Profile</h2>
+          <h2 className="text-xl font-bold text-gray-800">Profile Settings</h2>
           <p className="text-sm text-gray-600">
             Manage your profile information and account settings.
           </p>
@@ -128,7 +128,7 @@ export default function AccountSettings() {
                     />
                     <label
                       htmlFor="avatar"
-                      className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 cursor-pointer"
+                      className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 cursor-pointer"
                     >
                       <Upload />
                       Upload photo
@@ -153,7 +153,7 @@ export default function AccountSettings() {
                 type="text"
                 value={formData.username}
                 onChange={handleChange}
-                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
                 required
               />
             </div>
@@ -173,7 +173,7 @@ export default function AccountSettings() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
                 required
               />
             </div>
@@ -192,7 +192,7 @@ export default function AccountSettings() {
                 name="bio"
                 value={formData.bio}
                 onChange={handleChange}
-                className="py-2 px-3 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                className="py-2 px-3 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={3}
                 placeholder="Tell us about yourself..."
               ></textarea>
@@ -213,7 +213,7 @@ export default function AccountSettings() {
                 type="url"
                 value={formData.videoLink1}
                 onChange={handleChange}
-                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
@@ -232,7 +232,7 @@ export default function AccountSettings() {
                 type="url"
                 value={formData.videoLink2}
                 onChange={handleChange}
-                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
@@ -251,7 +251,7 @@ export default function AccountSettings() {
                 type="url"
                 value={formData.videoLink3}
                 onChange={handleChange}
-                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-md rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           </div>
