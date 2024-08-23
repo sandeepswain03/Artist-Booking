@@ -2,19 +2,27 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { OrangeLine, BlueLine, Search, SideArrow } from "@/components/svgIcons";
+import { FaSearch, FaCalendarAlt } from "react-icons/fa";
+import { TbCategory2 } from "react-icons/tb";
+import { BsDiagram3 } from "react-icons/bs";
+import { CiLocationOn } from "react-icons/ci";
+import Image from "next/image";
 
 interface Concert {
   _id: string;
   title: string;
   date: string;
   concertImages: { url: string; public_id: string }[];
+  location: string;
+  price: number;
+  seat: number;
 }
 
 export default function ConcertsPage() {
   const [concerts, setConcerts] = useState<Concert[]>([]);
+  const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [filterDate, setFilterDate] = useState("");
-  const [filterName, setFilterName] = useState("");
 
   useEffect(() => {
     const fetchConcerts = async () => {
@@ -22,6 +30,7 @@ export default function ConcertsPage() {
         const response = await axios.get("/api/concert");
         if (response.data.success) {
           setConcerts(response.data.data);
+          setFilteredConcerts(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching concerts:", error);
@@ -30,111 +39,148 @@ export default function ConcertsPage() {
     fetchConcerts();
   }, []);
 
-  const filteredConcerts = concerts.filter(
-    (concert) =>
-      (filterDate === "" || concert.date === filterDate) &&
-      (filterName === "" ||
-        concert.title.toLowerCase().includes(filterName.toLowerCase()))
-  );
+  useEffect(() => {
+    const applyFilters = () => {
+      let filtered = concerts;
+
+      if (searchTerm) {
+        filtered = filtered.filter((concert) =>
+          concert.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      if (filterDate) {
+        filtered = filtered.filter((concert) => {
+          const concertDate = new Date(concert.date)
+            .toISOString()
+            .split("T")[0];
+          return concertDate === filterDate;
+        });
+      }
+
+      setFilteredConcerts(filtered);
+    };
+
+    applyFilters();
+  }, [concerts, searchTerm, filterDate]);
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // The filtering is now handled in the useEffect
+  };
+
+  const handleDateFilter = (date: string) => {
+    setFilterDate(date);
+    // The filtering is now handled in the useEffect
+  };
 
   return (
-    <>
-      {/* search Bar */}
-      <div className="relative overflow-hidden bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
-        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
-          <div className="text-center">
-            <h1 className="text-4xl sm:text-6xl font-bold text-gray-800">
-              Search Concerts
-            </h1>
-            <p className="mt-3 text-gray-600">
-              Search your favorite Concerts and enjoy!
-            </p>
-            <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
-              <form>
-                <div className="relative z-10 flex gap-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100">
-                  <div className="w-full">
-                    <label
-                      htmlFor="hs-search-article-1"
-                      className="block text-sm text-gray-700 font-medium"
-                    >
-                      <span className="sr-only">Search for a Concert</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="hs-search-article-1"
-                      id="hs-search-article-1"
-                      className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                      placeholder="Search for a Concert"
-                      value={filterName}
-                      onChange={(e) => setFilterName(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Link
-                      className="size-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg bg-[#674188] text-white hover:bg-[#674188] disabled:opacity-50 disabled:pointer-events-none"
-                      href="#"
-                    >
-                      <Search />
-                    </Link>
-                  </div>
-                </div>
-              </form>
-              <div className="hidden md:block absolute top-0 end-0 -translate-y-12 translate-x-20">
-                <OrangeLine />
-              </div>
-              <div className="hidden md:block absolute bottom-0 start-0 translate-y-10 -translate-x-32">
-                <BlueLine />
-              </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 className="text-3xl md:text-5xl font-bold text-center text-secondary mt-10 uppercase">
+        All Concerts
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 my-10 md:my-20 gap-6">
+        <div className="md:col-span-1">
+          {/* Search */}
+          <form
+            onSubmit={handleSearch}
+            className="flex bg-gray-50 p-5 shadow-md rounded-md"
+          >
+            <input
+              type="text"
+              name="search"
+              placeholder="Search by name"
+              className="w-full px-4 py-3 border rounded-3xl outline-none border-none bg-gray-200 text-black"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="bg-[#CE1446] text-white py-3 px-8 rounded-3xl rounded-tl-none -ml-8 text-2xl font-bold"
+            >
+              <FaSearch />
+            </button>
+          </form>
+
+          {/* Date Filter */}
+          <div className="bg-gray-50 shadow-md rounded-md mt-8">
+            <div className="pt-6">
+              <span className="bg-[#CE1446] inline-flex gap-2 items-center text-white text-xl font-bold p-5 rounded-r-xl">
+                <TbCategory2 /> Date Filter
+              </span>
             </div>
-            <div className="mt-8">
-              {/* search date */}
-              <div className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-white">
-                <input
-                  type="date"
-                  value={filterDate}
-                  onChange={(e) => setFilterDate(e.target.value)}
-                  className="px-4 py-2 block w-full border border-gray-300 rounded-md shadow-sm transition bg-white"
-                />
-              </div>
+            <div className="mt-3">
+              <button
+                className="block w-full text-left p-5 hover:bg-secondary hover:text-[#CE1446] text-xl font-semibold border-b"
+                onClick={() => handleDateFilter("")}
+              >
+                All Dates
+              </button>
+              <input
+                type="date"
+                value={filterDate}
+                onChange={(e) => handleDateFilter(e.target.value)}
+                className="block w-full text-left p-5 text-xl font-semibold border-b"
+              />
             </div>
           </div>
         </div>
-      </div>
-      {/* Concerts section */}
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredConcerts.length > 0 ? (
-            filteredConcerts.map((concert) => (
+
+        {/* cards */}
+        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {filteredConcerts.map((concert) => {
+            const dateFormat = new Date(concert.date);
+            const options = { day: "numeric", month: "long", year: "numeric" };
+            const formattedDate = dateFormat.toLocaleDateString(
+              "en-US",
+              options as Intl.DateTimeFormatOptions
+            );
+
+            return (
               <div
                 key={concert._id}
-                className="hover:scale-105 transition-all duration-300 ease-in-out"
+                className="rounded-md shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 hover:shadow-lg bg-white hover:bg-gray-100"
               >
-                <Link
-                  className="relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl"
-                  href={`/concerts/${concert._id}`}
-                  style={{ backgroundImage: `url(${concert.concertImages[0]?.url || ""})` }}
-                >
-                  <div className="flex-auto p-4 md:p-6">
-                    <h3 className="text-xl text-white/90">
-                      <span className="font-bold">{concert.title}</span>
-                      <br />
-                      {concert.date}
-                    </h3>
+                <div className="rounded-t-md shadow-lg h-60 relative overflow-hidden">
+                  <Image
+                    src={concert.concertImages[0]?.url || "/default-image.jpg"}
+                    alt={concert.title}
+                    width={400}
+                    height={200}
+                    className="rounded-t-md h-full w-full object-cover transform transition-transform duration-500 hover:scale-110"
+                  />
+                  <div className="absolute bg-primary bottom-0 left-0 px-6 py-3 text-white font-semibold rounded-tr-md flex items-center gap-3">
+                    <BsDiagram3 /> {concert.seat} Seat
                   </div>
-                  <div className="pt-0 p-4 md:p-6">
-                    <div className="inline-flex items-center gap-2 text-sm font-medium text-white/90">
-                      Explore
-                      <SideArrow />
-                    </div>
+                </div>
+                <div className="px-4 py-6">
+                  <div className="flex justify-between">
+                    <p className="text-sm text-secondary font-medium flex gap-2">
+                      <FaCalendarAlt className="text-primary text-base" />
+                      {formattedDate}
+                    </p>
+                    <p className="text-sm text-secondary font-medium flex gap-1">
+                      <CiLocationOn className="text-primary text-lg font-bold" />{" "}
+                      {concert.location}
+                    </p>
                   </div>
-                </Link>
+                  <h2 className="text-2xl mt-2 font-semibold text-secondary">
+                    {concert.title}
+                  </h2>
+                  <div className="flex justify-between items-center mt-4">
+                    <Link
+                      href={`/concerts/${concert._id}`}
+                      className="text-primary font-semibold underline"
+                    >
+                      Event Details
+                    </Link>
+                  </div>
+                </div>
               </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-600">No concerts found.</p>
-          )}
+            );
+          })}
         </div>
       </div>
-    </>
+    </div>
   );
 }
