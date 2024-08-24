@@ -91,13 +91,21 @@ function Header() {
                 </div>
               ) : (
                 <div className="flex flex-wrap items-center gap-x-1.5">
-                  <Link href="/profile">
+                  {user?.role === "artist" ? (
+                    <Link href="/profile">
+                      <img
+                        src={user?.avatar?.url || "/avatar.png"}
+                        alt="Avatar"
+                        className="w-10 h-10 rounded-full"
+                      />
+                    </Link>
+                  ) : (
                     <img
                       src={user?.avatar?.url || "/avatar.png"}
                       alt="Avatar"
                       className="w-10 h-10 rounded-full"
                     />
-                  </Link>
+                  )}
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}
                     className="py-2 px-2.5 inline-flex items-center font-semibold text-sm rounded-sm bg-[#D0204F] text-white focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
