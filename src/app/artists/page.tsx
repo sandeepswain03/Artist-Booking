@@ -17,6 +17,7 @@ export default function ArtistsPage() {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [filteredArtists, setFilteredArtists] = useState<Artist[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchArtists = async () => {
@@ -28,6 +29,8 @@ export default function ArtistsPage() {
         }
       } catch (error) {
         console.error("Error fetching artists:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchArtists();
@@ -44,6 +47,14 @@ export default function ArtistsPage() {
     e.preventDefault();
     // The filtering is now handled in the useEffect
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#CE1446]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

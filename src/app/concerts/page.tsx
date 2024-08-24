@@ -23,6 +23,7 @@ export default function ConcertsPage() {
   const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDate, setFilterDate] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchConcerts = async () => {
@@ -34,6 +35,8 @@ export default function ConcertsPage() {
         }
       } catch (error) {
         console.error("Error fetching concerts:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchConcerts();
@@ -73,6 +76,14 @@ export default function ConcertsPage() {
     setFilterDate(date);
     // The filtering is now handled in the useEffect
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#CE1446]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -149,9 +160,7 @@ export default function ConcertsPage() {
                     height={200}
                     className="rounded-t-md h-full w-full object-cover transform transition-transform duration-500 hover:scale-110"
                   />
-                  <div className="absolute bg-primary bottom-0 left-0 px-6 py-3 text-white font-semibold rounded-tr-md flex items-center gap-3">
-                    <BsDiagram3 /> {concert.seat} Seat
-                  </div>
+                 
                 </div>
                 <div className="px-4 py-6">
                   <div className="flex justify-between">
