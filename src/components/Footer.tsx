@@ -26,9 +26,9 @@ function Footer() {
 
   return (
     <footer className="mt-auto border-t border-gray-200 shadow-lg w-full">
-      <div className="mt-auto w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:pt-20 mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          <div className="col-span-full lg:col-span-3">
+      <div className="mt-auto w-full max-w-[85rem] py-6 sm:py-10 px-4 sm:px-6 lg:px-8 lg:pt-20 mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div className="col-span-1 sm:col-span-2 lg:col-span-3">
             <Link
               className="flex-none text-xl font-semibold text-black focus:outline-none focus:opacity-80"
               href="/"
@@ -42,8 +42,8 @@ function Footer() {
           </div>
 
           <div className="col-span-1">
-            <h4 className="font-semibold text-black">Important Links</h4>
-            <div className="mt-3 grid space-y-3">
+            <h4 className="font-semibold text-black mb-3">Important Links</h4>
+            <div className="grid space-y-2">
               {importantLinks.map((link, index) => (
                 <p key={index}>
                   <Link
@@ -58,8 +58,8 @@ function Footer() {
           </div>
 
           <div className="col-span-1">
-            <h4 className="font-semibold text-black">Contact Us</h4>
-            <div className="mt-3 grid space-y-3">
+            <h4 className="font-semibold text-black mb-3">Contact Us</h4>
+            <div className="grid space-y-2">
               {contactInfo.map(({ Icon, href, text }, index) => (
                 <p key={index}>
                   <Link
@@ -67,7 +67,7 @@ function Footer() {
                     href={href}
                   >
                     <Icon className="text-[#D0204F]" />
-                    {text}
+                    <span className="text-sm">{text}</span>
                   </Link>
                 </p>
               ))}
@@ -75,18 +75,16 @@ function Footer() {
           </div>
         </div>
 
-        <div className="mt-5 sm:mt-12 grid gap-y-2 sm:gap-y-0 sm:flex sm:justify-between sm:items-center">
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-black">
-              © 2024 Logo. All rights reserved.
-            </p>
-          </div>
+        <div className="mt-6 sm:mt-12 flex flex-col sm:flex-row justify-between items-center">
+          <p className="text-sm text-black mb-4 sm:mb-0">
+            © 2024 Logo. All rights reserved.
+          </p>
 
-          <div>
+          <div className="flex justify-center space-x-2">
             {socialLinks.map(({ Icon, href }, index) => (
               <Link
                 key={index}
-                className="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-[#D0204F] hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
+                className="size-8 sm:size-10 inline-flex justify-center items-center text-sm font-semibold rounded-lg border border-transparent text-[#D0204F] hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
                 href={href}
               >
                 <Icon />
