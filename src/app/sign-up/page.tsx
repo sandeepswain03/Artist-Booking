@@ -4,6 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Eye, EyeOff } from "@/components/svgIcons";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -20,7 +21,6 @@ export default function SignUp() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [passwordShow, setPasswordShow] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const router = useRouter();
@@ -54,7 +54,6 @@ export default function SignUp() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setSuccess("");
 
     const {
       username,
@@ -100,22 +99,8 @@ export default function SignUp() {
         },
       });
 
-      router.replace("/sign-in");
-
       if (response.data.success) {
-        setSuccess("User registered successfully!");
-        setFormData({
-          username: "",
-          email: "",
-          password: "",
-          role: "user",
-          avatar: null,
-          bio: "",
-          videoLink1: "",
-          videoLink2: "",
-          videoLink3: "",
-        });
-        setAvatarPreview(null);
+        router.replace("/sign-in");
       } else {
         setError(response.data.message || "Something went wrong");
       }
@@ -135,11 +120,11 @@ export default function SignUp() {
     >
       <form
         onSubmit={handleSubmit}
-        className={`w-full max-w-4xl ${
-          formData.role === "user" ? "md:max-w-md" : ""
+        className={`w-full ${
+          formData.role === "user" ? "md:max-w-md" : "max-w-4xl"
         }`}
       >
-        <div className="bg-white px-6 sm:px-10 py-8 rounded-lg shadow-md w-full">
+        <div className="bg-white px-6 sm:px-10 py-8 rounded-sm shadow-md w-full">
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h1 className="text-2xl sm:text-3xl font-semibold">
@@ -150,15 +135,11 @@ export default function SignUp() {
               </p>
             </div>
             <div
-              className={`grid md:grid-cols-2 gap-6 ${
-                formData.role === "user" ? "md:grid-cols-1" : ""
-              }`}
+              className={`grid ${
+                formData.role === "user" ? "md:grid-cols-1" : "md:grid-cols-2"
+              } gap-6`}
             >
-              <div
-                className={`space-y-6 ${
-                  formData.role === "user" ? "md:col-span-1" : ""
-                }`}
-              >
+              <div className="space-y-6">
                 <div>
                   <label
                     htmlFor="username"
@@ -172,7 +153,7 @@ export default function SignUp() {
                     name="username"
                     value={formData.username}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
+                    className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
                     placeholder="Enter Username"
                     required
                   />
@@ -190,7 +171,7 @@ export default function SignUp() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
+                    className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
                     placeholder="Enter Email Address"
                     required
                   />
@@ -208,7 +189,7 @@ export default function SignUp() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
+                    className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
                     placeholder="Enter Password"
                     required
                   />
@@ -217,37 +198,7 @@ export default function SignUp() {
                     onClick={() => setPasswordShow(!passwordShow)}
                     className="absolute top-[38px] text-gray-500 right-3 cursor-pointer select-none"
                   >
-                    {passwordShow ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                        <line x1="1" y1="1" x2="23" y2="23"></line>
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                    )}
+                    {passwordShow ? <Eye /> : <EyeOff />}
                   </button>
                 </div>
                 <div>
@@ -257,17 +208,38 @@ export default function SignUp() {
                   >
                     Role
                   </label>
-                  <select
-                    id="role"
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
-                    required
-                  >
-                    <option value="user">User</option>
-                    <option value="artist">Artist</option>
-                  </select>
+                  <div className="flex space-x-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleChange({
+                          target: { name: "role", value: "user" },
+                        } as React.ChangeEvent<HTMLInputElement>)
+                      }
+                      className={`flex-1 py-2 px-4 rounded-sm text-sm font-medium transition-colors duration-200 ${
+                        formData.role === "user"
+                          ? "bg-[#CE1446] text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                    >
+                      User
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleChange({
+                          target: { name: "role", value: "artist" },
+                        } as React.ChangeEvent<HTMLInputElement>)
+                      }
+                      className={`flex-1 py-2 px-4 rounded-sm text-sm font-medium transition-colors duration-200 ${
+                        formData.role === "artist"
+                          ? "bg-[#CE1446] text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                    >
+                      Artist
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label
@@ -280,7 +252,7 @@ export default function SignUp() {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors duration-200"
+                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-sm hover:bg-gray-300 transition-colors duration-300"
                     >
                       Choose File
                     </button>
@@ -322,7 +294,7 @@ export default function SignUp() {
                       name="bio"
                       value={formData.bio}
                       onChange={handleChange}
-                      className="w-full rounded-lg border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
+                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
                       placeholder="Enter your bio"
                       required
                     />
@@ -340,7 +312,7 @@ export default function SignUp() {
                       name="videoLink1"
                       value={formData.videoLink1}
                       onChange={handleChange}
-                      className="w-full rounded-lg border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
+                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
                       placeholder="Enter video link"
                       required
                     />
@@ -358,7 +330,7 @@ export default function SignUp() {
                       name="videoLink2"
                       value={formData.videoLink2}
                       onChange={handleChange}
-                      className="w-full rounded-lg border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
+                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
                       placeholder="Enter video link (optional)"
                     />
                   </div>
@@ -375,7 +347,7 @@ export default function SignUp() {
                       name="videoLink3"
                       value={formData.videoLink3}
                       onChange={handleChange}
-                      className="w-full rounded-lg border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200"
+                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
                       placeholder="Enter video link (optional)"
                     />
                   </div>
@@ -384,12 +356,9 @@ export default function SignUp() {
             </div>
           </div>
           {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
-          {success && (
-            <div className="mt-4 text-green-500 text-sm">{success}</div>
-          )}
           <button
             type="submit"
-            className="mt-6 w-full bg-[#CE1446] text-white py-2 px-4 rounded-md text-sm sm:text-base font-medium tracking-wide hover:bg-[#B01238] transition-colors duration-200"
+            className="mt-6 w-full bg-[#CE1446] text-white py-2 px-4 rounded-sm text-sm sm:text-base font-medium tracking-wide hover:bg-[#B01238] transition-colors duration-200"
             disabled={loading}
           >
             {loading ? "Signing Up..." : "Sign Up"}

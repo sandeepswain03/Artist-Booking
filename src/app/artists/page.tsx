@@ -43,11 +43,6 @@ export default function ArtistsPage() {
     setFilteredArtists(filtered);
   }, [artists, searchTerm]);
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // The filtering is now handled in the useEffect
-  };
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -63,11 +58,7 @@ export default function ArtistsPage() {
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 my-10 md:my-20 gap-6">
         <div className="md:col-span-1">
-          {/* Search */}
-          <form
-            onSubmit={handleSearch}
-            className="flex bg-gray-50 p-5 shadow-md rounded-md"
-          >
+          <div className="flex bg-gray-50 p-5 shadow-md rounded-md">
             <input
               type="text"
               name="search"
@@ -77,15 +68,14 @@ export default function ArtistsPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
-              type="submit"
+              type="button"
               className="bg-[#CE1446] text-white py-3 px-8 rounded-3xl rounded-tl-none -ml-8 text-2xl font-bold"
             >
               <FaSearch />
             </button>
-          </form>
+          </div>
         </div>
 
-        {/* Artist cards */}
         <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
           {filteredArtists.map((artist) => (
             <div
@@ -111,7 +101,7 @@ export default function ArtistsPage() {
                 <div className="flex justify-between items-center mt-4">
                   <Link
                     href={`/artists/${artist._id}`}
-                    className="text-primary font-semibold underline"
+                    className="text-[#CE1446] font-semibold underline"
                   >
                     View Profile
                   </Link>

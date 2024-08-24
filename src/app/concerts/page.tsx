@@ -4,7 +4,6 @@ import Link from "next/link";
 import axios from "axios";
 import { FaSearch, FaCalendarAlt } from "react-icons/fa";
 import { TbCategory2 } from "react-icons/tb";
-import { BsDiagram3 } from "react-icons/bs";
 import { CiLocationOn } from "react-icons/ci";
 import Image from "next/image";
 
@@ -14,8 +13,6 @@ interface Concert {
   date: string;
   concertImages: { url: string; public_id: string }[];
   location: string;
-  price: number;
-  seat: number;
 }
 
 export default function ConcertsPage() {
@@ -67,16 +64,6 @@ export default function ConcertsPage() {
     applyFilters();
   }, [concerts, searchTerm, filterDate]);
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // The filtering is now handled in the useEffect
-  };
-
-  const handleDateFilter = (date: string) => {
-    setFilterDate(date);
-    // The filtering is now handled in the useEffect
-  };
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -88,15 +75,12 @@ export default function ConcertsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 className="text-3xl md:text-5xl font-bold text-center text-secondary mt-10 uppercase">
-        All Concerts
+        All Events
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 my-10 md:my-20 gap-6">
         <div className="md:col-span-1">
           {/* Search */}
-          <form
-            onSubmit={handleSearch}
-            className="flex bg-gray-50 p-5 shadow-md rounded-md"
-          >
+          <form className="flex bg-gray-50 p-5 shadow-md rounded-md">
             <input
               type="text"
               name="search"
@@ -123,14 +107,14 @@ export default function ConcertsPage() {
             <div className="mt-3">
               <button
                 className="block w-full text-left p-5 hover:bg-secondary hover:text-[#CE1446] text-xl font-semibold border-b"
-                onClick={() => handleDateFilter("")}
+                onClick={() => setFilterDate("")}
               >
                 All Dates
               </button>
               <input
                 type="date"
                 value={filterDate}
-                onChange={(e) => handleDateFilter(e.target.value)}
+                onChange={(e) => setFilterDate(e.target.value)}
                 className="block w-full text-left p-5 text-xl font-semibold border-b"
               />
             </div>
@@ -160,16 +144,15 @@ export default function ConcertsPage() {
                     height={200}
                     className="rounded-t-md h-full w-full object-cover transform transition-transform duration-500 hover:scale-110"
                   />
-                 
                 </div>
                 <div className="px-4 py-6">
                   <div className="flex justify-between">
                     <p className="text-sm text-secondary font-medium flex gap-2">
-                      <FaCalendarAlt className="text-primary text-base" />
+                      <FaCalendarAlt className="text-[#CE1446] text-base" />
                       {formattedDate}
                     </p>
                     <p className="text-sm text-secondary font-medium flex gap-1">
-                      <CiLocationOn className="text-primary text-lg font-bold" />{" "}
+                      <CiLocationOn className="text-[#CE1446] text-lg font-bold" />{" "}
                       {concert.location}
                     </p>
                   </div>
@@ -179,7 +162,7 @@ export default function ConcertsPage() {
                   <div className="flex justify-between items-center mt-4">
                     <Link
                       href={`/concerts/${concert._id}`}
-                      className="text-primary font-semibold underline"
+                      className="text-[#CE1446] font-semibold underline"
                     >
                       Event Details
                     </Link>

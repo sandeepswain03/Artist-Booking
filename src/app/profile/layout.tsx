@@ -1,85 +1,88 @@
 "use client";
 import React from 'react';
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
+import { FiUser, FiPlusCircle, FiCalendar, FiMessageSquare } from 'react-icons/fi';
 
-export default function Layout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const navItems = [
+  { href: "/profile", icon: FiUser, text: "Profile Settings" },
+  { href: "/profile/add_concert", icon: FiPlusCircle, text: "Add Concert" },
+  { href: "/profile/all_concerts", icon: FiCalendar, text: "All Concerts" },
+  { href: "/profile/all_inquiry", icon: FiMessageSquare, text: "All Inquiries" },
+];
+
+const getBreadcrumbText = (path: string) => {
+  const item = navItems.find(item => item.href === path);
+  return item ? item.text : 'Profile';
+};
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
       {/* Sidebar */}
-      <div id="hs-application-sidebar" className="hs-overlay [--auto-close:lg] hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform w-[260px] h-full fixed inset-y-0 start-0 z-[60] bg-white border-e border-gray-200 lg:relative lg:translate-x-0 lg:inset-0" role="dialog" tabIndex={-1} aria-label="Sidebar">
-        <div className="flex flex-col h-full">
-          <div className="p-4 overflow-y-auto">
-            <nav className="space-y-2">
-              <Link href="/profile" className="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100">
-                General
+      <aside id="hs-application-sidebar" className="hs-overlay [--auto-close:lg] hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform w-64 h-full fixed inset-y-0 start-0 z-[60] bg-white border-e border-gray-200 shadow-lg lg:relative lg:translate-x-0 lg:inset-0" role="dialog" tabIndex={-1} aria-label="Sidebar">
+        <div className="flex flex-col h-full p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h2>
+          <nav className="space-y-4">
+            {navItems.map(({ href, icon: Icon, text }) => (
+              <Link key={href} href={href} className="flex items-center gap-x-3 py-2 px-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-all duration-200">
+                <Icon className="text-gray-500" size={20} />
+                {text}
               </Link>
-              <Link href="/profile/add_concert" className="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100">
-                Add Concert
-              </Link>
-              <Link href="/profile/all_concerts" className="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100">
-                All Concerts
-              </Link>
-              <Link href="/profile/all_inquiry" className="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100">
-                All Inquiries
-              </Link>
-            </nav>
-          </div>
+            ))}
+          </nav>
         </div>
-      </div>
-      {/* End Sidebar */}
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+      <main className="flex-1 flex flex-col min-h-screen overflow-hidden">
         {/* Breadcrumb */}
-        <div className="sticky top-0 inset-x-0 z-20 bg-white border-y px-4 sm:px-6 lg:px-8 lg:hidden">
-          <div className="flex items-center py-2">
-            {/* Navigation Toggle */}
+        <header className="sticky top-0 inset-x-0 z-20 bg-white border-b px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
             <button
               type="button"
-              className="size-8 flex justify-center items-center gap-x-2 border border-gray-200 text-gray-800 hover:text-gray-500 rounded-lg focus:outline-none focus:text-gray-500 disabled:opacity-50 disabled:pointer-events-none"
-              aria-haspopup="dialog"
-              aria-expanded="false"
+              className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#D0204F]"
               aria-controls="hs-application-sidebar"
-              aria-label="Toggle navigation"
               data-hs-overlay="#hs-application-sidebar"
             >
-              <span className="sr-only">Toggle Navigation</span>
-              <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="18" height="18" x="3" y="3" rx="2"/>
-                <path d="M15 3v18"/>
-                <path d="m8 9 3 3-3 3"/>
+              <span className="sr-only">Open sidebar</span>
+              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            {/* End Navigation Toggle */}
 
-            {/* Breadcrumb */}
-            <ol className="ms-3 flex items-center whitespace-nowrap">
-              <li className="flex items-center text-sm text-gray-800">
-                Application Layout
-                <svg className="shrink-0 mx-3 overflow-visible size-2.5 text-gray-400" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              </li>
-              <li className="text-sm font-semibold text-gray-800 truncate" aria-current="page">
-                Dashboard
-              </li>
-            </ol>
-            {/* End Breadcrumb */}
+            <nav aria-label="Breadcrumb">
+              <ol className="inline-flex items-center space-x-1 md:space-x-3">
+                <li className="inline-flex items-center">
+                  <Link href="/profile" className="text-sm font-medium text-gray-700 hover:text-gray-900">
+                    Profile
+                  </Link>
+                </li>
+                {pathname !== '/profile' && (
+                  <li>
+                    <div className="flex items-center">
+                      <svg className="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
+                      </svg>
+                      <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
+                        {getBreadcrumbText(pathname)}
+                      </span>
+                    </div>
+                  </li>
+                )}
+              </ol>
+            </nav>
+          </div>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50">
+          <div className="max-w-7xl mx-auto">
+            {children}
           </div>
         </div>
-        {/* End Breadcrumb */}
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#F9FAFB]">
-          {children}
-        </div>
-        {/* End Content */}
-      </div>
-      {/* End Main Content */}
+      </main>
     </div>
   );
 }

@@ -21,21 +21,21 @@ export default function EnquiryList() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchEnquiries = async () => {
-      try {
-        const response = await axios.get("/api/enquiry");
-        if (response.data.success) {
-          setEnquiries(response.data.enquiries);
-        } else {
-          console.error("Failed to fetch enquiries:", response.data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching enquiries:", error);
-      }
-    };
-
     fetchEnquiries();
   }, []);
+
+  const fetchEnquiries = async () => {
+    try {
+      const response = await axios.get("/api/enquiry");
+      if (response.data.success) {
+        setEnquiries(response.data.enquiries);
+      } else {
+        console.error("Failed to fetch enquiries:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching enquiries:", error);
+    }
+  };
 
   const handleDelete = async (id: string) => {
     setDeletingId(id);
@@ -51,6 +51,14 @@ export default function EnquiryList() {
       setLoading(false);
       setDeletingId(null);
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   return (
@@ -73,42 +81,32 @@ export default function EnquiryList() {
                   {enquiry.name} ({enquiry.occasion})
                 </h5>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Email:</span> {enquiry.email}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Contact:</span> {enquiry.contactNumber}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">City:</span> {enquiry.city}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Date:</span> {enquiry.date}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Guest Count:</span> {enquiry.guestCount}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Budget:</span> {enquiry.budget}
-                  </p>
+                  <EnquiryDetail label="Email" value={enquiry.email} />
+                  <EnquiryDetail
+                    label="Contact"
+                    value={enquiry.contactNumber}
+                  />
+                  <EnquiryDetail label="City" value={enquiry.city} />
+                  <EnquiryDetail
+                    label="Date"
+                    value={formatDate(enquiry.date)}
+                  />
+                  <EnquiryDetail
+                    label="Guest Count"
+                    value={enquiry.guestCount.toString()}
+                  />
+                  <EnquiryDetail label="Budget" value={`₹${enquiry.budget}`} />
                 </div>
-                <p className="text-sm text-gray-600 mt-3">
-                  <span className="font-semibold">Message:</span> {enquiry.message}
-                </p>
+                <EnquiryDetail
+                  label="Message"
+                  value={enquiry.message}
+                  className="mt-3"
+                />
                 <div className="mt-4 text-right">
-                  <button
+                  <DeleteButton
                     onClick={() => handleDelete(enquiry._id)}
-                    disabled={loading && deletingId === enquiry._id}
-                    className={`py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-[#D0204F] text-white hover:bg-[#B01C44] disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:ring-2 focus:ring-[#D0204F] focus:ring-offset-2 transition-all ${
-                      loading && deletingId === enquiry._id
-                        ? "cursor-not-allowed opacity-50"
-                        : ""
-                    }`}
-                  >
-                    {loading && deletingId === enquiry._id
-                      ? "Deleting..."
-                      : "Delete"}
-                  </button>
+                    loading={loading && deletingId === enquiry._id}
+                  />
                 </div>
               </div>
             ))
@@ -120,3 +118,28 @@ export default function EnquiryList() {
     </section>
   );
 }
+
+const EnquiryDetail: React.FC<{
+  label: string;
+  value: string;
+  className?: string;
+}> = ({ label, value, className = "" }) => (
+  <p className={`text-sm text-gray-600 ${className}`}>
+    <span className="font-semibold">{label}:</span> {value}
+  </p>
+);
+
+const DeleteButton: React.FC<{ onClick: () => void; loading: boolean }> = ({
+  onClick,
+  loading,
+}) => (
+  <button
+    onClick={onClick}
+    disabled={loading}
+    className={`py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-[#D0204F] text-white hover:bg-[#B01C44] disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:ring-2 focus:ring-[#D0204F] focus:ring-offset-2 transition-all ${
+      loading ? "cursor-not-allowed opacity-50" : ""
+    }`}
+  >
+    {loading ? "Deleting..." : "Delete"}
+  </button>
+);

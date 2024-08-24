@@ -1,8 +1,29 @@
 import React from "react";
 import Link from "next/link";
 import { Facebook, Google, Twitter, Github } from "./svgIcons";
+import { FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
 
 function Footer() {
+  const socialLinks = [
+    { Icon: Facebook, href: "#" },
+    { Icon: Google, href: "#" },
+    { Icon: Twitter, href: "#" },
+    { Icon: Github, href: "#" },
+  ];
+
+  const importantLinks = [
+    { href: "/artists", text: "Artists" },
+    { href: "/concerts", text: "Events" },
+    { href: "/contact", text: "Contact Us" },
+    { href: "/sign-up", text: "Sign Up" },
+  ];
+
+  const contactInfo = [
+    { Icon: FaMapMarkerAlt, href: "#", text: "Vadodara, Gujarat India" },
+    { Icon: FaPhone, href: "#", text: "+123 456 7890" },
+    { Icon: FaEnvelope, href: "#", text: "contactemail@gmail.com" },
+  ];
+
   return (
     <footer className="mt-auto border-t border-gray-200 shadow-lg w-full">
       <div className="mt-auto w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:pt-20 mx-auto">
@@ -22,63 +43,34 @@ function Footer() {
 
           <div className="col-span-1">
             <h4 className="font-semibold text-black">Important Links</h4>
-
             <div className="mt-3 grid space-y-3">
-              <p>
-                <Link
-                  className="inline-flex gap-x-2 text-black hover:text-gray-600 focus:outline-none focus:text-gray-600"
-                  href="#"
-                >
-                  Pricing
-                </Link>
-              </p>
-              <p>
-                <Link
-                  className="inline-flex gap-x-2 text-black hover:text-gray-600 focus:outline-none focus:text-gray-600"
-                  href="#"
-                >
-                  Changelog
-                </Link>
-              </p>
-              <p>
-                <Link
-                  className="inline-flex gap-x-2 text-black hover:text-gray-600 focus:outline-none focus:text-gray-600"
-                  href="#"
-                >
-                  Docs
-                </Link>
-              </p>
+              {importantLinks.map((link, index) => (
+                <p key={index}>
+                  <Link
+                    className="inline-flex gap-x-2 text-black hover:text-gray-600 focus:outline-none focus:text-gray-600"
+                    href={link.href}
+                  >
+                    {link.text}
+                  </Link>
+                </p>
+              ))}
             </div>
           </div>
 
           <div className="col-span-1">
             <h4 className="font-semibold text-black">Contact Us</h4>
-
             <div className="mt-3 grid space-y-3">
-              <p>
-                <Link
-                  className="inline-flex gap-x-2 text-black hover:text-gray-600 focus:outline-none focus:text-gray-600"
-                  href="#"
-                >
-                  Blog
-                </Link>
-              </p>
-              <p>
-                <Link
-                  className="inline-flex gap-x-2 text-black hover:text-gray-600 focus:outline-none focus:text-gray-600"
-                  href="#"
-                >
-                  Careers
-                </Link>
-              </p>
-              <p>
-                <Link
-                  className="inline-flex gap-x-2 text-black hover:text-gray-600 focus:outline-none focus:text-gray-600"
-                  href="#"
-                >
-                  Customers
-                </Link>
-              </p>
+              {contactInfo.map(({ Icon, href, text }, index) => (
+                <p key={index}>
+                  <Link
+                    className="inline-flex items-center gap-x-2 text-black hover:text-gray-600 focus:outline-none focus:text-gray-600"
+                    href={href}
+                  >
+                    <Icon className="text-[#D0204F]" />
+                    {text}
+                  </Link>
+                </p>
+              ))}
             </div>
           </div>
         </div>
@@ -91,30 +83,15 @@ function Footer() {
           </div>
 
           <div>
-            <Link
-              className="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-[#D0204F] hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
-              href="#"
-            >
-              <Facebook />
-            </Link>
-            <Link
-              className="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-[#D0204F] hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
-              href="#"
-            >
-              <Google />
-            </Link>
-            <Link
-              className="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-[#D0204F] hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
-              href="#"
-            >
-              <Twitter />
-            </Link>
-            <Link
-              className="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-[#D0204F] hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
-              href="#"
-            >
-              <Github />
-            </Link>
+            {socialLinks.map(({ Icon, href }, index) => (
+              <Link
+                key={index}
+                className="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-[#D0204F] hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
+                href={href}
+              >
+                <Icon />
+              </Link>
+            ))}
           </div>
         </div>
       </div>

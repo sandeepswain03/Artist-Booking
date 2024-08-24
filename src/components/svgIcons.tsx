@@ -146,72 +146,6 @@ export const Star: React.FC<StarProps> = ({ filled }) => (
   </svg>
 );
 
-export const OrangeLine = () => (
-  <svg
-    className="w-16 h-auto text-orange-500"
-    width="121"
-    height="135"
-    viewBox="0 0 121 135"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M5 16.4754C11.7688 27.4499 21.2452 57.3224 5 89.0164"
-      stroke="currentColor"
-      stroke-width="10"
-      stroke-linecap="round"
-    />
-    <path
-      d="M33.6761 112.104C44.6984 98.1239 74.2618 57.6776 83.4821 5"
-      stroke="currentColor"
-      stroke-width="10"
-      stroke-linecap="round"
-    />
-    <path
-      d="M50.5525 130C68.2064 127.495 110.731 117.541 116 78.0874"
-      stroke="currentColor"
-      stroke-width="10"
-      stroke-linecap="round"
-    />
-  </svg>
-);
-
-export const BlueLine = () => (
-  <svg
-    className="w-40 h-auto text-cyan-500"
-    width="347"
-    height="188"
-    viewBox="0 0 347 188"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M4 82.4591C54.7956 92.8751 30.9771 162.782 68.2065 181.385C112.642 203.59 127.943 78.57 122.161 25.5053C120.504 2.2376 93.4028 -8.11128 89.7468 25.5053C85.8633 61.2125 130.186 199.678 180.982 146.248L214.898 107.02C224.322 95.4118 242.9 79.2851 258.6 107.02C274.299 134.754 299.315 125.589 309.861 117.539L343 93.4426"
-      stroke="currentColor"
-      stroke-width="7"
-      stroke-linecap="round"
-    />
-  </svg>
-);
-
-export const Search = () => (
-  <svg
-    className="shrink-0 size-5"
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <circle cx="11" cy="11" r="8" />
-    <path d="m21 21-4.3-4.3" />
-  </svg>
-);
-
 export const ContactUs = () => (
   <svg
     className="shrink-0 size-4 me-3 md:me-2 block md:hidden"
@@ -298,5 +232,39 @@ export const Upload = () => (
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
     <polyline points="17 8 12 3 7 8" />
     <line x1="12" x2="12" y1="3" y2="15" />
+  </svg>
+);
+
+export const Eye = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+    <line x1="1" y1="1" x2="23" y2="23"></line>
+  </svg>
+);
+
+export const EyeOff = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
   </svg>
 );
