@@ -3,22 +3,21 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
-import {
-  OrangeLine,
-  BlueLine,
-  Search,
-  SideArrow,
-} from "../../components/svgIcons";
+import { FaSearch } from "react-icons/fa";
+import Image from "next/image";
 
 interface Artist {
   _id: string;
   username: string;
   avatar: { url: string; public_id: string };
+  bio: string;
 }
 
 export default function ArtistsPage() {
   const [artists, setArtists] = useState<Artist[]>([]);
-  const [filterName, setFilterName] = useState("");
+  const [filteredArtists, setFilteredArtists] = useState<Artist[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchArtists = async () => {
@@ -26,95 +25,92 @@ export default function ArtistsPage() {
         const response = await axios.get("/api/artist");
         if (response.data.success) {
           setArtists(response.data.data);
+          setFilteredArtists(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching artists:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchArtists();
   }, []);
 
-  const filteredArtists = artists.filter((artist) =>
-    filterName === ""
-      ? true
-      : artist.username.toLowerCase().includes(filterName.toLowerCase())
-  );
+  useEffect(() => {
+    const filtered = artists.filter((artist) =>
+      artist.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredArtists(filtered);
+  }, [artists, searchTerm]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#CE1446]"></div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {/* Search Bar */}
-      <div className="relative overflow-hidden bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
-        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 bg-gradient-to-tl from-[#E2BFD9] via-purple-100 to-[#E2BFD9]">
-          <div className="text-center">
-            <h1 className="text-4xl sm:text-6xl font-bold text-gray-800">
-              Search Artists
-            </h1>
-            <p className="mt-3 text-gray-600">
-              Book The artist of your choice!
-            </p>
-            <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
-              <form>
-                <div className="relative z-10 flex gap-x-3 p-3 bg-white rounded-lg shadow-lg shadow-gray-100">
-                  <div className="w-full">
-                    <input
-                      type="text"
-                      name="hs-search-article-1"
-                      id="hs-search-article-1"
-                      className="py-2.5 px-4 block w-full rounded-lg"
-                      placeholder="Search for an Artist"
-                      value={filterName}
-                      onChange={(e) => setFilterName(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Link
-                      className="size-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg bg-[#674188] text-white hover:bg-[#674188] disabled:opacity-50 disabled:pointer-events-none"
-                      href="#"
-                    >
-                      <Search />
-                    </Link>
-                  </div>
-                </div>
-              </form>
-              <div className="hidden md:block absolute top-0 end-0 -translate-y-12 translate-x-20">
-                <OrangeLine />
-              </div>
-              <div className="hidden md:block absolute bottom-0 start-0 translate-y-10 -translate-x-32">
-                <BlueLine />
-              </div>
-            </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 className="text-3xl md:text-5xl font-bold text-center text-secondary mt-10 uppercase">
+        All Artists
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 my-10 md:my-20 gap-6">
+        <div className="md:col-span-1">
+          <div className="flex bg-gray-50 p-5 shadow-md rounded-md">
+            <input
+              type="text"
+              name="search"
+              placeholder="Search by name"
+              className="w-full px-4 py-3 border rounded-3xl outline-none border-none bg-gray-200 text-black"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              type="button"
+              className="bg-[#CE1446] text-white py-3 px-8 rounded-3xl rounded-tl-none -ml-8 text-2xl font-bold"
+            >
+              <FaSearch />
+            </button>
           </div>
         </div>
-      </div>
-      {/* Artists section */}
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
           {filteredArtists.map((artist) => (
             <div
               key={artist._id}
-              className="hover:scale-105 transition-all duration-300 ease-in-out"
+              className="rounded-md shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 hover:shadow-lg bg-white hover:bg-gray-100"
             >
-              <Link
-                className="relative flex flex-col w-full min-h-60 bg-center bg-cover rounded-xl"
-                href={`/artists/${artist._id}`}
-                style={{ backgroundImage: `url(${artist.avatar?.url})` }}
-              >
-                <div className="flex-auto p-4 md:p-6">
-                  <h3 className="text-xl text-white/90">
-                    <span className="font-bold">{artist.username}</span>
-                  </h3>
+              <div className="rounded-t-md shadow-lg h-60 relative overflow-hidden">
+                <Image
+                  src={artist.avatar?.url || "/default-avatar.jpg"}
+                  alt={artist.username}
+                  width={400}
+                  height={200}
+                  className="rounded-t-md h-full w-full object-cover transform transition-transform duration-500 hover:scale-110"
+                />
+              </div>
+              <div className="px-4 py-6">
+                <h2 className="text-2xl font-semibold text-secondary">
+                  {artist.username}
+                </h2>
+                <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+                  {artist.bio}
+                </p>
+                <div className="flex justify-between items-center mt-4">
+                  <Link
+                    href={`/artists/${artist._id}`}
+                    className="text-[#CE1446] font-semibold underline"
+                  >
+                    View Profile
+                  </Link>
                 </div>
-                <div className="pt-0 p-4 md:p-6">
-                  <div className="inline-flex items-center gap-2 text-sm font-medium text-white/90">
-                    Explore
-                    <SideArrow />
-                  </div>
-                </div>
-              </Link>
+              </div>
             </div>
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

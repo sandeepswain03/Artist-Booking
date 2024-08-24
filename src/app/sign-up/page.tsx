@@ -1,8 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Eye, EyeOff } from "@/components/svgIcons";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -19,8 +21,10 @@ export default function SignUp() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [passwordShow, setPasswordShow] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -32,14 +36,24 @@ export default function SignUp() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, avatar: e.target.files?.[0] || null });
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData({ ...formData, avatar: file });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFormData({ ...formData, avatar: null });
+      setAvatarPreview(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setSuccess("");
 
     const {
       username,
@@ -59,7 +73,6 @@ export default function SignUp() {
       return;
     }
 
-    // Additional validation for artists
     if (role === "artist" && (!bio || !videoLink1)) {
       setError("Bio and at least one video link are required for artists");
       setLoading(false);
@@ -86,21 +99,8 @@ export default function SignUp() {
         },
       });
 
-      router.replace("/sign-in");
-
       if (response.data.success) {
-        setSuccess("User registered successfully!");
-        setFormData({
-          username: "",
-          email: "",
-          password: "",
-          role: "user",
-          avatar: null,
-          bio: "",
-          videoLink1: "",
-          videoLink2: "",
-          videoLink3: "",
-        });
+        router.replace("/sign-in");
       } else {
         setError(response.data.message || "Something went wrong");
       }
@@ -113,193 +113,267 @@ export default function SignUp() {
   };
 
   return (
-    <>
-      <div className="container mx-auto px-4 m-12 max-w-md">
-        <h2 className="text-3xl font-bold mb-8 text-center text-[#4A3F6A]">
-          Sign Up
-        </h2>
-        <div className="bg-[#5E4B88] shadow-lg rounded-xl p-8">
-          <div className="text-center mb-6">
-            <p className="text-sm text-[#EAD8FF]">
-              Already have an account?{" "}
-              <Link
-                href="/sign-in"
-                className="text-[#BCA7E7] underline hover:text-white"
-              >
-                Sign in here
-              </Link>
-            </p>
-          </div>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                required
-              />
+    <div
+      className={`flex justify-center items-center w-full min-h-screen p-4 ${
+        formData.role === "user" ? "md:items-center" : ""
+      }`}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className={`w-full ${
+          formData.role === "user" ? "md:max-w-md" : "max-w-4xl"
+        }`}
+      >
+        <div className="bg-white px-6 sm:px-10 py-8 rounded-sm shadow-md w-full">
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <h1 className="text-2xl sm:text-3xl font-semibold">
+                Create an account
+              </h1>
+              <p className="text-gray-400 text-sm sm:text-base">
+                Sign up to get started
+              </p>
             </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-              >
-                Email address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="role"
-                className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-              >
-                Role
-              </label>
-              <select
-                id="role"
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                required
-              >
-                <option value="user">User</option>
-                <option value="artist">Artist</option>
-              </select>
-            </div>
-            {formData.role === "artist" && (
-              <>
-                <div>
-                  <label
-                    htmlFor="bio"
-                    className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-                  >
-                    Bio
-                  </label>
-                  <textarea
-                    id="bio"
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="videoLink1"
-                    className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-                  >
-                    Video Link 1
-                  </label>
-                  <input
-                    type="url"
-                    id="videoLink1"
-                    name="videoLink1"
-                    value={formData.videoLink1}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="videoLink2"
-                    className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-                  >
-                    Video Link 2
-                  </label>
-                  <input
-                    type="url"
-                    id="videoLink2"
-                    name="videoLink2"
-                    value={formData.videoLink2}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="videoLink3"
-                    className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-                  >
-                    Video Link 3
-                  </label>
-                  <input
-                    type="url"
-                    id="videoLink3"
-                    name="videoLink3"
-                    value={formData.videoLink3}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                  />
-                </div>
-              </>
-            )}
-            <div>
-              <label
-                htmlFor="avatar"
-                className="block text-sm font-semibold mb-2 text-[#EAD8FF]"
-              >
-                Avatar
-              </label>
-              <input
-                type="file"
-                id="avatar"
-                name="avatar"
-                onChange={handleFileChange}
-                className="w-full px-4 py-3 rounded-lg bg-[#BCA7E7] focus:outline-none focus:ring-2 focus:ring-[#8F75E5]"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full px-8 py-3 text-white rounded-lg bg-gradient-to-r from-[#8F75E5] to-[#674188] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8F75E5]"
-              disabled={loading}
+            <div
+              className={`grid ${
+                formData.role === "user" ? "md:grid-cols-1" : "md:grid-cols-2"
+              } gap-6`}
             >
-              {loading ? "Signing Up..." : "Sign Up"}
-            </button>
-            {error && <p className="text-red-600 mt-4 text-sm">{error}</p>}
-            {success && (
-              <p className="text-green-600 mt-4 text-sm">{success}</p>
-            )}
-          </form>
+              <div className="space-y-6">
+                <div>
+                  <label
+                    htmlFor="username"
+                    className="block mb-2 text-gray-600 text-sm font-medium"
+                  >
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                    placeholder="Enter Username"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block mb-2 text-gray-600 text-sm font-medium"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                    placeholder="Enter Email Address"
+                    required
+                  />
+                </div>
+                <div className="relative">
+                  <label
+                    htmlFor="password"
+                    className="block mb-2 text-gray-600 text-sm font-medium"
+                  >
+                    Password
+                  </label>
+                  <input
+                    type={passwordShow ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                    placeholder="Enter Password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setPasswordShow(!passwordShow)}
+                    className="absolute top-[38px] text-gray-500 right-3 cursor-pointer select-none"
+                  >
+                    {passwordShow ? <Eye /> : <EyeOff />}
+                  </button>
+                </div>
+                <div>
+                  <label
+                    htmlFor="role"
+                    className="block mb-2 text-gray-600 text-sm font-medium"
+                  >
+                    Role
+                  </label>
+                  <div className="flex space-x-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleChange({
+                          target: { name: "role", value: "user" },
+                        } as React.ChangeEvent<HTMLInputElement>)
+                      }
+                      className={`flex-1 py-2 px-4 rounded-sm text-sm font-medium transition-colors duration-200 ${
+                        formData.role === "user"
+                          ? "bg-[#CE1446] text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                    >
+                      User
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleChange({
+                          target: { name: "role", value: "artist" },
+                        } as React.ChangeEvent<HTMLInputElement>)
+                      }
+                      className={`flex-1 py-2 px-4 rounded-sm text-sm font-medium transition-colors duration-200 ${
+                        formData.role === "artist"
+                          ? "bg-[#CE1446] text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                    >
+                      Artist
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label
+                    htmlFor="avatar"
+                    className="block mb-2 text-gray-600 text-sm font-medium"
+                  >
+                    Avatar
+                  </label>
+                  <div className="flex items-center space-x-4">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-sm hover:bg-gray-300 transition-colors duration-300"
+                    >
+                      Choose File
+                    </button>
+                    <input
+                      type="file"
+                      id="avatar"
+                      name="avatar"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      className="hidden"
+                      accept="image/*"
+                      required
+                    />
+                    {avatarPreview && (
+                      <div className="relative w-16 h-16">
+                        <Image
+                          src={avatarPreview}
+                          alt="Avatar preview"
+                          layout="fill"
+                          objectFit="cover"
+                          className="rounded-full"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {formData.role === "artist" && (
+                <div className="space-y-6">
+                  <div>
+                    <label
+                      htmlFor="bio"
+                      className="block mb-2 text-gray-600 text-sm font-medium"
+                    >
+                      Bio
+                    </label>
+                    <textarea
+                      id="bio"
+                      name="bio"
+                      value={formData.bio}
+                      onChange={handleChange}
+                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                      placeholder="Enter your bio"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="videoLink1"
+                      className="block mb-2 text-gray-600 text-sm font-medium"
+                    >
+                      Video Link 1
+                    </label>
+                    <input
+                      type="url"
+                      id="videoLink1"
+                      name="videoLink1"
+                      value={formData.videoLink1}
+                      onChange={handleChange}
+                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                      placeholder="Enter video link"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="videoLink2"
+                      className="block mb-2 text-gray-600 text-sm font-medium"
+                    >
+                      Video Link 2
+                    </label>
+                    <input
+                      type="url"
+                      id="videoLink2"
+                      name="videoLink2"
+                      value={formData.videoLink2}
+                      onChange={handleChange}
+                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                      placeholder="Enter video link (optional)"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="videoLink3"
+                      className="block mb-2 text-gray-600 text-sm font-medium"
+                    >
+                      Video Link 3
+                    </label>
+                    <input
+                      type="url"
+                      id="videoLink3"
+                      name="videoLink3"
+                      value={formData.videoLink3}
+                      onChange={handleChange}
+                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                      placeholder="Enter video link (optional)"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
+          <button
+            type="submit"
+            className="mt-6 w-full bg-[#CE1446] text-white py-2 px-4 rounded-sm text-sm sm:text-base font-medium tracking-wide hover:bg-[#B01238] transition-colors duration-200"
+            disabled={loading}
+          >
+            {loading ? "Signing Up..." : "Sign Up"}
+          </button>
+          <div className="mt-6 text-sm text-center">
+            Already have an account?
+            <Link
+              href="/sign-in"
+              className="font-medium text-[#CE1446] hover:underline ml-1"
+            >
+              Sign in
+            </Link>
+          </div>
         </div>
-      </div>
-    </>
+      </form>
+    </div>
   );
 }

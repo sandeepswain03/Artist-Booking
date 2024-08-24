@@ -8,42 +8,34 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Upload to Cloudinary
-const uploadOnCloudinary = async (localFilePath: string) => {
-    try {
-        if (!localFilePath) return null;
-        
-        // Set static path for public/uploads directory
-        const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-        const normalizedPath = path.join(uploadsDir, path.basename(localFilePath));
-        
-        const res = await cloudinary.uploader.upload(normalizedPath, {
-            resource_type: 'auto',
-        });
-        
-        // Delete the local file
-        // fs.unlinkSync(normalizedPath);
-        
-        return res;
-    } catch (error) {
-        // Remove the locally saved temporary file as the upload operation failed
-        if (localFilePath) {
-            const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-            const normalizedPath = path.join(uploadsDir, path.basename(localFilePath));
-            fs.unlinkSync(normalizedPath);
-        }
-        return error;
-    }
-}
+const getUploadPath = (localFilePath: string) => {
+  const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+  return path.join(uploadsDir, path.basename(localFilePath));
+};
 
-// Delete from Cloudinary
+const uploadOnCloudinary = async (localFilePath: string) => {
+  if (!localFilePath) return null;
+
+  const normalizedPath = getUploadPath(localFilePath);
+
+  try {
+    const res = await cloudinary.uploader.upload(normalizedPath, {
+      resource_type: 'auto',
+    });
+    fs.unlinkSync(normalizedPath);
+    return res;
+  } catch (error) {
+    fs.unlinkSync(normalizedPath);
+    return error;
+  }
+};
+
 const deleteFromCloudinary = async (publicId: string) => {
-    try {
-        const result = await cloudinary.uploader.destroy(publicId);
-        return result;
-    } catch (error) {
-        return error;
-    }
-}
+  try {
+    return await cloudinary.uploader.destroy(publicId);
+  } catch (error) {
+    return error;
+  }
+};
 
 export { uploadOnCloudinary, deleteFromCloudinary };
