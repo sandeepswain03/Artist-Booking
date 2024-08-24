@@ -1,6 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Image from "next/image";
+import Link from "next/link";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { CiCalendarDate } from "react-icons/ci";
+import { BsDiagram3 } from "react-icons/bs";
+import { VscLocation } from "react-icons/vsc";
+import { PiListDashesBold } from "react-icons/pi";
+import { HiOutlineSpeakerphone } from "react-icons/hi";
+import { MdOutlineEmail } from "react-icons/md";
 
 // Define the Concert type
 interface Concert {
@@ -10,10 +20,20 @@ interface Concert {
   description: string;
   location: string;
   price: string;
+  genre: string;
   concertImages: { url: string; public_id: string }[];
+  artistId: {
+    _id: string;
+    username: string;
+    email: string;
+  };
 }
 
-export default function ConcertDetailsPage({ params }: { params: { id: string } }) {
+export default function ConcertDetailsPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const [concert, setConcert] = useState<Concert | null>(null);
 
   useEffect(() => {
@@ -31,85 +51,101 @@ export default function ConcertDetailsPage({ params }: { params: { id: string } 
   }, [params.id]);
 
   if (!concert) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-pink-500"></div>
+      </div>
+    );
   }
 
+  const formattedDate = new Date(concert.date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
-    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-      <div className="relative p-6 md:p-16">
-        <div className="relative z-10 lg:grid lg:grid-cols-12 lg:gap-12 lg:items-center">
-          <div className="mb-10 lg:mb-0 lg:col-span-6 lg:col-start-8 lg:order-2">
-            <h2 className="text-2xl text-gray-800 font-bold sm:text-3xl">
-              {concert.title}
-            </h2>
-
-            <nav
-              className="grid gap-4 mt-5 md:mt-10"
-              aria-label="Tabs"
-              role="tablist"
-              aria-orientation="vertical"
-            >
-              <div className="text-start p-4 md:p-5 rounded-xl">
-                <span className="flex gap-x-6">
-                  <span className="grow">
-                    <span className="block mt-1 text-gray-800 text-lg">
-                      {concert.description}
-                    </span>
-                  </span>
-                </span>
-              </div>
-
-              <div className="text-start p-4 md:p-5 rounded-xl">
-                <span className="flex gap-x-6">
-                  <span className="grow">
-                    <span className="block text-xl font-semibold text-gray-800">
-                      {concert.location}
-                    </span>
-                  </span>
-                </span>
-              </div>
-
-              <div className="text-start p-4 md:p-5 rounded-xl">
-                <span className="flex gap-x-6">
-                  <span className="grow">
-                    <span className="block text-xl font-semibold text-gray-800">
-                      {concert.date}
-                    </span>
-                  </span>
-                </span>
-              </div>
-
-              <div className="text-start p-4 md:p-5 rounded-xl">
-                <span className="flex gap-x-6">
-                  <span className="grow">
-                    <span className="block text-xl font-semibold text-gray-800">
-                      {concert.price}
-                    </span>
-                  </span>
-                </span>
-              </div>
-            </nav>
-          </div>
-          <div className="lg:col-span-6 lg:w-[560px] lg:h-[560px]">
-            <div className="relative">
-              <div
-                id={`tabs-with-card-1`}
-                role="tabpanel"
-                aria-labelledby={`tabs-with-card-item-1`}
-              >
-                <img
-                  className="shadow-xl lg:absolute lg:top-16 rounded-xl"
-                  src={concert.concertImages[0]?.url || ""}
-                  alt={"Concert Cover"}
-                  width={720}
-                  height={720}
+    <div className="container mx-auto px-4 mt-16 sm:mt-24">
+      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+        Event Details
+      </h1>
+      <div className="max-w-4xl mx-auto">
+        <div>
+          <Carousel
+            showArrows={true}
+            showStatus={false}
+            showThumbs={false}
+            infiniteLoop={true}
+            autoPlay={true}
+            interval={5000}
+          >
+            {concert.concertImages.map((image, index) => (
+              <div key={index}>
+                <Image
+                  src={image.url}
+                  alt={`Concert Image ${index + 1}`}
+                  width={840}
+                  height={384}
+                  className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover rounded-md"
                 />
+              </div>
+            ))}
+          </Carousel>
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-4 sm:mt-6">
+            <p className="flex items-center text-sm gap-2 mb-2 sm:mb-0">
+              <CiCalendarDate className="text-xl text-primary" />
+              {formattedDate}
+            </p>
+            <p className="flex items-center gap-2 text-red-600 font-semibold text-lg sm:text-xl mb-2 sm:mb-0">
+              {concert.title}
+            </p>
+            <p className="flex items-center gap-1 text-sm">
+              <VscLocation className="text-2xl text-primary" />
+              {concert.location}
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row text-sm gap-4 border-y py-4 my-6 justify-around">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-8 md:gap-16 lg:gap-24">
+              <div className="flex gap-3 items-center">
+                <PiListDashesBold className="text-red-500 text-xl" />
+                <div>
+                  <p className="font-semibold">Event Type</p>
+                  <p>{concert.genre}</p>
+                </div>
+              </div>
+              <div className="flex gap-3 items-center">
+                <HiOutlineSpeakerphone className="text-red-500 text-xl" />
+                <div>
+                  <p className="font-semibold">Artist</p>
+                  <p>{concert.artistId.username}</p>
+                </div>
+              </div>
+              <div className="flex gap-3 items-center">
+                <MdOutlineEmail className="text-red-500 text-xl" />
+                <div>
+                  <p className="font-semibold">Contact Email</p>
+                  <p>{concert.artistId.email}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="absolute inset-0 grid grid-cols-12 size-full">
-          <div className="col-span-full lg:col-span-7 lg:col-start-6 bg-[#E2BFD9] w-full h-5/6 rounded-xl sm:h-3/4 lg:h-full"></div>
+
+        <div className="flex justify-center gap-3 my-6">
+          <div className="bg-pink-700 text-white px-5 py-1 rounded-md text-center">
+            <span className="text-xl font-semibold">&#8377;</span>
+            <span className="text-3xl font-semibold ">{concert.price}</span>
+            <span className="ms-1 font-normal">/ Person</span>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold">
+            Description
+          </h2>
+          <p className="mt-3 sm:mt-5 text-gray-600 leading-loose text-sm sm:text-base">
+            {concert.description}
+          </p>
         </div>
       </div>
     </div>
