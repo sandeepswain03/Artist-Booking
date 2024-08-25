@@ -16,6 +16,8 @@ function Footer() {
     { href: "/concerts", text: "Events" },
     { href: "/contact", text: "Contact Us" },
     { href: "/sign-up", text: "Sign Up" },
+    { href: "/term&condition", text: "Terms & Conditions" },
+    { href: "/privacypolicy", text: "Privacy Policy" },
   ];
 
   const contactInfo = [
