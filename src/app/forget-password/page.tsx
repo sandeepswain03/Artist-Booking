@@ -60,6 +60,10 @@ export default function ForgetPassword() {
           "Password reset email sent. Please check your inbox."
         );
         setEmail("");
+        // Redirect to sign-in page after successful email send
+        setTimeout(() => {
+          router.push("/sign-in");
+        }, 2000); // Wait for 2 seconds before redirecting
       } else {
         setError(response.data.message || "Something went wrong");
       }
