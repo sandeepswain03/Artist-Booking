@@ -15,6 +15,8 @@ export interface IUser extends Document {
   videoLink2?: string;
   videoLink3?:string
   bio: string;
+  resetToken: string | undefined;
+  resetTokenExpires: Date | undefined;
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -74,6 +76,14 @@ const UserSchema: Schema<IUser> = new Schema({
       ref: "Enquiry",
     },
   ],
+  resetToken: {
+    type: String,
+    required: false,
+  },
+  resetTokenExpires: {
+    type: Date,
+    required: false,
+  },
 });
 
 const UserModel =
