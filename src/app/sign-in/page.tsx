@@ -1,7 +1,7 @@
 "use client";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff } from "@/components/svgIcons";
 
@@ -10,17 +10,46 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [passwordShow, setPasswordShow] = useState(false);
+  const { data: session, status } = useSession();
   const router = useRouter();
+<<<<<<< HEAD
+=======
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace("/");
+    }
+  }, [status, router]);
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+>>>>>>> 3d783c22eaa4597634de17d97206d43be6b4e380
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
+<<<<<<< HEAD
     try {
       const result = await signIn("credentials", {
         redirect: false,
         identifier: email,
         password,
       });
+=======
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    const result = await signIn("credentials", {
+      redirect: false,
+      identifier: email,
+      password,
+    });
+>>>>>>> 3d783c22eaa4597634de17d97206d43be6b4e380
 
       if (result?.error) {
         setError(
@@ -90,6 +119,12 @@ export default function SignIn() {
               {passwordShow ? <Eye /> : <EyeOff />}
             </button>
           </div>
+          <Link
+            href="/forget-password"
+            className="text-sm text-[#CE1446] hover:underline block text-right mt-2"
+          >
+            Forgot Password?
+          </Link>
         </div>
         {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
         <button

@@ -114,7 +114,7 @@ export async function POST(request: Request) {
             public_id: uploadedImage.public_id,
             url: uploadedImage.url,
           });
-          console.log(uploadedImage);
+          // console.log(uploadedImage);
         }
       }
     }

@@ -228,7 +228,7 @@ const MagicBanner = () => {
 
           {/* Events Service */}
           <Link
-            href="/events"
+            href="/concerts"
             className="group block rounded-xl overflow-hidden focus:outline-none"
           >
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
