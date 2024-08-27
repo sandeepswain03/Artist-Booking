@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -105,8 +105,9 @@ export default function SignUp() {
         setError(response.data.message || "Something went wrong");
       }
     } catch (err) {
-      console.error("Error during sign-up:", err);
-      setError("An error occurred during sign-up");
+      const error = err as any;
+      console.error(error.response?.data.message || "Error during sign-up:", error); 
+      setError(error.response?.data.message || "An error occurred during sign-up");
     }
 
     setLoading(false);

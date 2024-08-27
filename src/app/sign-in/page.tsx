@@ -44,8 +44,10 @@ export default function SignIn() {
       } else if (result?.url) {
         router.replace("/");
       }
-    } catch (error) {
-      setError("An unexpected error occurred. Please try again.");
+    } catch (error:any) {
+     
+      console.error(error.response?.data.message || "Error during sign-up:", error); 
+      setError(error.response?.data.message || "An error occurred during sign-up");
     }
   };
 
