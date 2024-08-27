@@ -98,24 +98,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, errors }, { status: 400 });
     }
 
-    // Upload Images
-    const concertImagesLocalPaths = await handleFileUpload(
-      concertImages,
-      "./public/uploads"
-    );
-
-    // Upload Images to Cloudinary
+    // Upload Images to Cloudinary directly
     let uploadedImages = [];
-    if (Array.isArray(concertImagesLocalPaths)) {
-      for (const imagePath of concertImagesLocalPaths) {
-        const uploadedImage: any = await uploadOnCloudinary(imagePath);
-        if (uploadedImage) {
-          uploadedImages.push({
-            public_id: uploadedImage.public_id,
-            url: uploadedImage.url,
-          });
-          // console.log(uploadedImage);
-        }
+    for (const concertImage of concertImages) {
+      const uploadedImage: any = await uploadOnCloudinary(concertImage);
+      if (uploadedImage) {
+        uploadedImages.push({
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.url,
+        });
       }
     }
 
