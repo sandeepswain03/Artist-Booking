@@ -298,6 +298,7 @@ export default function ArtistDetailsPage({
                       onChange={handleChange}
                       className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
                       placeholder="Enter guest count"
+                      required
                     />
                   </div>
                   <div>
@@ -369,6 +370,7 @@ export default function ArtistDetailsPage({
                       className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
                       placeholder="Enter your message"
                       rows={4}
+                      required
                     />
                   </div>
                 </div>

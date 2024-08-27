@@ -20,7 +20,7 @@ export default function SignUp() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [passwordShow, setPasswordShow] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const router = useRouter();
@@ -33,6 +33,8 @@ export default function SignUp() {
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    // Clear the error for this field when it's changed
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +46,7 @@ export default function SignUp() {
         setAvatarPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+      setErrors((prev) => ({ ...prev, avatar: "" }));
     } else {
       setFormData({ ...formData, avatar: null });
       setAvatarPreview(null);
@@ -53,7 +56,7 @@ export default function SignUp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setErrors({});
 
     const {
       username,
@@ -67,14 +70,23 @@ export default function SignUp() {
       videoLink3,
     } = formData;
 
-    if (!username || !email || !password || !avatar || !role) {
-      setError("All fields are required");
-      setLoading(false);
-      return;
+    let newErrors: { [key: string]: string } = {};
+
+    if (!username) newErrors.username = "Username is required";
+    if (!email) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
+    if (!avatar) newErrors.avatar = "Avatar is required";
+    if (!role) newErrors.role = "Role is required";
+
+    if (role === "artist") {
+      if (!bio) newErrors.bio = "Bio is required for artists";
+      if (!videoLink1)
+        newErrors.videoLink1 =
+          "At least one video link is required for artists";
     }
 
-    if (role === "artist" && (!bio || !videoLink1)) {
-      setError("Bio and at least one video link are required for artists");
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       setLoading(false);
       return;
     }
@@ -84,7 +96,9 @@ export default function SignUp() {
     formDataToSend.append("email", email);
     formDataToSend.append("password", password);
     formDataToSend.append("role", role);
-    formDataToSend.append("avatar", avatar);
+    if (avatar) {
+      formDataToSend.append("avatar", avatar);
+    }
     if (role === "artist") {
       formDataToSend.append("bio", bio);
       formDataToSend.append("videolink1", videoLink1);
@@ -102,12 +116,36 @@ export default function SignUp() {
       if (response.data.success) {
         router.replace("/sign-in");
       } else {
-        setError(response.data.message || "Something went wrong");
+        setErrors({ general: response.data.message || "Something went wrong" });
       }
     } catch (err) {
-      const error = err as any;
-      console.error(error.response?.data.message || "Error during sign-up:", error); 
-      setError(error.response?.data.message || "An error occurred during sign-up");
+      const error = err as AxiosError;
+      console.error("Error during sign-up:", error);
+      if (
+        error.response?.status === 400 &&
+        error.response?.data &&
+        typeof error.response.data === "object"
+      ) {
+        const responseData = error.response.data as { [key: string]: string };
+        if (
+          responseData.message &&
+          responseData.message.includes("already exists")
+        ) {
+          setErrors({
+            general: "User with this email or username already exists",
+          });
+        } else {
+          if (responseData.username) {
+            setErrors((prev) => ({ ...prev, username: responseData.username }));
+          }
+          if (responseData.email) {
+            setErrors((prev) => ({ ...prev, email: responseData.email }));
+          }
+          setErrors((prev) => ({ ...prev, ...responseData }));
+        }
+      } else {
+        setErrors({ general: "An error occurred during sign-up" });
+      }
     }
 
     setLoading(false);
@@ -154,10 +192,16 @@ export default function SignUp() {
                     name="username"
                     value={formData.username}
                     onChange={handleChange}
-                    className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                    className={`w-full rounded-sm border ${
+                      errors.username ? "border-red-500" : "border-gray-300"
+                    } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
                     placeholder="Enter Username"
-                    required
                   />
+                  {errors.username && (
+                    <p className="mt-1 text-red-500 text-xs">
+                      {errors.username}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label
@@ -172,10 +216,14 @@ export default function SignUp() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                    className={`w-full rounded-sm border ${
+                      errors.email ? "border-red-500" : "border-gray-300"
+                    } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
                     placeholder="Enter Email Address"
-                    required
                   />
+                  {errors.email && (
+                    <p className="mt-1 text-red-500 text-xs">{errors.email}</p>
+                  )}
                 </div>
                 <div className="relative">
                   <label
@@ -190,9 +238,10 @@ export default function SignUp() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                    className={`w-full rounded-sm border ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
                     placeholder="Enter Password"
-                    required
                   />
                   <button
                     type="button"
@@ -201,6 +250,11 @@ export default function SignUp() {
                   >
                     {passwordShow ? <Eye /> : <EyeOff />}
                   </button>
+                  {errors.password && (
+                    <p className="mt-1 text-red-500 text-xs">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label
@@ -241,6 +295,9 @@ export default function SignUp() {
                       Artist
                     </button>
                   </div>
+                  {errors.role && (
+                    <p className="mt-1 text-red-500 text-xs">{errors.role}</p>
+                  )}
                 </div>
                 <div>
                   <label
@@ -265,7 +322,6 @@ export default function SignUp() {
                       onChange={handleFileChange}
                       className="hidden"
                       accept="image/*"
-                      required
                     />
                     {avatarPreview && (
                       <div className="relative w-16 h-16">
@@ -279,6 +335,9 @@ export default function SignUp() {
                       </div>
                     )}
                   </div>
+                  {errors.avatar && (
+                    <p className="mt-1 text-red-500 text-xs">{errors.avatar}</p>
+                  )}
                 </div>
               </div>
               {formData.role === "artist" && (
@@ -295,10 +354,14 @@ export default function SignUp() {
                       name="bio"
                       value={formData.bio}
                       onChange={handleChange}
-                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                      className={`w-full rounded-sm border ${
+                        errors.bio ? "border-red-500" : "border-gray-300"
+                      } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
                       placeholder="Enter your bio"
-                      required
                     />
+                    {errors.bio && (
+                      <p className="mt-1 text-red-500 text-xs">{errors.bio}</p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -313,10 +376,16 @@ export default function SignUp() {
                       name="videoLink1"
                       value={formData.videoLink1}
                       onChange={handleChange}
-                      className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                      className={`w-full rounded-sm border ${
+                        errors.videoLink1 ? "border-red-500" : "border-gray-300"
+                      } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
                       placeholder="Enter video link"
-                      required
                     />
+                    {errors.videoLink1 && (
+                      <p className="mt-1 text-red-500 text-xs">
+                        {errors.videoLink1}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -356,7 +425,9 @@ export default function SignUp() {
               )}
             </div>
           </div>
-          {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
+          {errors && (
+            <div className="mt-4 text-red-500 text-sm">{errors.general}</div>
+          )}
           <button
             type="submit"
             className="mt-6 w-full bg-[#CE1446] text-white py-2 px-4 rounded-sm text-sm sm:text-base font-medium tracking-wide hover:bg-[#B01238] transition-colors duration-200"

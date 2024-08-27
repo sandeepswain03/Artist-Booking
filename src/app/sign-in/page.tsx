@@ -8,7 +8,7 @@ import { Eye, EyeOff } from "@/components/svgIcons";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const [passwordShow, setPasswordShow] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -20,7 +20,27 @@ export default function SignIn() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setErrors({ email: "", password: "" });
+
+    let hasErrors = false;
+
+    if (!email) {
+      setErrors((prev) => ({ ...prev, email: "Email is required" }));
+      hasErrors = true;
+    } else if (!isValidEmail(email)) {
+      setErrors((prev) => ({
+        ...prev,
+        email: "Please enter a valid email address",
+      }));
+      hasErrors = true;
+    }
+
+    if (!password) {
+      setErrors((prev) => ({ ...prev, password: "Password is required" }));
+      hasErrors = true;
+    }
+
+    if (hasErrors) return;
 
     try {
       const result = await signIn("credentials", {
@@ -28,26 +48,27 @@ export default function SignIn() {
         identifier: email,
         password,
       });
-      
-      // is ValidEmail 
-      if (!isValidEmail(email)) {
-        setError("Please enter a valid email address");
-        return;
-      }
-
       if (result?.error) {
-        setError(
-          result.error === "CredentialsSignin"
-            ? "Incorrect email or password"
-            : result.error
-        );
+        setErrors((prev) => ({
+          ...prev,
+          password:
+            result.error === "CredentialsSignin"
+              ? "Incorrect email or password"
+              : result.error || "",
+        }));
       } else if (result?.url) {
         router.replace("/");
       }
-    } catch (error:any) {
-     
-      console.error(error.response?.data.message || "Error during sign-up:", error); 
-      setError(error.response?.data.message || "An error occurred during sign-up");
+    } catch (error: any) {
+      console.error(
+        error.response?.data.message || "Error during sign-in:",
+        error
+      );
+      setErrors((prev) => ({
+        ...prev,
+        password:
+          error.response?.data.message || "An error occurred during sign-in",
+      }));
     }
   };
 
@@ -76,10 +97,14 @@ export default function SignIn() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+              className={`w-full rounded-sm border ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
               placeholder="Enter Email Address"
-              required
             />
+            {errors.email && (
+              <p className="mt-1 text-red-500 text-xs">{errors.email}</p>
+            )}
           </div>
           <div className="relative">
             <label
@@ -93,9 +118,10 @@ export default function SignIn() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+              className={`w-full rounded-sm border ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
               placeholder="Enter Password"
-              required
             />
             <button
               type="button"
@@ -104,6 +130,9 @@ export default function SignIn() {
             >
               {passwordShow ? <Eye /> : <EyeOff />}
             </button>
+            {errors.password && (
+              <p className="mt-1 text-red-500 text-xs">{errors.password}</p>
+            )}
           </div>
           <Link
             href="/forget-password"
@@ -112,7 +141,6 @@ export default function SignIn() {
             Forgot Password?
           </Link>
         </div>
-        {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
         <button
           type="submit"
           className="mt-6 w-full bg-[#CE1446] text-white py-2 px-4 rounded-sm text-sm sm:text-base font-medium tracking-wide hover:bg-[#B01238] transition-colors duration-300"
