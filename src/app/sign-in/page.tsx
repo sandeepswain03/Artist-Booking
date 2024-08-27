@@ -11,25 +11,28 @@ export default function SignIn() {
   const [error, setError] = useState("");
   const [passwordShow, setPasswordShow] = useState(false);
   const router = useRouter();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    const result = await signIn("credentials", {
-      redirect: false,
-      identifier: email,
-      password,
-    });
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        identifier: email,
+        password,
+      });
 
-    if (result?.error) {
-      setError(
-        result.error === "CredentialsSignin"
-          ? "Incorrect email or password"
-          : result.error
-      );
-    } else if (result?.url) {
-      router.replace("/");
+      if (result?.error) {
+        setError(
+          result.error === "CredentialsSignin"
+            ? "Incorrect email or password"
+            : result.error
+        );
+      } else if (result?.url) {
+        router.replace("/");
+      }
+    } catch (error) {
+      setError("An unexpected error occurred. Please try again.");
     }
   };
 
