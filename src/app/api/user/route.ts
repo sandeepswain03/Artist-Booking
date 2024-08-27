@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     }
     const avatarLocalPath = await handleFileUpload(
       data.getAll("avatar"),
-      "./public/uploads"
+      "./src/uploads" 
     );
 
     let avatarImage: any;

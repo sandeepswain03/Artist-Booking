@@ -9,12 +9,12 @@ cloudinary.config({
 });
 
 const getUploadPath = (localFilePath: string) => {
-  const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+  const uploadsDir = path.join(process.cwd(), 'src', 'uploads');
   return path.join(uploadsDir, path.basename(localFilePath));
 };
 
 const uploadOnCloudinary = async (localFilePath: string) => {
-  if (!localFilePath) return null;
+  if (!localFilePath) return null;  
 
   const normalizedPath = getUploadPath(localFilePath);
 
