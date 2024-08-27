@@ -12,44 +12,28 @@ export default function SignIn() {
   const [passwordShow, setPasswordShow] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
-<<<<<<< HEAD
-=======
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.replace("/");
-    }
-  }, [status, router]);
 
   const isValidEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
->>>>>>> 3d783c22eaa4597634de17d97206d43be6b4e380
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-<<<<<<< HEAD
     try {
       const result = await signIn("credentials", {
         redirect: false,
         identifier: email,
         password,
       });
-=======
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address");
-      return;
-    }
-
-    const result = await signIn("credentials", {
-      redirect: false,
-      identifier: email,
-      password,
-    });
->>>>>>> 3d783c22eaa4597634de17d97206d43be6b4e380
+      
+      // is ValidEmail 
+      if (!isValidEmail(email)) {
+        setError("Please enter a valid email address");
+        return;
+      }
 
       if (result?.error) {
         setError(
