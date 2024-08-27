@@ -68,14 +68,10 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const avatarLocalPath = await handleFileUpload(
-      data.getAll("avatar"),
-      "./src/uploads" 
-    );
 
     let avatarImage: any;
-    if (Array.isArray(avatarLocalPath) && avatarLocalPath.length > 0) {
-      avatarImage = await uploadOnCloudinary(avatarLocalPath[0]);
+    if (avatarFile) {
+      avatarImage = await uploadOnCloudinary(avatarFile);
     }
 
     if (!avatarImage) {
@@ -174,13 +170,9 @@ export async function PUT(request: Request) {
     // Handle avatar update
     const avatarFile = data.get("avatar") as File | null;
     if (avatarFile) {
-      const avatarLocalPath = await handleFileUpload(
-        data.getAll("avatar"),
-        "./public/uploads"
-      );
-
-      if (Array.isArray(avatarLocalPath) && avatarLocalPath.length > 0) {
-        const newAvatarImage: any = await uploadOnCloudinary(avatarLocalPath[0]);
+  
+      if (avatarFile) {
+        const newAvatarImage: any = await uploadOnCloudinary(avatarFile);
         if (newAvatarImage) {
           // Delete old avatar from Cloudinary
           if (user.avatar.public_id) {
