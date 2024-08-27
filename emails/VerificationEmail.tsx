@@ -34,7 +34,7 @@ export default function VerificationEmail({
           fontStyle="normal"
         />
       </Head>
-      <Preview>Here&apos;s your verification Link: {otp}</Preview>
+      <Preview>Click Here to reset the password</Preview>
       <Section>
         <Row>
           <Heading as="h2">Hello {username},</Heading>
@@ -44,9 +44,6 @@ export default function VerificationEmail({
             Thank you for registering. Please use the following Link to change
             your Password:
           </Text>
-        </Row>
-        <Row>
-          <Text>{otp}</Text>
         </Row>
         <Row>
           <Button
@@ -59,6 +56,9 @@ export default function VerificationEmail({
           >
             Reset Password
           </Button>
+        </Row>
+        <Row>
+          <Text>{otp}</Text>
         </Row>
         <Row>
           <Text>

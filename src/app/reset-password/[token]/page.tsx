@@ -23,6 +23,7 @@ export default function ResetPassword({
   const [user, setUser] = useState<User | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(true);
   const router = useRouter();
   const { status } = useSession();
   const { token } = params;
@@ -40,6 +41,8 @@ export default function ResetPassword({
       } catch (error) {
         console.error("Error verifying token:", error);
         setError("An error occurred while verifying the token");
+      } finally {
+        setIsVerifying(false);
       }
     };
     verifyToken();
@@ -83,10 +86,13 @@ export default function ResetPassword({
 
       if (response.data.success) {
         setSuccessMessage(
-          "Password reset successfully. You can now log in with your new password."
+          "Password reset successfully. Redirecting to sign in page..."
         );
         setPassword("");
         setConfirmPassword("");
+        setTimeout(() => {
+          router.push("/sign-in");
+        }, 3000);
       } else {
         setError(response.data.message || "Failed to reset password");
       }
@@ -97,6 +103,17 @@ export default function ResetPassword({
       setIsLoading(false);
     }
   };
+
+  if (isVerifying) {
+    return (
+      <div className="flex justify-center items-center w-full min-h-screen p-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#CE1446] mx-auto mb-4"></div>
+          <p className="text-gray-600">Verifying token...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!verified) {
     return (
