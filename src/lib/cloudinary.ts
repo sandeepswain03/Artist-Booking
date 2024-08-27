@@ -1,6 +1,4 @@
 import { v2 as cloudinary } from 'cloudinary';
-import fs from 'fs';
-import path from 'path';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -8,24 +6,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const getUploadPath = (localFilePath: string) => {
-  const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-  return path.join(uploadsDir, path.basename(localFilePath));
-};
-
-const uploadOnCloudinary = async (localFilePath: string) => {
-  if (!localFilePath) return null;
-
-  const normalizedPath = getUploadPath(localFilePath);
-
+const uploadOnCloudinary = async (image: any) => {
   try {
-    const res = await cloudinary.uploader.upload(normalizedPath, {
+    const res = await cloudinary.uploader.upload(image, {
       resource_type: 'auto',
     });
-    fs.unlinkSync(normalizedPath);
     return res;
   } catch (error) {
-    fs.unlinkSync(normalizedPath);
     return error;
   }
 };
