@@ -1,5 +1,5 @@
 import { Schema, model, models, Model, Document } from "mongoose";
-
+//User 
 export interface IUser extends Document {
   username: string;
   email: string;
