@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { FaFacebook, FaInstagram, FaTwitter, FaYoutube, FaTiktok } from "react-icons/fa";
 
 interface Artist {
   _id: string;
@@ -11,7 +14,12 @@ interface Artist {
   videoLink1: string;
   videoLink2?: string;
   videoLink3?: string;
-  avatar: { url: string; public_id: string };
+  avatar: { url: string; public_id: string }[];
+  socialLink1?: string;
+  socialLink2?: string;
+  socialLink3?: string;
+  socialLink4?: string;
+  socialLink5?: string;
 }
 
 export default function ArtistDetailsPage({
@@ -120,12 +128,18 @@ export default function ArtistDetailsPage({
         <div className="container mx-auto px-4">
           <div className="bg-white rounded-sm shadow-xl overflow-hidden">
             <div className="md:flex">
-              <div className="md:w-1/3 relative overflow-hidden">
-                <img
-                  src={artist.avatar.url}
-                  alt={artist.username}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                />
+              <div className="md:w-1/3 relative overflow-hidden h-full">
+                <Carousel showThumbs={false} infiniteLoop={true} autoPlay={true} showArrows={false} showStatus={false} interval={3000} className="h-full">
+                  {artist.avatar.map((image, index) => (
+                    <div key={index} className="h-full">
+                      <img
+                        src={image.url}
+                        alt={`${artist.username} - Image ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </Carousel>
               </div>
               <div className="md:w-2/3 p-8">
                 <h1 className="text-4xl font-bold text-gray-800 mb-4">
@@ -134,6 +148,33 @@ export default function ArtistDetailsPage({
                 <p className="text-gray-600 mb-6 leading-relaxed hover:text-gray-800 transition-colors duration-300 text-justify">
                   {artist.bio}
                 </p>
+                <div className="flex space-x-4 mb-6">
+                  {artist.socialLink4 && (
+                    <Link href={artist.socialLink4} target="_blank" rel="noopener noreferrer">
+                      <FaFacebook className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
+                    </Link>
+                  )}
+                  {artist.socialLink1 && (
+                    <Link href={artist.socialLink1} target="_blank" rel="noopener noreferrer">
+                      <FaInstagram className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
+                    </Link>
+                  )}
+                  {artist.socialLink2 && (
+                    <Link href={artist.socialLink2} target="_blank" rel="noopener noreferrer">
+                      <FaTwitter className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
+                    </Link>
+                  )}
+                  {artist.socialLink3 && (
+                    <Link href={artist.socialLink3} target="_blank" rel="noopener noreferrer">
+                      <FaYoutube className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
+                    </Link>
+                  )}
+                  {artist.socialLink5 && (
+                    <Link href={artist.socialLink5} target="_blank" rel="noopener noreferrer">
+                      <FaTiktok className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
+                    </Link>
+                  )}
+                </div>
                 <p className="text-black font-bold mb-6 leading-relaxed hover:text-gray-800 transition-colors duration-300">
                   Some Previous Performances of {artist.username}
                 </p>

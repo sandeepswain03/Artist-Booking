@@ -7,14 +7,19 @@ declare module "next-auth" {
       _id: string;
       username: string;
       role: string;
-      avatar: {
+      avatar: Array<{
         public_id: string;
         url: string;
-      }
+      }>;
       videoLink1: string;
       videoLink2?: string;
       videoLink3?: string;
       bio: string;
+      socialLink1?: string;
+      socialLink2?: string;
+      socialLink3?: string;
+      socialLink4?: string;
+      socialLink5?: string;
     } & DefaultSession["user"];
   }
 
@@ -22,14 +27,19 @@ declare module "next-auth" {
     _id: string;
     username: string;
     role: string;
-    avatar: {
+    avatar: Array<{
       public_id: string;
       url: string;
-    }
+    }>;
     videoLink1: string;
     videoLink2?: string;
     videoLink3?: string;
     bio: string;
+    socialLink1?: string;
+    socialLink2?: string;
+    socialLink3?: string;
+    socialLink4?: string;
+    socialLink5?: string;
   }
 }
 
@@ -38,13 +48,18 @@ declare module "next-auth/jwt" {
     _id: string;
     username: string;
     role: string;
-    avatar: {
+    avatar: Array<{
       public_id: string;
       url: string;
-    }
+    }>;
     videoLink1: string;
     videoLink2?: string;
     videoLink3?: string;
     bio: string;
+    socialLink1?: string;
+    socialLink2?: string;
+    socialLink3?: string;
+    socialLink4?: string;
+    socialLink5?: string;
   }
 }

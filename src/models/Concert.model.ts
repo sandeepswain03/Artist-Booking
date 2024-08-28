@@ -28,18 +28,20 @@ const ConcertSchema: Schema<IConcert> = new Schema({
   title: {
     type: String,
     required: [true, "Title is required"],
-    trim: true
+    trim: true,
   },
-  concertImages: [{
-    public_id: {
-      type: String,
-      required: true,
+  concertImages: [
+    {
+      public_id: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
     },
-    url: {
-      type: String,
-      required: true,
-    },
-  }],
+  ],
   date: {
     type: Date,
     required: [true, "Date is required"],

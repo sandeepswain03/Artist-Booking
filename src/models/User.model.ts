@@ -1,5 +1,5 @@
 import { Schema, model, models, Model, Document } from "mongoose";
-//User 
+//User
 export interface IUser extends Document {
   username: string;
   email: string;
@@ -7,13 +7,18 @@ export interface IUser extends Document {
   avatar: {
     public_id: string;
     url: string;
-  };
-  concerts: Schema.Types.ObjectId[]; 
-  enquiry: Schema.Types.ObjectId[];   
+  }[];
+  concerts: Schema.Types.ObjectId[];
+  enquiry: Schema.Types.ObjectId[];
   role: "user" | "artist";
   videoLink1?: string;
   videoLink2?: string;
-  videoLink3?:string
+  videoLink3?: string;
+  socialLink1?: string;
+  socialLink2?: string;
+  socialLink3?: string;
+  socialLink4?: string;
+  socialLink5?: string;
   bio: string;
   resetToken: string | undefined;
   resetTokenExpires: Date | undefined;
@@ -36,16 +41,18 @@ const UserSchema: Schema<IUser> = new Schema({
     type: String,
     required: [true, "Password is required"],
   },
-  avatar: {
-    public_id: {
-      type: String,
-      required: true,
+  avatar: [
+    {
+      public_id: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
     },
-    url: {
-      type: String,
-      required: true,
-    },
-  },
+  ],
   role: {
     type: String,
     enum: ["user", "artist"],
@@ -58,6 +65,21 @@ const UserSchema: Schema<IUser> = new Schema({
     type: String,
   },
   videoLink3: {
+    type: String,
+  },
+  socialLink1: {
+    type: String,
+  },
+  socialLink2: {
+    type: String,
+  },
+  socialLink3: {
+    type: String,
+  },
+  socialLink4: {
+    type: String,
+  },
+  socialLink5: {
     type: String,
   },
   bio: {

@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SideArrow, Star } from "@/components/svgIcons";
+import { useSession } from "next-auth/react";
 
 const MagicBanner = () => {
+  const { data: session } = useSession();
+  const user = session?.user;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isNext, setIsNext] = useState(false);
   const [isPrev, setIsPrev] = useState(false);
@@ -115,14 +118,26 @@ const MagicBanner = () => {
                     events for every occasion, guaranteeing a memorable
                     experience for all guests.
                   </p>
-                  <Link href="/concerts">
-                    <button
-                      type="button"
-                      className="mt-14 text-white bg-gradient-to-r from-rose-700 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 dark:focus:ring-pink-800 font-medium rounded-sm text-lg px-7 py-2 text-center mb-2"
-                    >
-                      See More
-                    </button>
-                  </Link>
+                  <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                    <Link href="/concerts">
+                      <button
+                        type="button"
+                        className="text-white bg-gradient-to-r from-rose-700 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 dark:focus:ring-pink-800 font-medium rounded-sm text-lg px-7 py-2 text-center transition-all duration-300 transform hover:scale-105"
+                      >
+                        Explore Events
+                      </button>
+                    </Link>
+                    {user?.role === "artist" && (
+                      <Link href="/profile/add_concert">
+                        <button
+                          type="button"
+                          className="text-white bg-gradient-to-r from-purple-700 to-indigo-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 font-medium rounded-sm text-lg px-7 py-2 text-center transition-all duration-300 transform hover:scale-105"
+                        >
+                          Create Concert
+                        </button>
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -327,7 +342,9 @@ const MagicBanner = () => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-gray-600 italic">&ldquo;{testimonial.text}&rdquo;</p>
+                  <p className="text-gray-600 italic">
+                    &ldquo;{testimonial.text}&rdquo;
+                  </p>
                 </div>
               </blockquote>
             </div>

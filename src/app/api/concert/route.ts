@@ -1,7 +1,6 @@
 import ConcertModel, { IConcert } from "@/models/Concert.model";
 import dbConnect from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
-import { handleFileUpload } from "@/lib/fileUpload";
 import { uploadOnCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 import { ApiError } from "next/dist/server/api-utils";
 import { getServerSession } from "next-auth";
