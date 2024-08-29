@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube, FaTiktok } from "react-icons/fa";
+import Rating from "react-rating";
 
 interface Artist {
   _id: string;
@@ -20,6 +21,10 @@ interface Artist {
   socialLink3?: string;
   socialLink4?: string;
   socialLink5?: string;
+  rating: {
+    average: number;
+    count: number;
+  };
 }
 
 export default function ArtistDetailsPage({
@@ -46,6 +51,7 @@ export default function ArtistDetailsPage({
   const { data: session } = useSession();
   const user = session?.user;
   const [isLoading, setIsLoading] = useState(true);
+  const [userRating, setUserRating] = useState(0);
 
   useEffect(() => {
     const fetchArtist = async () => {
@@ -110,6 +116,24 @@ export default function ArtistDetailsPage({
     }
   };
 
+  const handleRating = async (value: number) => {
+    setUserRating(value);
+    try {
+      const response = await axios.patch(`/api/artist`, {
+        artistId: params.id,
+        rating: value,
+      });
+      if (response.data.success) {
+        setArtist(prevArtist => ({
+          ...prevArtist!,
+          rating: response.data.data
+        }));
+      }
+    } catch (error) {
+      console.error("Error updating rating:", error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -128,6 +152,7 @@ export default function ArtistDetailsPage({
         <div className="container mx-auto px-4">
           <div className="bg-white rounded-sm shadow-xl overflow-hidden">
             <div className="md:flex">
+              {/* Artist Images */}
               <div className="md:w-1/3 relative overflow-hidden h-full">
                 <Carousel showThumbs={false} infiniteLoop={true} autoPlay={true} showArrows={false} showStatus={false} interval={3000} className="h-full">
                   {artist.avatar.map((image, index) => (
@@ -141,10 +166,23 @@ export default function ArtistDetailsPage({
                   ))}
                 </Carousel>
               </div>
+              {/* Artist Details */}
               <div className="md:w-2/3 p-8">
                 <h1 className="text-4xl font-bold text-gray-800 mb-4">
                   {artist.username}
                 </h1>
+                {/* artist Rating */}
+                <div className="mb-4">
+                  <Rating
+                    initialRating={artist.rating.average}
+                    emptySymbol={<span className="text-gray-300">★</span>}
+                    fullSymbol={<span className="text-yellow-400">★</span>}
+                    readonly={true}
+                  />
+                  <span className="ml-2 text-sm text-gray-600">
+                    ({artist.rating.count} {artist.rating.count === 1 ? 'rating' : 'ratings'})
+                  </span>
+                </div>
                 <p className="text-gray-600 mb-6 leading-relaxed hover:text-gray-800 transition-colors duration-300 text-justify">
                   {artist.bio}
                 </p>
@@ -215,7 +253,31 @@ export default function ArtistDetailsPage({
           </div>
         </div>
       </section>
-      {user?._id! != params.id && (
+      {/*Give Artist Rating */}
+      {user?._id != params.id && (
+        <section className="py-10">
+          <div className="container mx-auto px-4">
+            <div className="bg-white rounded-sm shadow-xl p-6 max-w-sm mx-auto">
+              <h2 className="text-xl font-semibold mb-4">Rate this Artist</h2>
+              <div className="flex items-center">
+                <input
+                  type="number"
+                  min="1"
+                  max="5"
+                  step="1"
+                  className="w-16 p-2 border rounded-sm mr-2"
+                  placeholder="1-5"
+                />
+                <button className="bg-[#CE1446] text-white py-2 px-4 rounded-sm hover:bg-[#A01234] transition duration-300">
+                  Submit Rating
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+      {/* Inquiry Form */}
+      {user?._id != params.id && (
         <div className="flex justify-center items-center w-full min-h-screen p-4">
           <form onSubmit={handleSubmit} className="w-full max-w-4xl">
             <div className="bg-white px-6 sm:px-10 py-8 rounded-sm shadow-md w-full">
