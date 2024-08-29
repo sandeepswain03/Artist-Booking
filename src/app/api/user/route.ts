@@ -159,7 +159,6 @@ export async function PUT(request: Request) {
 
   try {
     const data = await request.formData();
-    console.log(data);
 
     const userId = data.get("userId") as string;
 
@@ -190,7 +189,11 @@ export async function PUT(request: Request) {
     const socialLink3 = data.get("socialLink3") as string;
     const socialLink4 = data.get("socialLink4") as string;
     const socialLink5 = data.get("socialLink5") as string;
-    const userImages = data.getAll("avatar") as File[];
+    console.log(data);
+    
+    const avatar1 = data.get("avatar0") as File;
+    const avatar2 = data.get("avatar1") as File;
+    const avatar3 = data.get("avatar2") as File;
 
     // Update user fields
     if (username) user.username = username;
@@ -205,40 +208,64 @@ export async function PUT(request: Request) {
     if (socialLink4) user.socialLink4 = socialLink4;
     if (socialLink5) user.socialLink5 = socialLink5;
 
-
-    // Get Images
-    if (!userImages || userImages.length === 0) {
-      return NextResponse.json(
-        { success: false, message: "User Image not found" },
-        { status: 404 }
-      );
-    }
-    if (userImages) {
-      // Upload Images to Cloudinary directly
-      let uploadedImages = [];
-      for (const userImage of userImages) {
-        const uploadedImage: any = await uploadOnCloudinary(userImage);
-        if (uploadedImage) {
-          uploadedImages.push({
-            public_id: uploadedImage.public_id,
-            url: uploadedImage.url,
-          });
+    if (avatar1) {
+      const uploadedImage: any = await uploadOnCloudinary(avatar1);
+      
+      // Update user avatar with the uploaded image
+      if (uploadedImage) {
+        const newAvatarImage = {
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.url,
+        };
+    
+        if (user.avatar && user.avatar.length > 0) {
+          // Replace the first avatar if it exists          
+          user.avatar[0] =  newAvatarImage;
+        } else {
+          // Add the new avatar if there are no existing avatars
+          user.avatar = [newAvatarImage];
         }
       }
-
-      // Delete old avatar from Cloudinary
-      if (user.avatar.length > 0 && user.avatar[0].public_id) {
-        await deleteFromCloudinary(user.avatar[0].public_id);
+    } 
+    
+    if (avatar2) {
+      const uploadedImage: any = await uploadOnCloudinary(avatar2);
+      
+      if (uploadedImage) {
+        const newAvatarImage = {
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.url,
+        };
+    
+        if (user.avatar && user.avatar.length > 1) {
+          // Replace the second avatar if it exists
+          user.avatar[1] =  newAvatarImage 
+        } else if (user.avatar) {
+          // Add the new avatar as the second one
+          user.avatar.push(newAvatarImage);
+        } 
       }
-
-      // Update user avatar with the first uploaded image
-      if (uploadedImages.length > 0) {
-        user.avatar = [{
-          public_id: uploadedImages[0].public_id,
-          url: uploadedImages[0].url,
-        }];
+    } 
+    
+    if (avatar3) {
+      const uploadedImage: any = await uploadOnCloudinary(avatar3);
+      
+      if (uploadedImage) {
+        const newAvatarImage = {
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.url,
+        };
+    
+        if (user.avatar && user.avatar.length > 2) {
+          user.avatar[2] = newAvatarImage;
+        } else if (user.avatar) {
+          // Add the new avatar as the third one
+          user.avatar.push(newAvatarImage);
+        } 
       }
-    }
+    } 
+
+
 
     await user.save();
 

@@ -91,7 +91,7 @@ export default function AccountSettings() {
       data.append("socialLink5", formData.socialLink5);
       formData.avatars.forEach((avatar, index) => {
         if (avatar.file) {
-          data.append(`avatar${index + 1}`, avatar.file);
+          data.append(`avatar${index}`, avatar.file, avatar.file.name);
         }
       });
 
