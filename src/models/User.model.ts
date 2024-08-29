@@ -22,6 +22,14 @@ export interface IUser extends Document {
   bio: string;
   resetToken: string | undefined;
   resetTokenExpires: Date | undefined;
+  rating?: {
+    average: number;
+    count: number;
+    ratings: {
+      userId: Schema.Types.ObjectId;
+      rating: number;
+    }[];
+  };
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -106,6 +114,32 @@ const UserSchema: Schema<IUser> = new Schema({
     type: Date,
     required: false,
   },
+  rating: {
+    average: {
+      type: Number,
+      default: 0,
+    },
+    count: {
+      type: Number,
+      default: 0,
+    },
+    ratings: [
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        rating: {
+          type: Number,
+          required: true,
+          min: 1,
+          max: 5,
+        },
+      },
+    ],
+  },
+
 });
 
 const UserModel =

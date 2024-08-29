@@ -17,6 +17,7 @@ export interface IConcert extends Document {
     public_id: string;
     url: string;
   }[];
+  
 }
 
 const ConcertSchema: Schema<IConcert> = new Schema({

@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { isValidObjectId } from "mongoose";
 import UserModel from "@/models/User.model";
+import { Schema } from "mongoose";
 
 export async function POST(request: Request) {
   await dbConnect();
