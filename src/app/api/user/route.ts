@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       if (!bio) errors.bio = "Bio is required for artists";
       if (!videoLink1) errors.videoLink1 = "Video Link 1 is required for artists";
     }
-    
+
     const avatarFiles = [];
     for (let i = 1; i <= 3; i++) {
       const avatarFile = data.get(`avatar${i}`) as File;
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         avatarFiles.push(avatarFile);
       }
     }
-    
+
     if (avatarFiles.length === 0) {
       errors.avatar = "At least one avatar image is required";
     }
@@ -160,7 +160,7 @@ export async function PUT(request: Request) {
   try {
     const data = await request.formData();
     console.log(data);
-    
+
     const userId = data.get("userId") as string;
 
     // Check if userId is a valid MongoDB ObjectId
@@ -190,6 +190,7 @@ export async function PUT(request: Request) {
     const socialLink3 = data.get("socialLink3") as string;
     const socialLink4 = data.get("socialLink4") as string;
     const socialLink5 = data.get("socialLink5") as string;
+    const userImages = data.getAll("avatar") as File[];
 
     // Update user fields
     if (username) user.username = username;
@@ -204,18 +205,37 @@ export async function PUT(request: Request) {
     if (socialLink4) user.socialLink4 = socialLink4;
     if (socialLink5) user.socialLink5 = socialLink5;
 
-    // Handle avatar update
-    const avatarFile = data.get("avatar") as File | null;
-    if (avatarFile) {
-      const newAvatarImage: any = await uploadOnCloudinary(avatarFile);
-      if (newAvatarImage) {
-        // Delete old avatar from Cloudinary
-        if (user.avatar.length > 0 && user.avatar[0].public_id) {
-          await deleteFromCloudinary(user.avatar[0].public_id);
+
+    // Get Images
+    if (!userImages || userImages.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "User Image not found" },
+        { status: 404 }
+      );
+    }
+    if (userImages) {
+      // Upload Images to Cloudinary directly
+      let uploadedImages = [];
+      for (const userImage of userImages) {
+        const uploadedImage: any = await uploadOnCloudinary(userImage);
+        if (uploadedImage) {
+          uploadedImages.push({
+            public_id: uploadedImage.public_id,
+            url: uploadedImage.url,
+          });
         }
+      }
+
+      // Delete old avatar from Cloudinary
+      if (user.avatar.length > 0 && user.avatar[0].public_id) {
+        await deleteFromCloudinary(user.avatar[0].public_id);
+      }
+
+      // Update user avatar with the first uploaded image
+      if (uploadedImages.length > 0) {
         user.avatar = [{
-          public_id: newAvatarImage.public_id,
-          url: newAvatarImage.url,
+          public_id: uploadedImages[0].public_id,
+          url: uploadedImages[0].url,
         }];
       }
     }

@@ -179,6 +179,13 @@ export default function ArtistDetailsPage({
                     fullSymbol={<span className="text-yellow-400">★</span>}
                     readonly={true}
                   />
+
+                  <Rating
+                    initialRating={artist.rating.average}
+                    emptySymbol={<span className="text-gray-300">★</span>}
+                    fullSymbol={<span className="text-yellow-400">★</span>}
+                    onClick={(value) => alert(`You clicked on a rating of ${value} stars!`)}
+                  />
                   <span className="ml-2 text-sm text-gray-600">
                     ({artist.rating.count} {artist.rating.count === 1 ? 'rating' : 'ratings'})
                   </span>
