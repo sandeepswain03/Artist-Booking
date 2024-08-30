@@ -27,8 +27,12 @@ export default function ConcertsPage() {
       try {
         const response = await axios.get("/api/concert");
         if (response.data.success) {
-          setConcerts(response.data.data);
-          setFilteredConcerts(response.data.data);
+          const currentDate = new Date();
+          const upcomingConcerts = response.data.data.filter((concert: Concert) => {
+            return new Date(concert.date) >= currentDate;
+          });
+          setConcerts(upcomingConcerts);
+          setFilteredConcerts(upcomingConcerts);
         }
       } catch (error) {
         console.error("Error fetching concerts:", error);

@@ -26,7 +26,7 @@ export interface IUser extends Document {
     average: number;
     count: number;
     ratings: {
-      userId: Schema.Types.ObjectId;
+      userId: any;
       rating: number;
     }[];
   };

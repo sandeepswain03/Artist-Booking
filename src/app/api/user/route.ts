@@ -219,8 +219,12 @@ export async function PUT(request: Request) {
         };
     
         if (user.avatar && user.avatar.length > 0) {
-          // Replace the first avatar if it exists          
-          user.avatar[0] =  newAvatarImage;
+          // Delete the old avatar from Cloudinary
+          if (user.avatar[0].public_id) {
+            await deleteFromCloudinary(user.avatar[0].public_id);
+          }
+          // Replace the first avatar
+          user.avatar[0] = newAvatarImage;
         } else {
           // Add the new avatar if there are no existing avatars
           user.avatar = [newAvatarImage];
@@ -238,8 +242,12 @@ export async function PUT(request: Request) {
         };
     
         if (user.avatar && user.avatar.length > 1) {
-          // Replace the second avatar if it exists
-          user.avatar[1] =  newAvatarImage 
+          // Delete the old avatar from Cloudinary
+          if (user.avatar[1].public_id) {
+            await deleteFromCloudinary(user.avatar[1].public_id);
+          }
+          // Replace the second avatar
+          user.avatar[1] = newAvatarImage;
         } else if (user.avatar) {
           // Add the new avatar as the second one
           user.avatar.push(newAvatarImage);
@@ -257,6 +265,11 @@ export async function PUT(request: Request) {
         };
     
         if (user.avatar && user.avatar.length > 2) {
+          // Delete the old avatar from Cloudinary
+          if (user.avatar[2].public_id) {
+            await deleteFromCloudinary(user.avatar[2].public_id);
+          }
+          // Replace the third avatar
           user.avatar[2] = newAvatarImage;
         } else if (user.avatar) {
           // Add the new avatar as the third one
@@ -264,8 +277,6 @@ export async function PUT(request: Request) {
         } 
       }
     } 
-
-
 
     await user.save();
 

@@ -1,19 +1,16 @@
 import UserModel from "@/models/User.model";
 import dbConnect from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
-import { Schema } from "mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
+import mongoose, { Schema } from "mongoose";
 
 export async function GET(request: Request) {
   await dbConnect();
   try {
     const artists = await UserModel.find({ role: "artist" });
 
-    return NextResponse.json(
-      { success: true, data: artists },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true, data: artists }, { status: 200 });
   } catch (error) {
     console.error("Error fetching artists:", error);
     return NextResponse.json(
@@ -23,8 +20,7 @@ export async function GET(request: Request) {
   }
 }
 
-
-// Patch  Request 
+// error in user validation
 export async function PATCH(request: Request) {
   await dbConnect();
   try {
@@ -37,6 +33,7 @@ export async function PATCH(request: Request) {
     }
     const userId = session.user._id;
     const { artistId, rating } = await request.json();
+    console.log(artistId, userId, rating);
 
     if (!artistId || !userId || rating === undefined) {
       return NextResponse.json(
@@ -45,8 +42,29 @@ export async function PATCH(request: Request) {
       );
     }
 
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid user ID format" },
+        { status: 400 }
+      );
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(artistId)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid artist ID format" },
+        { status: 400 }
+      );
+    }
+
+    const validUserId: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(userId);
+    const validArtistId = new mongoose.Types.ObjectId(artistId);
+
     // Check if the artist (user with role "artist") exists
-    const artist = await UserModel.findOne({ _id: artistId, role: "artist" });
+    const artist = await UserModel.findOne({
+      _id: validArtistId,
+      role: "artist",
+    });
+
     if (!artist) {
       return NextResponse.json(
         { success: false, message: "Artist not found" },
@@ -65,7 +83,7 @@ export async function PATCH(request: Request) {
     } else {
       // Add the new rating
       artist.rating?.ratings.push({
-        userId: new Schema.Types.ObjectId(userId),
+        userId: validUserId,
         rating,
       });
       artist.rating!.count += 1; // Increment the rating count
@@ -93,4 +111,3 @@ export async function PATCH(request: Request) {
     );
   }
 }
-

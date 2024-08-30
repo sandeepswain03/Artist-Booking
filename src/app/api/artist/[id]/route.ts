@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    const artist = await UserModel.findById(artistId);
+    const artist = await UserModel.findById(artistId).populate('concerts');
 
     if (!artist) {
       return NextResponse.json({ success: false, message: "Artist not found" }, { status: 404 });
