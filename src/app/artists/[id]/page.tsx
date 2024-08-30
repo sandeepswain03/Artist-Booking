@@ -73,13 +73,14 @@ export default function ArtistDetailsPage({
   const [isLoading, setIsLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
   const [pastConcerts, setPastConcerts] = useState<Concert[]>([]);
+  const [nextConcerts, setNextConcerts] = useState<Concert[]>([]);
 
   useEffect(() => {
     const fetchArtist = async () => {
       setIsLoading(true);
       try {
-          const response = await axios.get(`/api/artist/artistid?id=${params.id}`);
-          if (response.data.success) {
+        const response = await axios.get(`/api/artist/artistid?id=${params.id}`);
+        if (response.data.success) {
           setArtist(response.data.data);
           const now = new Date();
           const pastConcerts = response.data.data.concerts
@@ -91,6 +92,14 @@ export default function ArtistDetailsPage({
             .slice(0, 3);
           setPastConcerts(pastConcerts);
 
+          const nextConcerts = response.data.data.concerts
+            .filter((concert: Concert) => new Date(concert.date) > now)
+            .sort(
+              (a: Concert, b: Concert) =>
+                new Date(a.date).getTime() - new Date(b.date).getTime()
+            )
+
+          setNextConcerts(nextConcerts)
           // Set user's rating if they've already rated
           if (user && response.data.data.rating.ratings) {
             const userRating = response.data.data.rating.ratings.find(
@@ -149,7 +158,7 @@ export default function ArtistDetailsPage({
     } catch (error: any) {
       setError(
         error.response?.data?.message ||
-          "An error occurred while submitting the inquiry."
+        "An error occurred while submitting the inquiry."
       );
     } finally {
       setLoading(false);
@@ -352,6 +361,68 @@ export default function ArtistDetailsPage({
           </div>
         </div>
       </section>
+
+
+      {/* Next Events Section */}
+      {nextConcerts.length > 0 && (
+        <section className="py-10 bg-gray-50 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+              Next Events of {artist.username}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {nextConcerts.map((concert) => {
+                const dateFormat = new Date(concert.date);
+                const options = {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                };
+                const formattedDate = dateFormat.toLocaleDateString(
+                  "en-US",
+                  options as Intl.DateTimeFormatOptions
+                );
+
+                return (
+                  <div
+                    key={concert._id}
+                    className="bg-white rounded-lg shadow-lg overflow-hidden flex"
+                  >
+                    <div className="flex flex-col justify-center items-center p-4 w-1/5">
+                      <div className="flex flex-col space-y-2 transform -rotate-90 origin-center">
+                        <p className="text-sm text-gray-600 font-medium flex items-center whitespace-nowrap">
+                          <FaCalendarAlt className="text-[#CE1446] mr-2 transform rotate-90" />
+                          {formattedDate}
+                        </p>
+                        <p className="text-sm text-gray-600 font-medium flex items-center whitespace-nowrap">
+                          <CiLocationOn className="text-[#CE1446] text-lg mr-1 transform rotate-90" />
+                          {concert.location}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="w-4/5 relative">
+                     <Link href={`/concerts/${concert._id}`}>
+                     <Image
+                        src={
+                          concert.concertImages[0]?.url || "/default-image.jpg"
+                        }
+                        alt={concert.title}
+                        layout="responsive"
+                        width={100}
+                        height={75}
+                        objectFit="cover"
+                      />
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+
       {/* Previous Events Section */}
       {pastConcerts.length > 0 && (
         <section className="py-10 bg-gray-50 px-4 sm:px-6 lg:px-8">

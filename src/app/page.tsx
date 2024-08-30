@@ -179,20 +179,23 @@ const MagicBanner = () => {
 
           <div>
             <h2 className="text-3xl font-bold text-gray-800 sm:text-4xl lg:text-5xl mb-4">
-              About <span className="text-rose-600">Event Booking</span> Company
+              About <span className="text-rose-600">Event Duniya</span>
             </h2>
             <p className="text-lg text-gray-600 mb-6">
-              The Artist Booking Company is your premier destination for
-              seamless event entertainment, with over 23 years of expertise. We
-              specialize in curating unforgettable experiences for a wide range
-              of events, including weddings, corporate gatherings, college
-              festivals, brand endorsements, celebrity appearances, and social
-              soirées.
+              Event Duniya is your ultimate platform for exceptional event
+              entertainment, backed by over 23 years of industry experience. We
+              specialize in delivering memorable experiences for a wide array of
+              events, including weddings, corporate functions, college
+              festivals, brand promotions, celebrity appearances, and social
+              gatherings.
             </p>
             <p className="text-lg text-gray-600 mb-8">
-              Headquartered in Mumbai, India, our global network of artists,
-              celebrities, and agents allows us to bring world-class talent to
-              your doorstep, no matter where you are.
+              With a strong presence in Mumbai, India, and connections across
+              the globe, our network of artists, celebrities, and agents ensures
+              that we deliver top-tier talent to your event, wherever it may be.
+              With Event Duniya, you’re not just hosting an event—you’re
+              creating an unforgettable experience that will be cherished for
+              years to come.
             </p>
 
             <Link
@@ -209,7 +212,7 @@ const MagicBanner = () => {
       {/* Our Services */}
       <div className="max-w-[85rem] px-4 py-6 sm:px-6 lg:px-8 lg:py-12 mx-auto">
         <h1 className="flex justify-center mb-10 font-bold text-rose-600 text-3xl md:text-4xl lg:text-5xl text-center">
-          Our Event Management Services
+          Artist Booking and Concerts
         </h1>
         <div className="grid lg:grid-cols-2 gap-10">
           {/* Artists Service */}
@@ -231,7 +234,8 @@ const MagicBanner = () => {
                   Artist Booking
                 </h3>
                 <p className="mt-3 text-gray-600">
-                  Find and book talented artists for your events.
+                  Discover and book talented artists for your events, or explore
+                  upcoming concerts.
                 </p>
                 <p className="mt-4 inline-flex items-center gap-x-1 text-sm text-rose-400 decoration-2 group-hover:underline group-focus:underline font-medium">
                   Explore Artists
@@ -257,13 +261,13 @@ const MagicBanner = () => {
               </div>
               <div className="grow">
                 <h3 className="text-xl font-semibold text-gray-800 group-hover:text-gray-600">
-                  Event Planning
+                  Concerts
                 </h3>
                 <p className="mt-3 text-gray-600">
-                  Comprehensive event planning and management services.
+                  Discover upcoming concerts and live performances.
                 </p>
                 <p className="mt-4 inline-flex items-center gap-x-1 text-sm text-rose-400 decoration-2 group-hover:underline group-focus:underline font-medium">
-                  Explore Events
+                  Explore Concerts
                   <SideArrow />
                 </p>
               </div>
@@ -277,26 +281,30 @@ const MagicBanner = () => {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 xl:gap-20 items-center">
           <div>
             <h2 className="text-3xl font-bold text-gray-800 sm:text-4xl lg:text-5xl mb-4">
-              About <span className="text-rose-600">Event Booking</span> Company
+              Why <span className="text-rose-600">Event Duniya</span> 
             </h2>
             <p className="text-lg text-gray-600 mb-6">
-              The Artist Booking Company is your premier destination for
-              seamless event entertainment, with over 23 years of expertise. We
-              specialize in curating unforgettable experiences for a wide range
-              of events, including weddings, corporate gatherings, college
-              festivals, brand endorsements, celebrity appearances, and social
-              soirées.
+              Event Duniya is your ultimate platform for exceptional event
+              entertainment, backed by over 23 years of industry experience. We
+              specialize in creating memorable experiences for a wide range of
+              events, including weddings, corporate functions, college
+              festivals, brand promotions, celebrity appearances, and social
+              gatherings.
             </p>
             <p className="text-lg text-gray-600 mb-8">
-              Headquartered in Mumbai, India, our global network of artists,
-              celebrities, and agents allows us to bring world-class talent to
-              your doorstep, no matter where you are.
+              With a strong presence in Mumbai, India, and connections across
+              the globe, our network of artists, celebrities, and agents ensures
+              that we deliver top-tier talent to your event, wherever it may be.
+              With Event Duniya, you’re not just hosting an event—you’re
+              creating an unforgettable experience that will be cherished for
+              years to come.
             </p>
 
             <Link
               href="/contact"
               className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-rose-600 rounded-md shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 transition-colors duration-200"
             >
+              {" "}
               Contact Us
               <SideArrow />
             </Link>
