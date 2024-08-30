@@ -18,7 +18,17 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    
+    const recipientEmail = 'paragvadgama123@gmail.com'; // Replace with your specific email
+    
+    const subject = encodeURIComponent(formData.subject);
+    const body = encodeURIComponent(`From: ${formData.email}\n\n${formData.message}`);
+    
+    const mailtoLink = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+    
+    window.location.href = mailtoLink;
+    
+    // Optional: Clear the form after submission
     setFormData({ email: "", subject: "", message: "" });
   };
 
@@ -31,7 +41,6 @@ export default function ContactPage() {
             We'd love to hear from you
           </p>
         </div>
-
         <div className="flex flex-col md:flex-row gap-8">
           <div className="md:w-1/2 space-y-6">
             {[
@@ -49,7 +58,6 @@ export default function ContactPage() {
               <AiOutlineArrowRight className="text-xl ml-2" />
             </div>
           </div>
-
           <form onSubmit={handleSubmit} className="md:w-1/2 space-y-6">
             {["email", "subject", "message"].map((field) => (
               <div key={field}>
