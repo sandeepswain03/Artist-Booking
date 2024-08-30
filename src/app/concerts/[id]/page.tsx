@@ -32,7 +32,7 @@ export default function ConcertDetailsPage({
   params: { id: string };
 }) {
   const [concert, setConcert] = useState<Concert | null>(null);
-
+  
   useEffect(() => {
     const fetchConcert = async () => {
       try {

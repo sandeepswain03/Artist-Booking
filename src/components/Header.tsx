@@ -35,7 +35,12 @@ function Header() {
             className="flex-none font-semibold text-xl text-black focus:outline-none focus:opacity-80"
             href="/"
           >
-            Logo
+            <img
+            src="/logo.png"
+            className="h-5 lg:h-7"
+            >
+            
+            </img>
           </Link>
           <button
             type="button"
