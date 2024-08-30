@@ -41,7 +41,9 @@ export async function middleware(req: NextRequest) {
 
     if (
       url.pathname.startsWith("/reset-password") ||
-      url.pathname.startsWith("/forget-password")
+      url.pathname.startsWith("/forget-password") ||
+      url.pathname.startsWith("/sign-up") ||
+      url.pathname.startsWith("/sign-in") 
     ) {
       return NextResponse.redirect(new URL("/", req.url));
     }

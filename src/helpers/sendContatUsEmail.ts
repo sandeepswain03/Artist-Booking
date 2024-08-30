@@ -1,6 +1,7 @@
+import { Resend } from "resend";
 import ContactUsEmail from "../../emails/ContactUsEmail";
-import { resend } from "../lib/resend";
 
+const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 export async function sendContactUsEmail(
   email: string,
   subject: string,
