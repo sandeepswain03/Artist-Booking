@@ -3,12 +3,13 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/User.model";
 import { isValidObjectId } from "mongoose";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: { artistid: string } }) {
   await dbConnect();
 
-  const artistId = params.id;
+  const { searchParams } = new URL(request.url);
+  const artistId = searchParams.get('id');
 
-  if (!isValidObjectId(artistId)) {
+  if (!artistId || !isValidObjectId(artistId)) {
     return NextResponse.json({ success: false, message: "Invalid artist ID" }, { status: 400 });
   }
 

@@ -78,8 +78,8 @@ export default function ArtistDetailsPage({
     const fetchArtist = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`/api/artist/${params.id}`);
-        if (response.data.success) {
+          const response = await axios.get(`/api/artist/artistid?id=${params.id}`);
+          if (response.data.success) {
           setArtist(response.data.data);
           const now = new Date();
           const pastConcerts = response.data.data.concerts

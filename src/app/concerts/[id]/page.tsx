@@ -36,7 +36,7 @@ export default function ConcertDetailsPage({
   useEffect(() => {
     const fetchConcert = async () => {
       try {
-        const response = await axios.get(`/api/concert/${params.id}`);
+        const response = await axios.get(`/api/concert/concertid?id=${params.id}`);
         if (response.data.success) {
           setConcert(response.data.data);
         }

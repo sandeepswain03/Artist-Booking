@@ -3,12 +3,13 @@ import dbConnect from "@/lib/dbConnect";
 import ConcertModel from "@/models/Concert.model";
 import { isValidObjectId } from "mongoose";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request) {
   await dbConnect();
 
-  const concertId = params.id;
+  const { searchParams } = new URL(request.url);
+  const concertId = searchParams.get('id');
 
-  if (!isValidObjectId(concertId)) {
+  if (!concertId || !isValidObjectId(concertId)) {
     return NextResponse.json({ success: false, message: "Invalid concert ID" }, { status: 400 });
   }
 
