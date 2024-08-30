@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import { sendContactUsEmail } from "../../helpers/sendContatUsEmail";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
+  const [submitStatus, setSubmitStatus] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -16,20 +18,26 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const recipientEmail = 'paragvadgama123@gmail.com'; // Replace with your specific email
-    
-    const subject = encodeURIComponent(formData.subject);
-    const body = encodeURIComponent(`From: ${formData.email}\n\n${formData.message}`);
-    
-    const mailtoLink = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
-    
-    window.location.href = mailtoLink;
-    
-    // Optional: Clear the form after submission
-    setFormData({ email: "", subject: "", message: "" });
+    try {
+      const result = await sendContactUsEmail(
+        formData.email,
+        formData.subject,
+        formData.message
+      );
+      
+      if (result.success) {
+        setSubmitStatus("Message sent successfully!");
+        setFormData({ email: "", subject: "", message: "" });
+      } else {
+        setSubmitStatus("Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setSubmitStatus("An error occurred. Please try again later.");
+    }
   };
 
   return (
@@ -98,6 +106,11 @@ export default function ContactPage() {
             >
               Send Message
             </button>
+            {submitStatus && (
+              <p className={`text-center ${submitStatus.includes("successfully") ? "text-green-600" : "text-red-600"}`}>
+                {submitStatus}
+              </p>
+            )}
           </form>
         </div>
       </div>

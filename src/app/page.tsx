@@ -22,45 +22,45 @@ const MagicBanner = () => {
   const testimonials = [
     {
       imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDJ8fG1hbnxlbnwwfHx8fDE2NzM3OTI1OTQ&ixlib=rb-1.2.1&q=80&w=400",
+      name: "John Doe",
+      text: "This platform has really transformed the way I approach my projects. The interface is intuitive, and the support team is always there when I need them.",
       rating: 5,
     },
     {
       imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
-      rating: 3,
-    },
-    {
-      imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDIxfHx3b21hbnxlbnwwfHx8fDE2NzM3OTI2MTc&ixlib=rb-1.2.1&q=80&w=400",
+      name: "Jane Smith",
+      text: "I love the flexibility this platform offers. I can customize everything to fit my needs perfectly. However, I think the mobile experience could be improved.",
       rating: 4,
     },
     {
       imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
+        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDIwfHxwZW9wbGV8ZW58MHx8fHwxNjczNzkyNjMw&ixlib=rb-1.2.1&q=80&w=400",
+      name: "Michael Johnson",
+      text: "The variety of features available is amazing. It’s helped me streamline my workflow and save a lot of time. Highly recommended!",
       rating: 5,
     },
     {
       imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
-      rating: 5,
-    },
-    {
-      imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
+        "https://images.unsplash.com/photo-1546456073-6712f79251bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDE2fHx3b21hbnxlbnwwfHx8fDE2NzM3OTI2MzI&ixlib=rb-1.2.1&q=80&w=400",
+      name: "Sarah Lee",
+      text: "Overall, a solid platform with great potential. I’m satisfied with the service, but I think there’s room for improvement in the documentation.",
       rating: 4,
+    },
+    {
+      imageSrc:
+        "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fG1hbnxlbnwwfHx8fDE2NzM3OTI2MzY&ixlib=rb-1.2.1&q=80&w=400",
+      name: "David Kim",
+      text: "Great experience! The platform is easy to use, and the results have exceeded my expectations. I would definitely recommend it to others.",
+      rating: 5,
+    },
+    {
+      imageSrc:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDJ8fG1hbnxlbnwwfHx8fDE2NzM3OTI2NDA&ixlib=rb-1.2.1&q=80&w=400",
+      name: "Emily Davis",
+      text: "I’ve been using this platform for a few months now, and it’s been fantastic. The customer support is top-notch, and they’re always willing to help.",
+      rating: 5,
     },
   ];
 
