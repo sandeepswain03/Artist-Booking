@@ -4,11 +4,12 @@ import axios from "axios";
 import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { CiCalendarDate } from "react-icons/ci";
+import { CiCalendarDate, CiLocationOn } from "react-icons/ci";
 import { VscLocation } from "react-icons/vsc";
 import { PiListDashesBold } from "react-icons/pi";
 import { HiOutlineSpeakerphone } from "react-icons/hi";
 import { MdOutlineEmail } from "react-icons/md";
+import { FaCalendarAlt } from "react-icons/fa";
 
 interface Concert {
   _id: string;
@@ -32,13 +33,27 @@ export default function ConcertDetailsPage({
   params: { id: string };
 }) {
   const [concert, setConcert] = useState<Concert | null>(null);
-
+  const [allConcerts, setAllConcerts] = useState<Concert[]>([]);
   useEffect(() => {
     const fetchConcert = async () => {
       try {
-        const response = await axios.get(`/api/concert/${params.id}`);
+        // Fetch the specific concert details
+        const response = await axios.get(
+          `/api/concert/concertid?id=${params.id}`
+        );
+        // Fetch all concerts
+        const response2 = await axios.get("/api/concert");
+
         if (response.data.success) {
           setConcert(response.data.data);
+          // Get the current date and time
+          const now = new Date();
+          // Filter out the concert with the same _id
+          const filteredConcerts = response2.data.data.filter(
+            (item: Concert) =>
+              item._id !== response.data.data._id && new Date(item.date) > now
+          );
+          setAllConcerts(filteredConcerts);
         }
       } catch (error) {
         console.error("Error fetching concert details:", error);
@@ -142,6 +157,67 @@ export default function ConcertDetailsPage({
           </p>
         </div>
       </div>
+
+      {/* All Concerts */}
+
+      {/* allConcerts */}
+
+      {/* Previous Events Section */}
+      {allConcerts.length > 0 && (
+        <section className="py-10 bg-gray-50 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+              All Events
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {allConcerts.map((concert) => {
+                const dateFormat = new Date(concert.date);
+                const options = {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                };
+                const formattedDate = dateFormat.toLocaleDateString(
+                  "en-US",
+                  options as Intl.DateTimeFormatOptions
+                );
+
+                return (
+                  <div
+                    key={concert._id}
+                    className="bg-white rounded-lg shadow-lg overflow-hidden flex"
+                  >
+                    <div className="flex flex-col justify-center items-center p-4 w-1/5">
+                      <div className="flex flex-col space-y-2 transform -rotate-90 origin-center">
+                        <p className="text-sm text-gray-600 font-medium flex items-center whitespace-nowrap">
+                          <FaCalendarAlt className="text-[#CE1446] mr-2 transform rotate-90" />
+                          {formattedDate}
+                        </p>
+                        <p className="text-sm text-gray-600 font-medium flex items-center whitespace-nowrap">
+                          <CiLocationOn className="text-[#CE1446] text-lg mr-1 transform rotate-90" />
+                          {concert.location}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="w-4/5 relative">
+                      <Image
+                        src={
+                          concert.concertImages[0]?.url || "/default-image.jpg"
+                        }
+                        alt={concert.title}
+                        layout="responsive"
+                        width={100}
+                        height={75}
+                        objectFit="cover"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

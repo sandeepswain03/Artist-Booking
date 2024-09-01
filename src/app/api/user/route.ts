@@ -2,12 +2,12 @@ import UserModel, { IUser } from "@/models/User.model";
 import dbConnect from "@/lib/dbConnect";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
-import { handleFileUpload } from "@/lib/fileUpload";
 import { uploadOnCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 import { ApiError } from "next/dist/server/api-utils";
 import { isValidObjectId } from "mongoose";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
+import { Schema } from "mongoose";
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -29,6 +29,11 @@ export async function POST(request: Request) {
     const videoLink1 = data.get("videolink1") as string;
     const videoLink2 = data.get("videolink2") as string;
     const videoLink3 = data.get("videolink3") as string;
+    const socialLink1 = data.get("socialLink1") as string;
+    const socialLink2 = data.get("socialLink2") as string;
+    const socialLink3 = data.get("socialLink3") as string;
+    const socialLink4 = data.get("socialLink4") as string;
+    const socialLink5 = data.get("socialLink5") as string;
 
     const errors: { [key: string]: string } = {};
 
@@ -40,10 +45,17 @@ export async function POST(request: Request) {
       if (!bio) errors.bio = "Bio is required for artists";
       if (!videoLink1) errors.videoLink1 = "Video Link 1 is required for artists";
     }
-    // Video Link 2 is not required, so we don't check for it
-    const avatarFile = data.get("avatar") as File | null;
-    if (!avatarFile) {
-      errors.avatar = "Avatar image is required";
+
+    const avatarFiles = [];
+    for (let i = 1; i <= 3; i++) {
+      const avatarFile = data.get(`avatar${i}`) as File;
+      if (avatarFile) {
+        avatarFiles.push(avatarFile);
+      }
+    }
+
+    if (avatarFiles.length === 0) {
+      errors.avatar = "At least one avatar image is required";
     }
 
     // Check if avatar image is a valid image
@@ -53,7 +65,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
 
     if (role !== "user" && role !== "artist") {
       return NextResponse.json(
@@ -69,14 +80,30 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+<<<<<<< HEAD
     
     let avatarImage: any;
     if (avatarFile) {
       avatarImage = await uploadOnCloudinary(avatarFile);
+=======
+
+    let avatarImages = [];
+    for (const avatarFile of avatarFiles) {
+      const uploadedImage: any = await uploadOnCloudinary(avatarFile);
+      if (uploadedImage) {
+        avatarImages.push({
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.url,
+        });
+      }
+>>>>>>> main
     }
 
-    if (!avatarImage) {
-      throw new ApiError(400, "Error while uploading avatar");
+    if (avatarImages.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "Error while uploading avatar images" },
+        { status: 400 }
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -85,15 +112,17 @@ export async function POST(request: Request) {
       username,
       email,
       password: hashedPassword,
-      avatar: {
-        public_id: avatarImage?.public_id ?? '',
-        url: avatarImage?.url ?? '',
-      },
+      avatar: avatarImages,
       role,
       bio,
       videoLink1,
       videoLink2,
       videoLink3,
+      socialLink1,
+      socialLink2,
+      socialLink3,
+      socialLink4,
+      socialLink5,
     });
 
     await newUser.save();
@@ -109,6 +138,11 @@ export async function POST(request: Request) {
       videoLink1: newUser.videoLink1,
       videoLink2: newUser.videoLink2,
       videoLink3: newUser.videoLink3,
+      socialLink1: newUser.socialLink1,
+      socialLink2: newUser.socialLink2,
+      socialLink3: newUser.socialLink3,
+      socialLink4: newUser.socialLink4,
+      socialLink5: newUser.socialLink5,
     };
 
     return NextResponse.json(
@@ -122,7 +156,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error registering user", error);
     return NextResponse.json(
-      { success: false, message: "Internal 1 Server Error" },
+      { success: false, message: "Internal Server Error" },
       { status: 500 }
     );
   }
@@ -133,8 +167,7 @@ export async function PUT(request: Request) {
 
   try {
     const data = await request.formData();
-    console.log(data);
-    
+
     const userId = data.get("userId") as string;
 
     // Check if userId is a valid MongoDB ObjectId
@@ -159,6 +192,16 @@ export async function PUT(request: Request) {
     const videoLink1 = data.get("videolink1") as string;
     const videoLink2 = data.get("videolink2") as string;
     const videoLink3 = data.get("videolink3") as string;
+    const socialLink1 = data.get("socialLink1") as string;
+    const socialLink2 = data.get("socialLink2") as string;
+    const socialLink3 = data.get("socialLink3") as string;
+    const socialLink4 = data.get("socialLink4") as string;
+    const socialLink5 = data.get("socialLink5") as string;
+    console.log(data);
+    
+    const avatar1 = data.get("avatar0") as File;
+    const avatar2 = data.get("avatar1") as File;
+    const avatar3 = data.get("avatar2") as File;
 
     // Update user fields
     if (username) user.username = username;
@@ -167,7 +210,13 @@ export async function PUT(request: Request) {
     if (videoLink1) user.videoLink1 = videoLink1;
     if (videoLink2) user.videoLink2 = videoLink2;
     if (videoLink3) user.videoLink3 = videoLink3;
+    if (socialLink1) user.socialLink1 = socialLink1;
+    if (socialLink2) user.socialLink2 = socialLink2;
+    if (socialLink3) user.socialLink3 = socialLink3;
+    if (socialLink4) user.socialLink4 = socialLink4;
+    if (socialLink5) user.socialLink5 = socialLink5;
 
+<<<<<<< HEAD
     // Handle avatar update
     const avatarFile = data.get("avatar") as File | null;
     if (avatarFile) {
@@ -177,14 +226,77 @@ export async function PUT(request: Request) {
           // Delete old avatar from Cloudinary
           if (user.avatar.public_id) {
             await deleteFromCloudinary(user.avatar.public_id);
+=======
+    if (avatar1) {
+      const uploadedImage: any = await uploadOnCloudinary(avatar1);
+      
+      // Update user avatar with the uploaded image
+      if (uploadedImage) {
+        const newAvatarImage = {
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.url,
+        };
+    
+        if (user.avatar && user.avatar.length > 0) {
+          // Delete the old avatar from Cloudinary
+          if (user.avatar[0].public_id) {
+            await deleteFromCloudinary(user.avatar[0].public_id);
+>>>>>>> main
           }
-          user.avatar = {
-            public_id: newAvatarImage.public_id,
-            url: newAvatarImage.url,
-          };
+          // Replace the first avatar
+          user.avatar[0] = newAvatarImage;
+        } else {
+          // Add the new avatar if there are no existing avatars
+          user.avatar = [newAvatarImage];
         }
       }
-    }
+    } 
+    
+    if (avatar2) {
+      const uploadedImage: any = await uploadOnCloudinary(avatar2);
+      
+      if (uploadedImage) {
+        const newAvatarImage = {
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.url,
+        };
+    
+        if (user.avatar && user.avatar.length > 1) {
+          // Delete the old avatar from Cloudinary
+          if (user.avatar[1].public_id) {
+            await deleteFromCloudinary(user.avatar[1].public_id);
+          }
+          // Replace the second avatar
+          user.avatar[1] = newAvatarImage;
+        } else if (user.avatar) {
+          // Add the new avatar as the second one
+          user.avatar.push(newAvatarImage);
+        } 
+      }
+    } 
+    
+    if (avatar3) {
+      const uploadedImage: any = await uploadOnCloudinary(avatar3);
+      
+      if (uploadedImage) {
+        const newAvatarImage = {
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.url,
+        };
+    
+        if (user.avatar && user.avatar.length > 2) {
+          // Delete the old avatar from Cloudinary
+          if (user.avatar[2].public_id) {
+            await deleteFromCloudinary(user.avatar[2].public_id);
+          }
+          // Replace the third avatar
+          user.avatar[2] = newAvatarImage;
+        } else if (user.avatar) {
+          // Add the new avatar as the third one
+          user.avatar.push(newAvatarImage);
+        } 
+      }
+    } 
 
     await user.save();
 
@@ -201,6 +313,11 @@ export async function PUT(request: Request) {
           videoLink1: user.videoLink1,
           videoLink2: user.videoLink2,
           videoLink3: user.videoLink3,
+          socialLink1: user.socialLink1,
+          socialLink2: user.socialLink2,
+          socialLink3: user.socialLink3,
+          socialLink4: user.socialLink4,
+          socialLink5: user.socialLink5,
         }
       },
       { status: 200 }
@@ -218,15 +335,15 @@ export async function DELETE(request: Request) {
   await dbConnect();
 
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-
-    if (!userId) {
+    const session = await getServerSession(authOptions);
+    if (!session) {
       return NextResponse.json(
-        { success: false, message: "User ID is required" },
-        { status: 400 }
+        { success: false, message: "Not authenticated" },
+        { status: 401 }
       );
     }
+
+    const userId = session.user._id;
 
     const user = await UserModel.findById(userId);
     if (!user) {
@@ -237,8 +354,8 @@ export async function DELETE(request: Request) {
     }
 
     // Delete avatar from Cloudinary
-    if (user.avatar.public_id) {
-      await deleteFromCloudinary(user.avatar.public_id);
+    if (user.avatar.length > 0 && user.avatar[0].public_id) {
+      await deleteFromCloudinary(user.avatar[0].public_id);
     }
 
     // Delete user from database

@@ -10,9 +10,9 @@ export const HamburgerIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <line x1="3" x2="21" y1="6" y2="6" />
     <line x1="3" x2="21" y1="12" y2="12" />
@@ -29,9 +29,9 @@ export const CloseIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M18 6 6 18" />
     <path d="m6 6 12 12" />
@@ -47,9 +47,9 @@ export const HomeIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
     <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -65,9 +65,9 @@ export const ArtistListIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="m3 10 2.5-2.5L3 5" />
     <path d="m3 19 2.5-2.5L3 14" />
@@ -86,9 +86,9 @@ export const DropdownIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="m6 9 6 6 6-6" />
   </svg>
@@ -103,9 +103,9 @@ export const ConcertIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
     <path d="M18 14h-8" />
@@ -123,9 +123,9 @@ export const SideArrow = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="m9 18 6-6-6-6" />
   </svg>
@@ -155,9 +155,9 @@ export const ContactUs = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
     <circle cx="12" cy="7" r="4" />
@@ -225,9 +225,9 @@ export const Upload = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
     <polyline points="17 8 12 3 7 8" />

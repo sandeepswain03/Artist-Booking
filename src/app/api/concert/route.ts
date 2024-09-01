@@ -1,13 +1,13 @@
 import ConcertModel, { IConcert } from "@/models/Concert.model";
 import dbConnect from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
-import { handleFileUpload } from "@/lib/fileUpload";
 import { uploadOnCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 import { ApiError } from "next/dist/server/api-utils";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { isValidObjectId } from "mongoose";
 import UserModel from "@/models/User.model";
+import { Schema } from "mongoose";
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -98,24 +98,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, errors }, { status: 400 });
     }
 
-    // Upload Images
-    const concertImagesLocalPaths = await handleFileUpload(
-      concertImages,
-      "./public/uploads"
-    );
-
-    // Upload Images to Cloudinary
+    // Upload Images to Cloudinary directly
     let uploadedImages = [];
-    if (Array.isArray(concertImagesLocalPaths)) {
-      for (const imagePath of concertImagesLocalPaths) {
-        const uploadedImage: any = await uploadOnCloudinary(imagePath);
-        if (uploadedImage) {
-          uploadedImages.push({
-            public_id: uploadedImage.public_id,
-            url: uploadedImage.url,
-          });
-          // console.log(uploadedImage);
-        }
+    for (const concertImage of concertImages) {
+      const uploadedImage: any = await uploadOnCloudinary(concertImage);
+      if (uploadedImage) {
+        uploadedImages.push({
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.url,
+        });
       }
     }
 

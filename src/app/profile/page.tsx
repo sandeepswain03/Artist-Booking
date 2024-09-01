@@ -10,13 +10,17 @@ export default function AccountSettings() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    avatarUrl: "/default-avatar.png",
+    avatars: [] as { url: string; file?: File }[],
     videoLink1: "",
     videoLink2: "",
     videoLink3: "",
     bio: "",
+    socialLink1: "",
+    socialLink2: "",
+    socialLink3: "",
+    socialLink4: "",
+    socialLink5: "",
   });
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -26,11 +30,18 @@ export default function AccountSettings() {
       setFormData({
         username: session.user.username || "",
         email: session.user.email || "",
-        avatarUrl: session.user.avatar.url || "/default-avatar.png",
+        avatars: (session.user.avatar || []).map((avatar) => ({
+          url: typeof avatar === 'string' ? avatar : avatar.url,
+        })),
         videoLink1: session.user.videoLink1 || "",
         videoLink2: session.user.videoLink2 || "",
         videoLink3: session.user.videoLink3 || "",
         bio: session.user.bio || "",
+        socialLink1: session.user.socialLink1 || "",
+        socialLink2: session.user.socialLink2 || "",
+        socialLink3: session.user.socialLink3 || "",
+        socialLink4: session.user.socialLink4 || "",
+        socialLink5: session.user.socialLink5 || "",
       });
     }
   }, [session]);
@@ -45,17 +56,18 @@ export default function AccountSettings() {
     }));
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setAvatarFile(file);
-      const imageUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({
-        ...prev,
-        avatarUrl: imageUrl,
-      }));
-    }
-  };
+  const handleAvatarChange =
+    (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        setFormData((prev) => {
+          const newAvatars = [...prev.avatars];
+          newAvatars[index] = { url: imageUrl, file };
+          return { ...prev, avatars: newAvatars };
+        });
+      }
+    };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,9 +84,16 @@ export default function AccountSettings() {
       data.append("videolink1", formData.videoLink1);
       data.append("videolink2", formData.videoLink2);
       data.append("videolink3", formData.videoLink3);
-      if (avatarFile) {
-        data.append("avatar", avatarFile);
-      }
+      data.append("socialLink1", formData.socialLink1);
+      data.append("socialLink2", formData.socialLink2);
+      data.append("socialLink3", formData.socialLink3);
+      data.append("socialLink4", formData.socialLink4);
+      data.append("socialLink5", formData.socialLink5);
+      formData.avatars.forEach((avatar, index) => {
+        if (avatar.file) {
+          data.append(`avatar${index}`, avatar.file, avatar.file.name);
+        }
+      });
 
       const response = await axios.put("/api/user", data);
 
@@ -108,42 +127,54 @@ export default function AccountSettings() {
           </div>
 
           {successMessage && (
-            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <div
+              className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
               <span className="block sm:inline">{successMessage}</span>
             </div>
           )}
 
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <div
+              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
               <span className="block sm:inline">{error}</span>
             </div>
           )}
 
-          <div className="flex items-center gap-5 justify-center">
-            <Image
-              src={formData.avatarUrl || "/default-avatar.png"}
-              alt="Profile Avatar"
-              width={64}
-              height={64}
-              className="inline-block size-16 rounded-full ring-2 ring-white"
-            />
-            <div>
-              <input
-                type="file"
-                id="avatar"
-                name="avatar"
-                accept="image/*"
-                className="hidden"
-                onChange={handleAvatarChange}
-              />
-              <label
-                htmlFor="avatar"
-                className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 cursor-pointer"
-              >
-                <Upload />
-                Upload photo
-              </label>
-            </div>
+          <div className="flex flex-wrap items-center gap-5 justify-center">
+            {[0, 1, 2].map((index) => (
+              <div key={index} className="flex flex-col items-center">
+                {formData.avatars[index] ? (
+                  <Image
+                    src={formData.avatars[index].url}
+                    alt={`Profile Avatar ${index + 1}`}
+                    width={64}
+                    height={64}
+                    className="inline-block size-16 rounded-full ring-2 ring-white mb-2"
+                  />
+                ) : (
+                  <div className="inline-block size-16 rounded-full ring-2 ring-white mb-2 bg-gray-200"></div>
+                )}
+                <input
+                  type="file"
+                  id={`avatar${index}`}
+                  name={`avatar${index}`}
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange(index)}
+                />
+                <label
+                  htmlFor={`avatar${index}`}
+                  className="py-1 px-2 inline-flex items-center gap-x-2 text-xs font-medium rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 cursor-pointer"
+                >
+                  <Upload />
+                  Upload photo {index + 1}
+                </label>
+              </div>
+            ))}
           </div>
 
           <div>
@@ -253,6 +284,96 @@ export default function AccountSettings() {
               onChange={handleChange}
               className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
               placeholder="Enter Video Link 3"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="socialLink1"
+              className="block mb-2 text-gray-600 text-sm font-medium"
+            >
+              Social Link 1
+            </label>
+            <input
+              type="url"
+              id="socialLink1"
+              name="socialLink1"
+              value={formData.socialLink1}
+              onChange={handleChange}
+              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+              placeholder="Enter Social Link 1"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="socialLink2"
+              className="block mb-2 text-gray-600 text-sm font-medium"
+            >
+              Social Link 2
+            </label>
+            <input
+              type="url"
+              id="socialLink2"
+              name="socialLink2"
+              value={formData.socialLink2}
+              onChange={handleChange}
+              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+              placeholder="Enter Social Link 2"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="socialLink3"
+              className="block mb-2 text-gray-600 text-sm font-medium"
+            >
+              Social Link 3
+            </label>
+            <input
+              type="url"
+              id="socialLink3"
+              name="socialLink3"
+              value={formData.socialLink3}
+              onChange={handleChange}
+              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+              placeholder="Enter Social Link 3"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="socialLink4"
+              className="block mb-2 text-gray-600 text-sm font-medium"
+            >
+              Social Link 4
+            </label>
+            <input
+              type="url"
+              id="socialLink4"
+              name="socialLink4"
+              value={formData.socialLink4}
+              onChange={handleChange}
+              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+              placeholder="Enter Social Link 4"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="socialLink5"
+              className="block mb-2 text-gray-600 text-sm font-medium"
+            >
+              Social Link 5
+            </label>
+            <input
+              type="url"
+              id="socialLink5"
+              name="socialLink5"
+              value={formData.socialLink5}
+              onChange={handleChange}
+              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+              placeholder="Enter Social Link 5"
             />
           </div>
         </div>

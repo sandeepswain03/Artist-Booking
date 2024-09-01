@@ -9,7 +9,7 @@ import Image from "next/image";
 interface Artist {
   _id: string;
   username: string;
-  avatar: { url: string; public_id: string };
+  avatar: { url: string; public_id: string }[];
   bio: string;
 }
 
@@ -84,7 +84,7 @@ export default function ArtistsPage() {
             >
               <div className="rounded-t-md shadow-lg h-60 relative overflow-hidden">
                 <Image
-                  src={artist.avatar?.url || "/default-avatar.jpg"}
+                  src={artist.avatar[0]?.url || "/default-avatar.jpg"}
                   alt={artist.username}
                   width={400}
                   height={200}

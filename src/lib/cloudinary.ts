@@ -5,10 +5,21 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+<<<<<<< HEAD
 
 const uploadOnCloudinary = async (image: any) => {
   try {
     const res = await cloudinary.uploader.upload(image, {
+=======
+const uploadOnCloudinary = async (file: File) => {
+  if (!file) return null;
+  const buffer = await file.arrayBuffer();
+  const base64File = Buffer.from(buffer).toString('base64');
+  const dataURI = `data:${file.type};base64,${base64File}`;
+  
+  try {
+    const res = await cloudinary.uploader.upload(dataURI, {
+>>>>>>> main
       resource_type: 'auto',
     });
     return res;
@@ -25,4 +36,5 @@ const deleteFromCloudinary = async (publicId: string) => {
   }
 };
 
-export { uploadOnCloudinary, deleteFromCloudinary };
+export { deleteFromCloudinary, uploadOnCloudinary };
+

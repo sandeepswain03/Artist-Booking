@@ -53,14 +53,16 @@ export const authOptions: NextAuthOptions = {
         token._id = user._id?.toString();
         token.username = user.username;
         token.role = user.role;
-        token.avatar = {
-          url: user.avatar?.url || "/default-avatar.png",
-          public_id: user.avatar?.public_id || "",
-        };
+        token.avatar = user.avatar || [];
         token.videoLink1 = user.videoLink1;
         token.videoLink2 = user.videoLink2;
         token.videoLink3 = user.videoLink3;
         token.bio = user.bio;
+        token.socialLink1 = user.socialLink1;
+        token.socialLink2 = user.socialLink2;
+        token.socialLink3 = user.socialLink3;
+        token.socialLink4 = user.socialLink4;
+        token.socialLink5 = user.socialLink5;
       }
       return token;
     },
@@ -69,14 +71,16 @@ export const authOptions: NextAuthOptions = {
         session.user._id = token._id;
         session.user.role = token.role;
         session.user.username = token.username;
-        session.user.avatar = {
-          url: token.avatar?.url || "/default-avatar.png",
-          public_id: token.avatar?.public_id || "",
-        };
+        session.user.avatar = token.avatar || [];
         session.user.videoLink1 = token.videoLink1;  
         session.user.videoLink2 = token.videoLink2;
         session.user.videoLink3 = token.videoLink3;
         session.user.bio = token.bio;
+        session.user.socialLink1 = token.socialLink1;
+        session.user.socialLink2 = token.socialLink2;
+        session.user.socialLink3 = token.socialLink3;
+        session.user.socialLink4 = token.socialLink4;
+        session.user.socialLink5 = token.socialLink5;
       }
       return session;
     },

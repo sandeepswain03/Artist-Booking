@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
 import {
   HamburgerIcon,
   CloseIcon,
@@ -10,9 +11,14 @@ import {
   ContactUs,
 } from "./svgIcons";
 
+interface Avatar {
+  public_id: string;
+  url: string;
+}
+
 function Header() {
   const { data: session } = useSession();
-  const user = session?.user;
+  const user = session?.user as unknown as { avatar: Avatar[]; role: string };
 
   const navLinks = [
     { href: "/", icon: <HomeIcon />, text: "Home" },
@@ -29,7 +35,12 @@ function Header() {
             className="flex-none font-semibold text-xl text-black focus:outline-none focus:opacity-80"
             href="/"
           >
-            Logo
+            <img
+            src="/logo.png"
+            className="h-5 lg:h-7"
+            >
+            
+            </img>
           </Link>
           <button
             type="button"
@@ -93,18 +104,26 @@ function Header() {
                 <div className="flex flex-wrap items-center gap-x-1.5">
                   {user?.role === "artist" ? (
                     <Link href="/profile">
-                      <img
-                        src={user?.avatar?.url || "/avatar.png"}
-                        alt="Avatar"
-                        className="w-10 h-10 rounded-full"
-                      />
+                      <div className="w-10 h-10 rounded-full overflow-hidden">
+                        <Image
+                          src={user?.avatar?.[0]?.url || "/avatar.png"}
+                          alt="Avatar"
+                          width={40}
+                          height={40}
+                          className="object-cover w-full h-full"
+                        />
+                      </div>
                     </Link>
                   ) : (
-                    <img
-                      src={user?.avatar?.url || "/avatar.png"}
-                      alt="Avatar"
-                      className="w-10 h-10 rounded-full"
-                    />
+                    <div className="w-10 h-10 rounded-full overflow-hidden">
+                      <Image
+                        src={user?.avatar?.[0]?.url || "/avatar.png"}
+                        alt="Avatar"
+                        width={40}
+                        height={40}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
                   )}
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}

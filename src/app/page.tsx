@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SideArrow, Star } from "@/components/svgIcons";
+import { useSession } from "next-auth/react";
 
 const MagicBanner = () => {
+  const { data: session } = useSession();
+  const user = session?.user;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isNext, setIsNext] = useState(false);
   const [isPrev, setIsPrev] = useState(false);
@@ -19,45 +22,45 @@ const MagicBanner = () => {
   const testimonials = [
     {
       imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDJ8fG1hbnxlbnwwfHx8fDE2NzM3OTI1OTQ&ixlib=rb-1.2.1&q=80&w=400",
+      name: "John Doe",
+      text: "This platform has really transformed the way I approach my projects. The interface is intuitive, and the support team is always there when I need them.",
       rating: 5,
     },
     {
       imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
-      rating: 3,
-    },
-    {
-      imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDIxfHx3b21hbnxlbnwwfHx8fDE2NzM3OTI2MTc&ixlib=rb-1.2.1&q=80&w=400",
+      name: "Jane Smith",
+      text: "I love the flexibility this platform offers. I can customize everything to fit my needs perfectly. However, I think the mobile experience could be improved.",
       rating: 4,
     },
     {
       imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
+        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDIwfHxwZW9wbGV8ZW58MHx8fHwxNjczNzkyNjMw&ixlib=rb-1.2.1&q=80&w=400",
+      name: "Michael Johnson",
+      text: "The variety of features available is amazing. It’s helped me streamline my workflow and save a lot of time. Highly recommended!",
       rating: 5,
     },
     {
       imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
-      rating: 5,
-    },
-    {
-      imageSrc:
-        "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
-      name: "Paul Starr",
-      text: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad mollitia rerum quo unde neque atque molestias quas pariatur! Sint, maxime?",
+        "https://images.unsplash.com/photo-1546456073-6712f79251bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDE2fHx3b21hbnxlbnwwfHx8fDE2NzM3OTI2MzI&ixlib=rb-1.2.1&q=80&w=400",
+      name: "Sarah Lee",
+      text: "Overall, a solid platform with great potential. I’m satisfied with the service, but I think there’s room for improvement in the documentation.",
       rating: 4,
+    },
+    {
+      imageSrc:
+        "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fG1hbnxlbnwwfHx8fDE2NzM3OTI2MzY&ixlib=rb-1.2.1&q=80&w=400",
+      name: "David Kim",
+      text: "Great experience! The platform is easy to use, and the results have exceeded my expectations. I would definitely recommend it to others.",
+      rating: 5,
+    },
+    {
+      imageSrc:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDJ8fG1hbnxlbnwwfHx8fDE2NzM3OTI2NDA&ixlib=rb-1.2.1&q=80&w=400",
+      name: "Emily Davis",
+      text: "I’ve been using this platform for a few months now, and it’s been fantastic. The customer support is top-notch, and they’re always willing to help.",
+      rating: 5,
     },
   ];
 
@@ -115,14 +118,26 @@ const MagicBanner = () => {
                     events for every occasion, guaranteeing a memorable
                     experience for all guests.
                   </p>
-                  <Link href="/concerts">
-                    <button
-                      type="button"
-                      className="mt-14 text-white bg-gradient-to-r from-rose-700 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 dark:focus:ring-pink-800 font-medium rounded-sm text-lg px-7 py-2 text-center mb-2"
-                    >
-                      See More
-                    </button>
-                  </Link>
+                  <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                    <Link href="/concerts">
+                      <button
+                        type="button"
+                        className="text-white bg-gradient-to-r from-rose-700 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 dark:focus:ring-pink-800 font-medium rounded-sm text-lg px-7 py-2 text-center transition-all duration-300 transform hover:scale-105"
+                      >
+                        Explore Events
+                      </button>
+                    </Link>
+                    {user?.role === "artist" && (
+                      <Link href="/profile/add_concert">
+                        <button
+                          type="button"
+                          className="text-white bg-gradient-to-r from-purple-700 to-indigo-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 font-medium rounded-sm text-lg px-7 py-2 text-center transition-all duration-300 transform hover:scale-105"
+                        >
+                          Create Concert
+                        </button>
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -164,20 +179,23 @@ const MagicBanner = () => {
 
           <div>
             <h2 className="text-3xl font-bold text-gray-800 sm:text-4xl lg:text-5xl mb-4">
-              About <span className="text-rose-600">Event Booking</span> Company
+              About <span className="text-rose-600">Event Duniya</span>
             </h2>
             <p className="text-lg text-gray-600 mb-6">
-              The Artist Booking Company is your premier destination for
-              seamless event entertainment, with over 23 years of expertise. We
-              specialize in curating unforgettable experiences for a wide range
-              of events, including weddings, corporate gatherings, college
-              festivals, brand endorsements, celebrity appearances, and social
-              soirées.
+              Event Duniya is your ultimate platform for exceptional event
+              entertainment, backed by over 23 years of industry experience. We
+              specialize in delivering memorable experiences for a wide array of
+              events, including weddings, corporate functions, college
+              festivals, brand promotions, celebrity appearances, and social
+              gatherings.
             </p>
             <p className="text-lg text-gray-600 mb-8">
-              Headquartered in Mumbai, India, our global network of artists,
-              celebrities, and agents allows us to bring world-class talent to
-              your doorstep, no matter where you are.
+              With a strong presence in Mumbai, India, and connections across
+              the globe, our network of artists, celebrities, and agents ensures
+              that we deliver top-tier talent to your event, wherever it may be.
+              With Event Duniya, you’re not just hosting an event—you’re
+              creating an unforgettable experience that will be cherished for
+              years to come.
             </p>
 
             <Link
@@ -194,7 +212,7 @@ const MagicBanner = () => {
       {/* Our Services */}
       <div className="max-w-[85rem] px-4 py-6 sm:px-6 lg:px-8 lg:py-12 mx-auto">
         <h1 className="flex justify-center mb-10 font-bold text-rose-600 text-3xl md:text-4xl lg:text-5xl text-center">
-          Our Event Management Services
+          Artist Booking and Concerts
         </h1>
         <div className="grid lg:grid-cols-2 gap-10">
           {/* Artists Service */}
@@ -216,7 +234,8 @@ const MagicBanner = () => {
                   Artist Booking
                 </h3>
                 <p className="mt-3 text-gray-600">
-                  Find and book talented artists for your events.
+                  Discover and book talented artists for your events, or explore
+                  upcoming concerts.
                 </p>
                 <p className="mt-4 inline-flex items-center gap-x-1 text-sm text-rose-400 decoration-2 group-hover:underline group-focus:underline font-medium">
                   Explore Artists
@@ -242,13 +261,13 @@ const MagicBanner = () => {
               </div>
               <div className="grow">
                 <h3 className="text-xl font-semibold text-gray-800 group-hover:text-gray-600">
-                  Event Planning
+                  Concerts
                 </h3>
                 <p className="mt-3 text-gray-600">
-                  Comprehensive event planning and management services.
+                  Discover upcoming concerts and live performances.
                 </p>
                 <p className="mt-4 inline-flex items-center gap-x-1 text-sm text-rose-400 decoration-2 group-hover:underline group-focus:underline font-medium">
-                  Explore Events
+                  Explore Concerts
                   <SideArrow />
                 </p>
               </div>
@@ -262,26 +281,30 @@ const MagicBanner = () => {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 xl:gap-20 items-center">
           <div>
             <h2 className="text-3xl font-bold text-gray-800 sm:text-4xl lg:text-5xl mb-4">
-              About <span className="text-rose-600">Event Booking</span> Company
+              Why <span className="text-rose-600">Event Duniya</span> 
             </h2>
             <p className="text-lg text-gray-600 mb-6">
-              The Artist Booking Company is your premier destination for
-              seamless event entertainment, with over 23 years of expertise. We
-              specialize in curating unforgettable experiences for a wide range
-              of events, including weddings, corporate gatherings, college
-              festivals, brand endorsements, celebrity appearances, and social
-              soirées.
+              Event Duniya is your ultimate platform for exceptional event
+              entertainment, backed by over 23 years of industry experience. We
+              specialize in creating memorable experiences for a wide range of
+              events, including weddings, corporate functions, college
+              festivals, brand promotions, celebrity appearances, and social
+              gatherings.
             </p>
             <p className="text-lg text-gray-600 mb-8">
-              Headquartered in Mumbai, India, our global network of artists,
-              celebrities, and agents allows us to bring world-class talent to
-              your doorstep, no matter where you are.
+              With a strong presence in Mumbai, India, and connections across
+              the globe, our network of artists, celebrities, and agents ensures
+              that we deliver top-tier talent to your event, wherever it may be.
+              With Event Duniya, you’re not just hosting an event—you’re
+              creating an unforgettable experience that will be cherished for
+              years to come.
             </p>
 
             <Link
               href="/contact"
               className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-rose-600 rounded-md shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 transition-colors duration-200"
             >
+              {" "}
               Contact Us
               <SideArrow />
             </Link>
@@ -327,7 +350,9 @@ const MagicBanner = () => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-gray-600 italic">&ldquo;{testimonial.text}&rdquo;</p>
+                  <p className="text-gray-600 italic">
+                    &ldquo;{testimonial.text}&rdquo;
+                  </p>
                 </div>
               </blockquote>
             </div>
