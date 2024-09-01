@@ -58,6 +58,7 @@ export async function POST(request: Request) {
       errors.avatar = "At least one avatar image is required";
     }
 
+    // Check if avatar image is a valid image
     if (Object.keys(errors).length > 0) {
       return NextResponse.json(
         { success: false, errors },
@@ -79,6 +80,12 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+<<<<<<< HEAD
+    
+    let avatarImage: any;
+    if (avatarFile) {
+      avatarImage = await uploadOnCloudinary(avatarFile);
+=======
 
     let avatarImages = [];
     for (const avatarFile of avatarFiles) {
@@ -89,6 +96,7 @@ export async function POST(request: Request) {
           url: uploadedImage.url,
         });
       }
+>>>>>>> main
     }
 
     if (avatarImages.length === 0) {
@@ -208,6 +216,17 @@ export async function PUT(request: Request) {
     if (socialLink4) user.socialLink4 = socialLink4;
     if (socialLink5) user.socialLink5 = socialLink5;
 
+<<<<<<< HEAD
+    // Handle avatar update
+    const avatarFile = data.get("avatar") as File | null;
+    if (avatarFile) {
+      if (avatarFile) {
+        const newAvatarImage: any = await uploadOnCloudinary(avatarFile);
+        if (newAvatarImage) {
+          // Delete old avatar from Cloudinary
+          if (user.avatar.public_id) {
+            await deleteFromCloudinary(user.avatar.public_id);
+=======
     if (avatar1) {
       const uploadedImage: any = await uploadOnCloudinary(avatar1);
       
@@ -222,6 +241,7 @@ export async function PUT(request: Request) {
           // Delete the old avatar from Cloudinary
           if (user.avatar[0].public_id) {
             await deleteFromCloudinary(user.avatar[0].public_id);
+>>>>>>> main
           }
           // Replace the first avatar
           user.avatar[0] = newAvatarImage;

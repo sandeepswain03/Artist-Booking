@@ -5,6 +5,12 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+<<<<<<< HEAD
+
+const uploadOnCloudinary = async (image: any) => {
+  try {
+    const res = await cloudinary.uploader.upload(image, {
+=======
 const uploadOnCloudinary = async (file: File) => {
   if (!file) return null;
   const buffer = await file.arrayBuffer();
@@ -13,6 +19,7 @@ const uploadOnCloudinary = async (file: File) => {
   
   try {
     const res = await cloudinary.uploader.upload(dataURI, {
+>>>>>>> main
       resource_type: 'auto',
     });
     return res;
