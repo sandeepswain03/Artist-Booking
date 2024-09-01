@@ -21,7 +21,7 @@ const restrictedRoutes = [
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
   const url = req.nextUrl;
-
+  
   if (!token) {
     if (
       url.pathname.startsWith("/concerts/") ||
