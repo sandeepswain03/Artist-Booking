@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-
+//middle ware is used to protect the routes
 export const config = {
   matcher: [
     "/concerts/:path*",
