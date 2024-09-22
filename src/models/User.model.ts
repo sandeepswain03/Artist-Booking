@@ -30,6 +30,16 @@ export interface IUser extends Document {
       rating: number;
     }[];
   };
+  reviews?: {
+    count: number;
+    reviews: {
+      userId: Schema.Types.ObjectId;
+      review: string;
+      username: string;
+      avatar: string;
+      createdAt: Date;
+    }[];
+  };
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -139,7 +149,37 @@ const UserSchema: Schema<IUser> = new Schema({
       },
     ],
   },
-
+  reviews: {
+    count: {
+      type: Number,
+      default: 0,
+    },
+    reviews: [
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        review: {
+          type: String,
+          required: true,
+        },
+        username: {
+          type: String,
+          required: false,
+        },
+        avatar: {
+          type: String,
+          required: false,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+  },
 });
 
 const UserModel =

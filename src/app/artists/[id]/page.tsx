@@ -26,6 +26,14 @@ interface Concert {
   location: string;
 }
 
+interface Review {
+  userId: string;
+  review: string;
+  username: string;
+  avatar: string;
+  createdAt: string;
+}
+
 interface Artist {
   _id: string;
   username: string;
@@ -43,6 +51,10 @@ interface Artist {
     average: number;
     count: number;
     ratings: { userId: string; rating: number }[];
+  };
+  reviews?: {
+    count: number;
+    reviews: Review[];
   };
   concerts: Concert[];
 }
@@ -72,6 +84,9 @@ export default function ArtistDetailsPage({
   const user = session?.user;
   const [isLoading, setIsLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewSuccess, setReviewSuccess] = useState<string | null>(null);
+  const [showReviewForm, setShowReviewForm] = useState(true);
   const [pastConcerts, setPastConcerts] = useState<Concert[]>([]);
   const [nextConcerts, setNextConcerts] = useState<Concert[]>([]);
 
@@ -79,7 +94,9 @@ export default function ArtistDetailsPage({
     const fetchArtist = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`/api/artist/artistid?id=${params.id}`);
+        const response = await axios.get(
+          `/api/artist/artistid?id=${params.id}`
+        );
         if (response.data.success) {
           setArtist(response.data.data);
           const now = new Date();
@@ -97,9 +114,9 @@ export default function ArtistDetailsPage({
             .sort(
               (a: Concert, b: Concert) =>
                 new Date(a.date).getTime() - new Date(b.date).getTime()
-            )
+            );
 
-          setNextConcerts(nextConcerts)
+          setNextConcerts(nextConcerts);
           // Set user's rating if they've already rated
           if (user && response.data.data.rating.ratings) {
             const userRating = response.data.data.rating.ratings.find(
@@ -107,6 +124,15 @@ export default function ArtistDetailsPage({
             );
             if (userRating) {
               setUserRating(userRating.rating);
+            }
+          }
+          // Check if the user has already reviewed the artist
+          if (user && response.data.data.reviews) {
+            const userReview = response.data.data.reviews.reviews.find(
+              (r: Review) => r.userId === user._id
+            );
+            if (userReview) {
+              setShowReviewForm(false);
             }
           }
         }
@@ -158,7 +184,7 @@ export default function ArtistDetailsPage({
     } catch (error: any) {
       setError(
         error.response?.data?.message ||
-        "An error occurred while submitting the inquiry."
+          "An error occurred while submitting the inquiry."
       );
     } finally {
       setLoading(false);
@@ -193,6 +219,40 @@ export default function ArtistDetailsPage({
     }
   };
 
+  const handleReviewSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setReviewSuccess(null);
+
+    try {
+      const response = await axios.post("/api/artist", {
+        artistId: params.id,
+        review: reviewText,
+      });
+      if (response.data.success) {
+        setReviewSuccess("Review submitted successfully!");
+        setReviewText("");
+        setShowReviewForm(false);
+
+        // Refresh artist data to include the new review
+        const artistResponse = await axios.get(
+          `/api/artist/artistid?id=${params.id}`
+        );
+        if (artistResponse.data.success) {
+          setArtist(artistResponse.data.data);
+        }
+      }
+    } catch (error: any) {
+      setError(
+        error.response?.data?.message ||
+          "An error occurred while submitting the review."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -202,7 +262,24 @@ export default function ArtistDetailsPage({
   }
 
   if (!artist) {
-    return <div>Artist not found</div>;
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <div className="text-center p-8 bg-white rounded-lg shadow-lg">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+            Artist Not Found
+          </h1>
+          <p className="text-xl text-gray-600">
+            We couldn't find the artist you're looking for.
+          </p>
+          <a
+            href="/artists"
+            className="mt-6 inline-block px-6 py-3 bg-[#CE1446] text-white rounded-lg hover:bg-[#A81038] transition-colors"
+          >
+            Explore Other Artists
+          </a>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -362,7 +439,6 @@ export default function ArtistDetailsPage({
         </div>
       </section>
 
-
       {/* Next Events Section */}
       {nextConcerts.length > 0 && (
         <section className="py-10 bg-gray-50 px-4 sm:px-6 lg:px-8">
@@ -401,17 +477,18 @@ export default function ArtistDetailsPage({
                       </div>
                     </div>
                     <div className="w-4/5 relative">
-                     <Link href={`/concerts/${concert._id}`}>
-                     <Image
-                        src={
-                          concert.concertImages[0]?.url || "/default-image.jpg"
-                        }
-                        alt={concert.title}
-                        layout="responsive"
-                        width={100}
-                        height={75}
-                        objectFit="cover"
-                      />
+                      <Link href={`/concerts/${concert._id}`}>
+                        <Image
+                          src={
+                            concert.concertImages[0]?.url ||
+                            "/default-image.jpg"
+                          }
+                          alt={concert.title}
+                          layout="responsive"
+                          width={100}
+                          height={75}
+                          objectFit="cover"
+                        />
                       </Link>
                     </div>
                   </div>
@@ -421,8 +498,6 @@ export default function ArtistDetailsPage({
           </div>
         </section>
       )}
-
-
       {/* Previous Events Section */}
       {pastConcerts.length > 0 && (
         <section className="py-10 bg-gray-50 px-4 sm:px-6 lg:px-8">
@@ -686,6 +761,119 @@ export default function ArtistDetailsPage({
             </div>
           </form>
         </div>
+      )}
+      {user?._id != params.id && showReviewForm && (
+        <section className="py-12 bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+              Share Your Experience
+            </h2>
+            <form
+              onSubmit={handleReviewSubmit}
+              className="bg-white p-8 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl"
+            >
+              <textarea
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 shadow-sm focus:border-[#CE1446] focus:outline-none focus:ring-2 focus:ring-[#CE1446] transition-all duration-200"
+                placeholder="Tell us about your experience with this artist..."
+                rows={6}
+                required
+              />
+              {error && (
+                <div className="mt-4 text-red-500 text-sm bg-red-50 border border-red-200 rounded-md p-3">
+                  {error}
+                </div>
+              )}
+              {reviewSuccess && (
+                <div className="mt-4 text-green-600 text-sm bg-green-50 border border-green-200 rounded-md p-3">
+                  {reviewSuccess}
+                </div>
+              )}
+              <button
+                type="submit"
+                className="mt-6 w-full bg-[#CE1446] text-white py-3 px-6 rounded-lg text-base font-semibold tracking-wide hover:bg-[#A01234] transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#CE1446] focus:ring-opacity-50"
+                disabled={loading}
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center">
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Submitting...
+                  </span>
+                ) : (
+                  "Submit Your Review"
+                )}
+              </button>
+            </form>
+          </div>
+        </section>
+      )}
+
+      {/* Display Reviews */}
+      {artist?.reviews && artist.reviews.reviews.length > 0 && (
+        <section className="py-16 bg-gradient-to-b from-gray-50 to-white px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">
+              What People Say{" "}
+              <span className="text-[#CE1446]">
+                ({artist.reviews.count} Reviews)
+              </span>
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {artist.reviews.reviews.map((review, index) => (
+                <div
+                  key={index}
+                  className="bg-white p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl"
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="w-14 h-14 mr-4 rounded-full border-2 border-[#CE1446] overflow-hidden">
+                      <Image
+                        src={review.avatar || "/default-avatar.jpg"}
+                        alt={review.username}
+                        width={56}
+                        height={56}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-bold text-lg text-gray-800">
+                        {review.username}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(review.createdAt).toLocaleDateString(
+                          "en-US",
+                          { year: "numeric", month: "long", day: "numeric" }
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 italic">
+                    &ldquo;{review.review}&rdquo;
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
     </>
   );
