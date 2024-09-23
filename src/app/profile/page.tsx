@@ -153,7 +153,7 @@ export default function AccountSettings() {
                     alt={`Profile Avatar ${index + 1}`}
                     width={64}
                     height={64}
-                    className="inline-block size-16 rounded-full ring-2 ring-white mb-2"
+                    className="inline-block object-cover  size-16 rounded-full ring-2 ring-white mb-2"
                   />
                 ) : (
                   <div className="inline-block size-16 rounded-full ring-2 ring-white mb-2 bg-gray-200"></div>
