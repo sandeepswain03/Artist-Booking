@@ -13,6 +13,8 @@ import {
   FaTiktok,
   FaCalendarAlt,
   FaPlay,
+  FaMapMarkerAlt,
+  FaPhone,
 } from "react-icons/fa";
 import Image from "next/image";
 import Rating from "react-rating";
@@ -47,6 +49,11 @@ interface Artist {
   socialLink3?: string;
   socialLink4?: string;
   socialLink5?: string;
+  phoneNumber: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
   rating: {
     average: number;
     count: number;
@@ -284,12 +291,12 @@ export default function ArtistDetailsPage({
 
   return (
     <>
-      <section className="py-10 px-4 sm:px-6 lg:px-8">
+      <section className="py-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white rounded-lg shadow-xl overflow-hidden">
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col lg:flex-row">
               {/* Artist Images */}
-              <div className="md:w-1/2 lg:w-2/5 relative overflow-hidden">
+              <div className="lg:w-2/5 relative overflow-hidden">
                 <Carousel
                   showThumbs={false}
                   infiniteLoop={true}
@@ -297,10 +304,10 @@ export default function ArtistDetailsPage({
                   showArrows={true}
                   showStatus={false}
                   interval={5000}
-                  className="h-full"
+                  className="h-64 lg:h-full"
                 >
                   {artist.avatar.map((image, index) => (
-                    <div key={index} className="h-64 md:h-96 lg:h-full">
+                    <div key={index} className="h-64 lg:h-full">
                       <img
                         src={image.url}
                         alt={`${artist.username} - Image ${index + 1}`}
@@ -311,43 +318,44 @@ export default function ArtistDetailsPage({
                 </Carousel>
               </div>
               {/* Artist Details */}
-              <div className="md:w-1/2 lg:w-3/5 p-6 md:p-8 lg:p-10">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-                  {artist.username}
-                </h1>
-                {/* Artist Rating */}
-                <div className="mb-4 flex items-center">
-                  <Rating
-                    initialRating={artist.rating.average}
-                    emptySymbol={
-                      <span className="text-gray-300 text-xl">★</span>
-                    }
-                    fullSymbol={
-                      <span className="text-yellow-400 text-xl">★</span>
-                    }
-                    readonly={true}
-                  />
-                  <span className="ml-2 text-sm text-gray-600">
-                    ({artist.rating.count}{" "}
-                    {artist.rating.count === 1 ? "rating" : "ratings"})
-                  </span>
+              <div className="lg:w-3/5 p-4 lg:p-6 flex flex-col">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                  <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-2 sm:mb-0">
+                    {artist.username}
+                  </h1>
+                  <div className="flex items-center">
+                    <Rating
+                      initialRating={artist.rating.average}
+                      emptySymbol={
+                        <span className="text-gray-300 text-lg">★</span>
+                      }
+                      fullSymbol={
+                        <span className="text-yellow-400 text-lg">★</span>
+                      }
+                      readonly={true}
+                    />
+                    <span className="ml-2 text-xs text-gray-600">
+                      ({artist.rating.count}{" "}
+                      {artist.rating.count === 1 ? "rating" : "ratings"})
+                    </span>
+                  </div>
                 </div>
-                {/* User Rating */}
+
                 {user &&
                   !artist.rating.ratings.some((r) => r.userId === user._id) && (
-                    <div className="mb-4">
-                      <p className="text-sm text-gray-600 mb-2">
+                    <div className="mb-3">
+                      <p className="text-xs text-gray-600 mb-1">
                         Rate this artist:
                       </p>
                       <Rating
                         initialRating={userRating}
                         emptySymbol={
-                          <span className="text-gray-300 text-xl cursor-pointer">
+                          <span className="text-gray-300 text-lg cursor-pointer">
                             ★
                           </span>
                         }
                         fullSymbol={
-                          <span className="text-yellow-400 text-xl cursor-pointer">
+                          <span className="text-yellow-400 text-lg cursor-pointer">
                             ★
                           </span>
                         }
@@ -355,69 +363,62 @@ export default function ArtistDetailsPage({
                       />
                     </div>
                   )}
-                {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+                {error && <p className="text-red-500 text-xs mb-2">{error}</p>}
                 {success && (
-                  <p className="text-green-500 text-sm mb-2">{success}</p>
+                  <p className="text-green-500 text-xs mb-2">{success}</p>
                 )}
-                <p className="text-gray-600 mb-6 leading-relaxed hover:text-gray-800 transition-colors duration-300 text-justify">
+
+                <p className="text-sm text-gray-600 mb-4 leading-relaxed hover:text-gray-800 transition-colors duration-300 text-justify">
                   {artist.bio}
                 </p>
-                <div className="flex flex-wrap gap-4 mb-6">
-                  {artist.socialLink4 && (
-                    <Link
-                      href={artist.socialLink4}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="transform hover:scale-110 transition-transform duration-300"
-                    >
-                      <FaFacebook className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
-                    </Link>
-                  )}
-                  {artist.socialLink1 && (
-                    <Link
-                      href={artist.socialLink1}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="transform hover:scale-110 transition-transform duration-300"
-                    >
-                      <FaInstagram className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
-                    </Link>
-                  )}
-                  {artist.socialLink2 && (
-                    <Link
-                      href={artist.socialLink2}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="transform hover:scale-110 transition-transform duration-300"
-                    >
-                      <FaTwitter className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
-                    </Link>
-                  )}
-                  {artist.socialLink3 && (
-                    <Link
-                      href={artist.socialLink3}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="transform hover:scale-110 transition-transform duration-300"
-                    >
-                      <FaYoutube className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
-                    </Link>
-                  )}
-                  {artist.socialLink5 && (
-                    <Link
-                      href={artist.socialLink5}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="transform hover:scale-110 transition-transform duration-300"
-                    >
-                      <FaTiktok className="text-2xl text-[#CE1446] hover:text-[#A01234]" />
-                    </Link>
-                  )}
+
+                <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+                  <div>
+                    <p className="font-semibold text-gray-600 flex items-center">
+                      <FaMapMarkerAlt className="text-lg text-[#CE1446] mr-1" />
+                      Location:
+                    </p>
+                    <p className="text-gray-800 ml-5">
+                      {artist.city}, {artist.state}
+                      <br />
+                      {artist.country} - {artist.pincode}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-600 flex items-center">
+                      <FaPhone className="text-lg text-[#CE1446] mr-1" />
+                      Contact:
+                    </p>
+                    <p className="text-gray-800 ml-5">{artist.phoneNumber}</p>
+                  </div>
                 </div>
-                <p className="text-black font-bold mb-4 leading-relaxed">
-                  Previous Performances of {artist.username}
+
+                <div className="flex flex-wrap gap-3 mb-4">
+                  {[
+                    { link: artist.socialLink4, icon: FaFacebook },
+                    { link: artist.socialLink1, icon: FaInstagram },
+                    { link: artist.socialLink2, icon: FaTwitter },
+                    { link: artist.socialLink3, icon: FaYoutube },
+                    { link: artist.socialLink5, icon: FaTiktok },
+                  ]
+                    .filter((item) => item.link)
+                    .map((item, index) => (
+                      <Link
+                        key={index}
+                        href={item.link || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="transform hover:scale-110 transition-transform duration-300"
+                      >
+                        <item.icon className="text-xl text-[#CE1446] hover:text-[#A01234]" />
+                      </Link>
+                    ))}
+                </div>
+
+                <p className="text-sm font-bold mb-2 leading-relaxed">
+                  Previous Performances
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {[artist.videoLink1, artist.videoLink2, artist.videoLink3]
                     .filter(Boolean)
                     .map((link, index) => (
@@ -426,10 +427,9 @@ export default function ArtistDetailsPage({
                         href={link || ""}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-[#CE1446] text-white py-3 px-6 rounded-md hover:bg-[#A01234] transition duration-300 text-center shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center"
+                        className="bg-[#CE1446] text-white py-1 px-2 rounded-md hover:bg-[#A01234] transition duration-300 text-center shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center text-xs"
                       >
-                        <FaPlay className="mr-2" /> Watch Performance{" "}
-                        {index + 1}
+                        <FaPlay className="mr-1" /> Watch {index + 1}
                       </Link>
                     ))}
                 </div>

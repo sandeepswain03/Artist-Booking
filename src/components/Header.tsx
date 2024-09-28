@@ -35,12 +35,7 @@ function Header() {
             className="flex-none font-semibold text-xl text-black focus:outline-none focus:opacity-80"
             href="/"
           >
-            <img
-            src="/logo.png"
-            className="h-5 lg:h-7"
-            >
-            
-            </img>
+            <img src="/logo.png" className="h-5 lg:h-7"></img>
           </Link>
           <button
             type="button"
@@ -102,19 +97,7 @@ function Header() {
                 </div>
               ) : (
                 <div className="flex flex-wrap items-center gap-x-1.5">
-                  {user?.role === "artist" ? (
-                    <Link href="/profile">
-                      <div className="w-10 h-10 rounded-full overflow-hidden">
-                        <Image
-                          src={user?.avatar?.[0]?.url || "/avatar.png"}
-                          alt="Avatar"
-                          width={40}
-                          height={40}
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                    </Link>
-                  ) : (
+                  <Link href="/profile">
                     <div className="w-10 h-10 rounded-full overflow-hidden">
                       <Image
                         src={user?.avatar?.[0]?.url || "/avatar.png"}
@@ -124,7 +107,7 @@ function Header() {
                         className="object-cover w-full h-full"
                       />
                     </div>
-                  )}
+                  </Link>
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}
                     className="py-2 px-2.5 inline-flex items-center font-semibold text-sm rounded-sm bg-[#D0204F] text-white focus:outline-none disabled:opacity-50 disabled:pointer-events-none"

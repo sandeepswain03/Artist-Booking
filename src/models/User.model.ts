@@ -19,6 +19,11 @@ export interface IUser extends Document {
   socialLink3?: string;
   socialLink4?: string;
   socialLink5?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  pincode?: string;
+  phoneNumber?: string;
   bio: string;
   resetToken: string | undefined;
   resetTokenExpires: Date | undefined;
@@ -179,6 +184,21 @@ const UserSchema: Schema<IUser> = new Schema({
         },
       },
     ],
+  },
+  city: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
+  pincode: {
+    type: String,
+  },
+  phoneNumber: {
+    type: String,
   },
 });
 

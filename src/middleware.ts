@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-//middle ware is used to protect the routes
+
 export const config = {
   matcher: [
     "/concerts/:path*",
@@ -12,7 +12,6 @@ export const config = {
 };
 
 const restrictedRoutes = [
-  "/profile",
   "/profile/add_concert",
   "/profile/all_concert",
   "/profile/all_inquiry",
@@ -21,7 +20,7 @@ const restrictedRoutes = [
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
   const url = req.nextUrl;
-  
+
   if (!token) {
     if (
       url.pathname.startsWith("/concerts/") ||
@@ -35,7 +34,7 @@ export async function middleware(req: NextRequest) {
   if (token) {
     if (token.role !== "artist" && url.pathname.startsWith("/profile")) {
       if (restrictedRoutes.includes(url.pathname)) {
-        return NextResponse.redirect(new URL("/", req.url));
+        return NextResponse.redirect(new URL("/profile", req.url));
       }
     }
 
@@ -43,7 +42,7 @@ export async function middleware(req: NextRequest) {
       url.pathname.startsWith("/reset-password") ||
       url.pathname.startsWith("/forget-password") ||
       url.pathname.startsWith("/sign-up") ||
-      url.pathname.startsWith("/sign-in") 
+      url.pathname.startsWith("/sign-in")
     ) {
       return NextResponse.redirect(new URL("/", req.url));
     }

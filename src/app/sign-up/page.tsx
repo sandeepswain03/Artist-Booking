@@ -23,6 +23,11 @@ export default function SignUp() {
     password: "",
     role: "user",
     avatars: [] as File[],
+    city: "",
+    state: "",
+    country: "",
+    pincode: "",
+    phoneNumber: "",
     bio: "",
     videoLink1: "",
     videoLink2: "",
@@ -145,6 +150,11 @@ export default function SignUp() {
       socialLink3,
       socialLink4,
       socialLink5,
+      city,
+      state,
+      country,
+      pincode,
+      phoneNumber,
     } = formData;
 
     let newErrors: { [key: string]: string } = {};
@@ -161,6 +171,12 @@ export default function SignUp() {
       if (!videoLink1)
         newErrors.videoLink1 =
           "At least one video link is required for artists";
+      if (!city) newErrors.city = "City is required for artists";
+      if (!state) newErrors.state = "State is required for artists";
+      if (!country) newErrors.country = "Country is required for artists";
+      if (!pincode) newErrors.pincode = "Pincode is required for artists";
+      if (!phoneNumber)
+        newErrors.phoneNumber = "Phone Number is required for artists";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -187,6 +203,11 @@ export default function SignUp() {
       formDataToSend.append("socialLink3", socialLink3);
       formDataToSend.append("socialLink4", socialLink4);
       formDataToSend.append("socialLink5", socialLink5);
+      formDataToSend.append("city", city);
+      formDataToSend.append("state", state);
+      formDataToSend.append("country", country);
+      formDataToSend.append("pincode", pincode);
+      formDataToSend.append("phoneNumber", phoneNumber);
     }
 
     try {
@@ -448,6 +469,130 @@ export default function SignUp() {
               </div>
               {formData.role === "artist" && (
                 <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label
+                        htmlFor="city"
+                        className="block mb-2 text-gray-600 text-sm font-medium"
+                      >
+                        City
+                      </label>
+                      <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className={`w-full rounded-sm border ${
+                          errors.city ? "border-red-500" : "border-gray-300"
+                        } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
+                        placeholder="Enter your city"
+                      />
+                      {errors.city && (
+                        <p className="mt-1 text-red-500 text-xs">
+                          {errors.city}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="state"
+                        className="block mb-2 text-gray-600 text-sm font-medium"
+                      >
+                        State
+                      </label>
+                      <input
+                        type="text"
+                        id="state"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        className={`w-full rounded-sm border ${
+                          errors.state ? "border-red-500" : "border-gray-300"
+                        } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
+                        placeholder="Enter your state"
+                      />
+                      {errors.state && (
+                        <p className="mt-1 text-red-500 text-xs">
+                          {errors.state}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="country"
+                        className="block mb-2 text-gray-600 text-sm font-medium"
+                      >
+                        Country
+                      </label>
+                      <input
+                        type="text"
+                        id="country"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        className={`w-full rounded-sm border ${
+                          errors.country ? "border-red-500" : "border-gray-300"
+                        } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
+                        placeholder="Enter your country"
+                      />
+                      {errors.country && (
+                        <p className="mt-1 text-red-500 text-xs">
+                          {errors.country}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="pincode"
+                        className="block mb-2 text-gray-600 text-sm font-medium"
+                      >
+                        Pincode
+                      </label>
+                      <input
+                        type="text"
+                        id="pincode"
+                        name="pincode"
+                        value={formData.pincode}
+                        onChange={handleChange}
+                        className={`w-full rounded-sm border ${
+                          errors.pincode ? "border-red-500" : "border-gray-300"
+                        } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
+                        placeholder="Enter your pincode"
+                      />
+                      {errors.pincode && (
+                        <p className="mt-1 text-red-500 text-xs">
+                          {errors.pincode}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="phoneNumber"
+                      className="block mb-2 text-gray-600 text-sm font-medium"
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      className={`w-full rounded-sm border ${
+                        errors.phoneNumber
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300`}
+                      placeholder="Enter your phone number"
+                    />
+                    {errors.phoneNumber && (
+                      <p className="mt-1 text-red-500 text-xs">
+                        {errors.phoneNumber}
+                      </p>
+                    )}
+                  </div>
                   <div>
                     <label
                       htmlFor="bio"

@@ -34,6 +34,11 @@ export async function POST(request: Request) {
     const socialLink3 = data.get("socialLink3") as string;
     const socialLink4 = data.get("socialLink4") as string;
     const socialLink5 = data.get("socialLink5") as string;
+    const city = data.get("city") as string;
+    const state = data.get("state") as string;
+    const country = data.get("country") as string;
+    const pincode = data.get("pincode") as string;
+    const phoneNumber = data.get("phoneNumber") as string;
 
     const errors: { [key: string]: string } = {};
 
@@ -44,7 +49,13 @@ export async function POST(request: Request) {
     if (role === "artist") {
       if (!bio) errors.bio = "Bio is required for artists";
       if (!videoLink1) errors.videoLink1 = "Video Link 1 is required for artists";
+      if (!city) errors.city = "City is required for artists";
+      if (!state) errors.state = "State is required for artists";
+      if (!country) errors.country = "Country is required for artists";
+      if (!pincode) errors.pincode = "Pincode is required for artists";
+      if (!phoneNumber) errors.phoneNumber = "Phone Number is required for artists";
     }
+
 
     const avatarFiles = [];
     for (let i = 1; i <= 3; i++) {
@@ -115,6 +126,11 @@ export async function POST(request: Request) {
       socialLink3,
       socialLink4,
       socialLink5,
+      city,
+      state,
+      country,
+      pincode,
+      phoneNumber,
     });
 
     await newUser.save();
@@ -135,6 +151,11 @@ export async function POST(request: Request) {
       socialLink3: newUser.socialLink3,
       socialLink4: newUser.socialLink4,
       socialLink5: newUser.socialLink5,
+      city: newUser.city,
+      state: newUser.state,
+      country: newUser.country,
+      pincode: newUser.pincode,
+      phoneNumber: newUser.phoneNumber,
     };
 
     return NextResponse.json(

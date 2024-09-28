@@ -31,7 +31,7 @@ export default function AccountSettings() {
         username: session.user.username || "",
         email: session.user.email || "",
         avatars: (session.user.avatar || []).map((avatar) => ({
-          url: typeof avatar === 'string' ? avatar : avatar.url,
+          url: typeof avatar === "string" ? avatar : avatar.url,
         })),
         videoLink1: session.user.videoLink1 || "",
         videoLink2: session.user.videoLink2 || "",
@@ -109,7 +109,6 @@ export default function AccountSettings() {
       setLoading(false);
     }
   };
-
   return (
     <div className="flex justify-center items-center w-full min-h-screen p-4">
       <form
@@ -122,7 +121,7 @@ export default function AccountSettings() {
               Profile Settings
             </h1>
             <p className="text-gray-400 text-sm sm:text-base">
-              Manage your profile information and account settings
+              Manage your profile information
             </p>
           </div>
 
@@ -145,36 +144,68 @@ export default function AccountSettings() {
           )}
 
           <div className="flex flex-wrap items-center gap-5 justify-center">
-            {[0, 1, 2].map((index) => (
-              <div key={index} className="flex flex-col items-center">
-                {formData.avatars[index] ? (
-                  <Image
-                    src={formData.avatars[index].url}
-                    alt={`Profile Avatar ${index + 1}`}
-                    width={64}
-                    height={64}
-                    className="inline-block object-cover  size-16 rounded-full ring-2 ring-white mb-2"
-                  />
-                ) : (
-                  <div className="inline-block size-16 rounded-full ring-2 ring-white mb-2 bg-gray-200"></div>
-                )}
-                <input
-                  type="file"
-                  id={`avatar${index}`}
-                  name={`avatar${index}`}
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarChange(index)}
+            <div className="flex flex-col items-center">
+              {formData.avatars[0] ? (
+                <Image
+                  src={formData.avatars[0].url}
+                  alt="Profile Avatar"
+                  width={64}
+                  height={64}
+                  className="inline-block object-cover size-16 rounded-full ring-2 ring-white mb-2"
                 />
-                <label
-                  htmlFor={`avatar${index}`}
-                  className="py-1 px-2 inline-flex items-center gap-x-2 text-xs font-medium rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 cursor-pointer"
-                >
-                  <Upload />
-                  Upload photo {index + 1}
-                </label>
-              </div>
-            ))}
+              ) : (
+                <div className="inline-block size-16 rounded-full ring-2 ring-white mb-2 bg-gray-200"></div>
+              )}
+              <input
+                type="file"
+                id="avatar0"
+                name="avatar0"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange(0)}
+              />
+              <label
+                htmlFor="avatar0"
+                className="py-1 px-2 inline-flex items-center gap-x-2 text-xs font-medium rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 cursor-pointer"
+              >
+                <Upload />
+                Upload photo
+              </label>
+            </div>
+            {session?.user.role === "artist" && (
+              <>
+                {[1, 2].map((index) => (
+                  <div key={index} className="flex flex-col items-center">
+                    {formData.avatars[index] ? (
+                      <Image
+                        src={formData.avatars[index].url}
+                        alt={`Profile Avatar ${index + 1}`}
+                        width={64}
+                        height={64}
+                        className="inline-block object-cover size-16 rounded-full ring-2 ring-white mb-2"
+                      />
+                    ) : (
+                      <div className="inline-block size-16 rounded-full ring-2 ring-white mb-2 bg-gray-200"></div>
+                    )}
+                    <input
+                      type="file"
+                      id={`avatar${index}`}
+                      name={`avatar${index}`}
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarChange(index)}
+                    />
+                    <label
+                      htmlFor={`avatar${index}`}
+                      className="py-1 px-2 inline-flex items-center gap-x-2 text-xs font-medium rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 cursor-pointer"
+                    >
+                      <Upload />
+                      Upload photo {index + 1}
+                    </label>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
 
           <div>
@@ -215,167 +246,171 @@ export default function AccountSettings() {
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="bio"
-              className="block mb-2 text-gray-600 text-sm font-medium"
-            >
-              Bio
-            </label>
-            <textarea
-              id="bio"
-              name="bio"
-              value={formData.bio}
-              onChange={handleChange}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
-              rows={3}
-              placeholder="Tell us about yourself..."
-            ></textarea>
-          </div>
+          {session?.user.role === "artist" && (
+            <>
+              <div>
+                <label
+                  htmlFor="bio"
+                  className="block mb-2 text-gray-600 text-sm font-medium"
+                >
+                  Bio
+                </label>
+                <textarea
+                  id="bio"
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                  rows={3}
+                  placeholder="Tell us about yourself..."
+                ></textarea>
+              </div>
 
-          <div>
-            <label
-              htmlFor="videoLink1"
-              className="block mb-2 text-gray-600 text-sm font-medium"
-            >
-              Video Link 1
-            </label>
-            <input
-              type="url"
-              id="videoLink1"
-              name="videoLink1"
-              value={formData.videoLink1}
-              onChange={handleChange}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
-              placeholder="Enter Video Link 1"
-            />
-          </div>
+              <div>
+                <label
+                  htmlFor="videoLink1"
+                  className="block mb-2 text-gray-600 text-sm font-medium"
+                >
+                  Video Link 1
+                </label>
+                <input
+                  type="url"
+                  id="videoLink1"
+                  name="videoLink1"
+                  value={formData.videoLink1}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                  placeholder="Enter Video Link 1"
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="videoLink2"
-              className="block mb-2 text-gray-600 text-sm font-medium"
-            >
-              Video Link 2
-            </label>
-            <input
-              type="url"
-              id="videoLink2"
-              name="videoLink2"
-              value={formData.videoLink2}
-              onChange={handleChange}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
-              placeholder="Enter Video Link 2"
-            />
-          </div>
+              <div>
+                <label
+                  htmlFor="videoLink2"
+                  className="block mb-2 text-gray-600 text-sm font-medium"
+                >
+                  Video Link 2
+                </label>
+                <input
+                  type="url"
+                  id="videoLink2"
+                  name="videoLink2"
+                  value={formData.videoLink2}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                  placeholder="Enter Video Link 2"
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="videoLink3"
-              className="block mb-2 text-gray-600 text-sm font-medium"
-            >
-              Video Link 3
-            </label>
-            <input
-              type="url"
-              id="videoLink3"
-              name="videoLink3"
-              value={formData.videoLink3}
-              onChange={handleChange}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
-              placeholder="Enter Video Link 3"
-            />
-          </div>
+              <div>
+                <label
+                  htmlFor="videoLink3"
+                  className="block mb-2 text-gray-600 text-sm font-medium"
+                >
+                  Video Link 3
+                </label>
+                <input
+                  type="url"
+                  id="videoLink3"
+                  name="videoLink3"
+                  value={formData.videoLink3}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                  placeholder="Enter Video Link 3"
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="socialLink1"
-              className="block mb-2 text-gray-600 text-sm font-medium"
-            >
-              Social Link 1
-            </label>
-            <input
-              type="url"
-              id="socialLink1"
-              name="socialLink1"
-              value={formData.socialLink1}
-              onChange={handleChange}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
-              placeholder="Enter Social Link 1"
-            />
-          </div>
+              <div>
+                <label
+                  htmlFor="socialLink1"
+                  className="block mb-2 text-gray-600 text-sm font-medium"
+                >
+                  Social Link 1
+                </label>
+                <input
+                  type="url"
+                  id="socialLink1"
+                  name="socialLink1"
+                  value={formData.socialLink1}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                  placeholder="Enter Social Link 1"
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="socialLink2"
-              className="block mb-2 text-gray-600 text-sm font-medium"
-            >
-              Social Link 2
-            </label>
-            <input
-              type="url"
-              id="socialLink2"
-              name="socialLink2"
-              value={formData.socialLink2}
-              onChange={handleChange}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
-              placeholder="Enter Social Link 2"
-            />
-          </div>
+              <div>
+                <label
+                  htmlFor="socialLink2"
+                  className="block mb-2 text-gray-600 text-sm font-medium"
+                >
+                  Social Link 2
+                </label>
+                <input
+                  type="url"
+                  id="socialLink2"
+                  name="socialLink2"
+                  value={formData.socialLink2}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                  placeholder="Enter Social Link 2"
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="socialLink3"
-              className="block mb-2 text-gray-600 text-sm font-medium"
-            >
-              Social Link 3
-            </label>
-            <input
-              type="url"
-              id="socialLink3"
-              name="socialLink3"
-              value={formData.socialLink3}
-              onChange={handleChange}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
-              placeholder="Enter Social Link 3"
-            />
-          </div>
+              <div>
+                <label
+                  htmlFor="socialLink3"
+                  className="block mb-2 text-gray-600 text-sm font-medium"
+                >
+                  Social Link 3
+                </label>
+                <input
+                  type="url"
+                  id="socialLink3"
+                  name="socialLink3"
+                  value={formData.socialLink3}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                  placeholder="Enter Social Link 3"
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="socialLink4"
-              className="block mb-2 text-gray-600 text-sm font-medium"
-            >
-              Social Link 4
-            </label>
-            <input
-              type="url"
-              id="socialLink4"
-              name="socialLink4"
-              value={formData.socialLink4}
-              onChange={handleChange}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
-              placeholder="Enter Social Link 4"
-            />
-          </div>
+              <div>
+                <label
+                  htmlFor="socialLink4"
+                  className="block mb-2 text-gray-600 text-sm font-medium"
+                >
+                  Social Link 4
+                </label>
+                <input
+                  type="url"
+                  id="socialLink4"
+                  name="socialLink4"
+                  value={formData.socialLink4}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                  placeholder="Enter Social Link 4"
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="socialLink5"
-              className="block mb-2 text-gray-600 text-sm font-medium"
-            >
-              Social Link 5
-            </label>
-            <input
-              type="url"
-              id="socialLink5"
-              name="socialLink5"
-              value={formData.socialLink5}
-              onChange={handleChange}
-              className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
-              placeholder="Enter Social Link 5"
-            />
-          </div>
+              <div>
+                <label
+                  htmlFor="socialLink5"
+                  className="block mb-2 text-gray-600 text-sm font-medium"
+                >
+                  Social Link 5
+                </label>
+                <input
+                  type="url"
+                  id="socialLink5"
+                  name="socialLink5"
+                  value={formData.socialLink5}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-300 bg-transparent py-2 px-3 outline-none text-gray-600 focus:border-[#CE1446] focus:ring-1 focus:ring-[#CE1446] transition-all duration-300"
+                  placeholder="Enter Social Link 5"
+                />
+              </div>
+            </>
+          )}
         </div>
 
         <button
