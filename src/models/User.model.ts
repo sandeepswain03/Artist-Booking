@@ -68,11 +68,15 @@ const UserSchema: Schema<IUser> = new Schema({
     {
       public_id: {
         type: String,
-        required: true,
+        required: function (this: IUser) {
+          return this.role === "artist";
+        },
       },
       url: {
         type: String,
-        required: true,
+        required: function (this: IUser) {
+          return this.role === "artist";
+        },
       },
     },
   ],

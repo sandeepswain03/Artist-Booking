@@ -13,8 +13,6 @@ import {
   FaTiktok,
   FaCalendarAlt,
   FaPlay,
-  FaMapMarkerAlt,
-  FaPhone,
 } from "react-icons/fa";
 import Image from "next/image";
 import Rating from "react-rating";
@@ -371,27 +369,6 @@ export default function ArtistDetailsPage({
                 <p className="text-sm text-gray-600 mb-4 leading-relaxed hover:text-gray-800 transition-colors duration-300 text-justify">
                   {artist.bio}
                 </p>
-
-                <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-                  <div>
-                    <p className="font-semibold text-gray-600 flex items-center">
-                      <FaMapMarkerAlt className="text-lg text-[#CE1446] mr-1" />
-                      Location:
-                    </p>
-                    <p className="text-gray-800 ml-5">
-                      {artist.city}, {artist.state}
-                      <br />
-                      {artist.country} - {artist.pincode}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-600 flex items-center">
-                      <FaPhone className="text-lg text-[#CE1446] mr-1" />
-                      Contact:
-                    </p>
-                    <p className="text-gray-800 ml-5">{artist.phoneNumber}</p>
-                  </div>
-                </div>
 
                 <div className="flex flex-wrap gap-3 mb-4">
                   {[

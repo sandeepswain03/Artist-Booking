@@ -8,6 +8,7 @@ export default function ContactPage() {
     email: "",
     subject: "",
     message: "",
+    phone: "",
   });
   const [submitStatus, setSubmitStatus] = useState<string | null>(null);
 
@@ -20,17 +21,18 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const result = await sendContactUsEmail(
         formData.email,
         formData.subject,
-        formData.message
+        formData.message,
+        formData.phone
       );
-      
+
       if (result.success) {
         setSubmitStatus("Message sent successfully!");
-        setFormData({ email: "", subject: "", message: "" });
+        setFormData({ email: "", subject: "", message: "", phone: "" });
       } else {
         setSubmitStatus("Failed to send message. Please try again.");
       }
@@ -67,7 +69,7 @@ export default function ContactPage() {
             </div>
           </div>
           <form onSubmit={handleSubmit} className="md:w-1/2 space-y-6">
-            {["email", "subject", "message"].map((field) => (
+            {["email", "phone", "subject", "message"].map((field) => (
               <div key={field}>
                 <label
                   htmlFor={field}
@@ -88,7 +90,13 @@ export default function ContactPage() {
                   />
                 ) : (
                   <input
-                    type={field === "email" ? "email" : "text"}
+                    type={
+                      field === "email"
+                        ? "email"
+                        : field === "phone"
+                        ? "tel"
+                        : "text"
+                    }
                     id={field}
                     name={field}
                     value={formData[field as keyof typeof formData]}
@@ -107,7 +115,13 @@ export default function ContactPage() {
               Send Message
             </button>
             {submitStatus && (
-              <p className={`text-center ${submitStatus.includes("successfully") ? "text-green-600" : "text-red-600"}`}>
+              <p
+                className={`text-center ${
+                  submitStatus.includes("successfully")
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
                 {submitStatus}
               </p>
             )}

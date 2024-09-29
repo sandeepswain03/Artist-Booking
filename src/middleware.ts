@@ -13,7 +13,7 @@ export const config = {
 
 const restrictedRoutes = [
   "/profile/add_concert",
-  "/profile/all_concert",
+  "/profile/all_concerts",
   "/profile/all_inquiry",
 ];
 

@@ -10,6 +10,7 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [passwordShow, setPasswordShow] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -21,6 +22,7 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({ email: "", password: "" });
+    setLoading(true);
 
     let hasErrors = false;
 
@@ -40,7 +42,10 @@ export default function SignIn() {
       hasErrors = true;
     }
 
-    if (hasErrors) return;
+    if (hasErrors) {
+      setLoading(false);
+      return;
+    }
 
     try {
       const result = await signIn("credentials", {
@@ -69,6 +74,8 @@ export default function SignIn() {
         password:
           error.response?.data.message || "An error occurred during sign-in",
       }));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -144,8 +151,9 @@ export default function SignIn() {
         <button
           type="submit"
           className="mt-6 w-full bg-[#CE1446] text-white py-2 px-4 rounded-sm text-sm sm:text-base font-medium tracking-wide hover:bg-[#B01238] transition-colors duration-300"
+          disabled={loading}
         >
-          Sign In
+          {loading ? "Logging in..." : "Login"}
         </button>
         <div className="mt-6 text-sm text-center">
           Don't have an account?

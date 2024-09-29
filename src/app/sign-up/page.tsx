@@ -162,10 +162,7 @@ export default function SignUp() {
     if (!username) newErrors.username = "Username is required";
     if (!email) newErrors.email = "Email is required";
     if (!password) newErrors.password = "Password is required";
-    if (avatars.length === 0)
-      newErrors.avatars = "At least one avatar image is required";
     if (!role) newErrors.role = "Role is required";
-
     if (role === "artist") {
       if (!bio) newErrors.bio = "Bio is required for artists";
       if (!videoLink1)
@@ -792,7 +789,7 @@ export default function SignUp() {
               href="/sign-in"
               className="font-medium text-[#CE1446] hover:underline ml-1"
             >
-              Sign in
+              login
             </Link>
           </div>
         </div>

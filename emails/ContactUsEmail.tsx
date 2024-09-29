@@ -13,12 +13,14 @@ interface ContactUsEmailProps {
   userEmail: string;
   subject: string;
   message: string;
+  phone: string;
 }
 
 export default function ContactUsEmail({
   userEmail,
   subject,
   message,
+  phone,
 }: ContactUsEmailProps) {
   return (
     <Html lang="en" dir="ltr">
@@ -57,6 +59,11 @@ export default function ContactUsEmail({
         </Row>
         <Row>
           <Text>{message}</Text>
+        </Row>
+        <Row>
+          <Text>
+            <strong>Phone:</strong> {phone}
+          </Text>
         </Row>
       </Section>
     </Html>

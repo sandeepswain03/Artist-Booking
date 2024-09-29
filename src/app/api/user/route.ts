@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       }
     }
 
-    if (avatarFiles.length === 0) {
+    if (role === "artist" && avatarFiles.length === 0) {
       errors.avatar = "At least one avatar image is required";
     }
 
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
       }
     }
 
-    if (avatarImages.length === 0) {
+    if (role === "artist" && avatarImages.length === 0) {
       return NextResponse.json(
         { success: false, message: "Error while uploading avatar images" },
         { status: 400 }
@@ -211,7 +211,7 @@ export async function PUT(request: Request) {
     const socialLink4 = data.get("socialLink4") as string;
     const socialLink5 = data.get("socialLink5") as string;
     console.log(data);
-    
+
     const avatar1 = data.get("avatar0") as File;
     const avatar2 = data.get("avatar1") as File;
     const avatar3 = data.get("avatar2") as File;
@@ -231,14 +231,14 @@ export async function PUT(request: Request) {
 
     if (avatar1) {
       const uploadedImage: any = await uploadOnCloudinary(avatar1);
-      
+
       // Update user avatar with the uploaded image
       if (uploadedImage) {
         const newAvatarImage = {
           public_id: uploadedImage.public_id,
           url: uploadedImage.url,
         };
-    
+
         if (user.avatar && user.avatar.length > 0) {
           // Delete the old avatar from Cloudinary
           if (user.avatar[0].public_id) {
@@ -251,17 +251,17 @@ export async function PUT(request: Request) {
           user.avatar = [newAvatarImage];
         }
       }
-    } 
-    
+    }
+
     if (avatar2) {
       const uploadedImage: any = await uploadOnCloudinary(avatar2);
-      
+
       if (uploadedImage) {
         const newAvatarImage = {
           public_id: uploadedImage.public_id,
           url: uploadedImage.url,
         };
-    
+
         if (user.avatar && user.avatar.length > 1) {
           // Delete the old avatar from Cloudinary
           if (user.avatar[1].public_id) {
@@ -272,19 +272,19 @@ export async function PUT(request: Request) {
         } else if (user.avatar) {
           // Add the new avatar as the second one
           user.avatar.push(newAvatarImage);
-        } 
+        }
       }
-    } 
-    
+    }
+
     if (avatar3) {
       const uploadedImage: any = await uploadOnCloudinary(avatar3);
-      
+
       if (uploadedImage) {
         const newAvatarImage = {
           public_id: uploadedImage.public_id,
           url: uploadedImage.url,
         };
-    
+
         if (user.avatar && user.avatar.length > 2) {
           // Delete the old avatar from Cloudinary
           if (user.avatar[2].public_id) {
@@ -295,9 +295,9 @@ export async function PUT(request: Request) {
         } else if (user.avatar) {
           // Add the new avatar as the third one
           user.avatar.push(newAvatarImage);
-        } 
+        }
       }
-    } 
+    }
 
     await user.save();
 
