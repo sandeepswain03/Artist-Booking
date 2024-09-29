@@ -215,7 +215,7 @@ export default function SignUp() {
       });
 
       if (response.data.success) {
-        router.replace("/sign-in");
+        router.replace(`/verify/${username}`);
       } else {
         setErrors({ general: response.data.message || "Something went wrong" });
       }

@@ -3,11 +3,10 @@ import dbConnect from "@/lib/dbConnect";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { uploadOnCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
-import { ApiError } from "next/dist/server/api-utils";
 import { isValidObjectId } from "mongoose";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
-import { Schema } from "mongoose";
+import { sendVerificationEmail2 } from "@/helpers/sendVerificationEmail2";
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -56,7 +55,6 @@ export async function POST(request: Request) {
       if (!phoneNumber) errors.phoneNumber = "Phone Number is required for artists";
     }
 
-
     const avatarFiles = [];
     for (let i = 1; i <= 3; i++) {
       const avatarFile = data.get(`avatar${i}`) as File;
@@ -83,86 +81,105 @@ export async function POST(request: Request) {
       );
     }
 
-    const existingUser = await UserModel.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      return NextResponse.json(
-        { success: false, message: "User with this email or username already exists" },
-        { status: 400 }
-      );
-    }
-
-    let avatarImages = [];
-    for (const avatarFile of avatarFiles) {
-      const uploadedImage: any = await uploadOnCloudinary(avatarFile);
-      if (uploadedImage) {
-        avatarImages.push({
-          public_id: uploadedImage.public_id,
-          url: uploadedImage.url,
-        });
-      }
-    }
-
-    if (role === "artist" && avatarImages.length === 0) {
-      return NextResponse.json(
-        { success: false, message: "Error while uploading avatar images" },
-        { status: 400 }
-      );
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser: IUser = new UserModel({
+    const existingVerifiedUserByUsername = await UserModel.findOne({
       username,
-      email,
-      password: hashedPassword,
-      avatar: avatarImages,
-      role,
-      bio,
-      videoLink1,
-      videoLink2,
-      videoLink3,
-      socialLink1,
-      socialLink2,
-      socialLink3,
-      socialLink4,
-      socialLink5,
-      city,
-      state,
-      country,
-      pincode,
-      phoneNumber,
+      isVerified: true,
     });
 
-    await newUser.save();
+    if (existingVerifiedUserByUsername) {
+      return NextResponse.json(
+        { success: false, message: "Username is already taken" },
+        { status: 400 }
+      );
+    }
 
-    // Create a user data object without sensitive information
-    const userData = {
-      _id: newUser._id,
-      username: newUser.username,
-      email: newUser.email,
-      role: newUser.role,
-      avatar: newUser.avatar,
-      bio: newUser.bio,
-      videoLink1: newUser.videoLink1,
-      videoLink2: newUser.videoLink2,
-      videoLink3: newUser.videoLink3,
-      socialLink1: newUser.socialLink1,
-      socialLink2: newUser.socialLink2,
-      socialLink3: newUser.socialLink3,
-      socialLink4: newUser.socialLink4,
-      socialLink5: newUser.socialLink5,
-      city: newUser.city,
-      state: newUser.state,
-      country: newUser.country,
-      pincode: newUser.pincode,
-      phoneNumber: newUser.phoneNumber,
-    };
+    const existingUserByEmail = await UserModel.findOne({ email });
+    let verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    if (existingUserByEmail) {
+      if (existingUserByEmail.isVerified) {
+        return NextResponse.json(
+          { success: false, message: "User already exists with this email" },
+          { status: 400 }
+        );
+      } else {
+        // User exists but is not verified
+        const hashedPassword = await bcrypt.hash(password, 10);
+        existingUserByEmail.password = hashedPassword;
+        existingUserByEmail.verifyCode = verifyCode;
+        existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
+        await existingUserByEmail.save();
+      }
+    } else {
+      let avatarImages = [];
+      for (const avatarFile of avatarFiles) {
+        const uploadedImage: any = await uploadOnCloudinary(avatarFile);
+        if (uploadedImage) {
+          avatarImages.push({
+            public_id: uploadedImage.public_id,
+            url: uploadedImage.url,
+          });
+        }
+      }
+
+      if (role === "artist" && avatarImages.length === 0) {
+        return NextResponse.json(
+          { success: false, message: "Error while uploading avatar images" },
+          { status: 400 }
+        );
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const expiryDate = new Date(Date.now() + 3600000);
+
+      const newUser: IUser = new UserModel({
+        username,
+        email,
+        password: hashedPassword,
+        avatar: avatarImages,
+        role,
+        bio,
+        videoLink1,
+        videoLink2,
+        videoLink3,
+        socialLink1,
+        socialLink2,
+        socialLink3,
+        socialLink4,
+        socialLink5,
+        city,
+        state,
+        country,
+        pincode,
+        phoneNumber,
+        verifyCode,
+        verifyCodeExpiry: expiryDate,
+        isVerified: false,
+      });
+
+      await newUser.save();
+    }
+
+
+    // Send verification email
+    const emailResponse = await sendVerificationEmail2(
+      email,
+      username,
+      verifyCode
+    );
+
+    console.log(emailResponse);
+    if (!emailResponse.success) {
+      return NextResponse.json(
+        { success: false, message: emailResponse.message },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       {
         success: true,
-        message: "User registered successfully",
-        user: userData
+        message: "User registered successfully. Please verify your account.",
       },
       { status: 201 }
     );

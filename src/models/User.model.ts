@@ -4,6 +4,9 @@ export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
+  verifyCode: string;
+  verifyCodeExpiry: Date;
+  isVerified: boolean;
   avatar: {
     public_id: string;
     url: string;
@@ -63,6 +66,18 @@ const UserSchema: Schema<IUser> = new Schema({
   password: {
     type: String,
     required: [true, "Password is required"],
+  },
+  verifyCode: {
+    type: String,
+    required: [true, 'Verify Code is required'],
+  },
+  verifyCodeExpiry: {
+    type: Date,
+    required: [true, 'Verify Code Expiry is required'],
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
   },
   avatar: [
     {

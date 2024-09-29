@@ -22,7 +22,7 @@ export default function VerificationEmail({
   return (
     <Html lang="en" dir="ltr">
       <Head>
-        <title>Verification Code</title>
+        <title>Reset Password</title>
         <Font
           fontFamily="Roboto"
           fallbackFontFamily="Verdana"

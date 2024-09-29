@@ -8,6 +8,7 @@ export const config = {
     "/profile/:path*",
     "/reset-password/:path*",
     "/forget-password",
+    "/verify/:path*",
   ],
 };
 
@@ -42,7 +43,8 @@ export async function middleware(req: NextRequest) {
       url.pathname.startsWith("/reset-password") ||
       url.pathname.startsWith("/forget-password") ||
       url.pathname.startsWith("/sign-up") ||
-      url.pathname.startsWith("/sign-in")
+      url.pathname.startsWith("/sign-in") ||
+      url.pathname.startsWith("/verify")
     ) {
       return NextResponse.redirect(new URL("/", req.url));
     }
