@@ -96,50 +96,48 @@ export default function ArtistDetailsPage({
   const [nextConcerts, setNextConcerts] = useState<Concert[]>([]);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchArtist = async () => {
-      setIsLoading(true);
       try {
-        if (params.id) {
-          const response = await axios.get(
-            `/api/artist/artistid?id=${params.id}`
-          );
-          if (response.data.success) {
-            setArtist(response.data.data);
-            const now = new Date();
-            const pastConcerts = response.data.data.concerts
-              .filter((concert: Concert) => new Date(concert.date) < now)
-              .sort(
-                (a: Concert, b: Concert) =>
-                  new Date(b.date).getTime() - new Date(a.date).getTime()
-              )
-              .slice(0, 3);
-            setPastConcerts(pastConcerts);
+        const response = await axios.get(
+          `/api/artist/artistid?id=${params.id}`
+        );
+        if (response.data.success) {
+          setArtist(response.data.data);
+          const now = new Date();
+          const pastConcerts = response.data.data.concerts
+            .filter((concert: Concert) => new Date(concert.date) < now)
+            .sort(
+              (a: Concert, b: Concert) =>
+                new Date(b.date).getTime() - new Date(a.date).getTime()
+            )
+            .slice(0, 3);
+          setPastConcerts(pastConcerts);
 
-            const nextConcerts = response.data.data.concerts
-              .filter((concert: Concert) => new Date(concert.date) > now)
-              .sort(
-                (a: Concert, b: Concert) =>
-                  new Date(a.date).getTime() - new Date(b.date).getTime()
-              );
+          const nextConcerts = response.data.data.concerts
+            .filter((concert: Concert) => new Date(concert.date) > now)
+            .sort(
+              (a: Concert, b: Concert) =>
+                new Date(a.date).getTime() - new Date(b.date).getTime()
+            );
 
-            setNextConcerts(nextConcerts);
-            // Set user's rating if they've already rated
-            if (user && response.data.data.rating.ratings) {
-              const userRating = response.data.data.rating.ratings.find(
-                (r: { userId: string; rating: number }) => r.userId === user._id
-              );
-              if (userRating) {
-                setUserRating(userRating.rating);
-              }
+          setNextConcerts(nextConcerts);
+          // Set user's rating if they've already rated
+          if (user && response.data.data.rating.ratings) {
+            const userRating = response.data.data.rating.ratings.find(
+              (r: { userId: string; rating: number }) => r.userId === user._id
+            );
+            if (userRating) {
+              setUserRating(userRating.rating);
             }
-            // Check if the user has already reviewed the artist
-            if (user && response.data.data.reviews) {
-              const userReview = response.data.data.reviews.reviews.find(
-                (r: Review) => r.userId === user._id
-              );
-              if (userReview) {
-                setShowReviewForm(false);
-              }
+          }
+          // Check if the user has already reviewed the artist
+          if (user && response.data.data.reviews) {
+            const userReview = response.data.data.reviews.reviews.find(
+              (r: Review) => r.userId === user._id
+            );
+            if (userReview) {
+              setShowReviewForm(false);
             }
           }
         }
@@ -149,7 +147,10 @@ export default function ArtistDetailsPage({
         setIsLoading(false);
       }
     };
-    fetchArtist();
+    
+    if (params.id) {
+      fetchArtist();
+    }
   }, [params.id, user]);
 
   const handleChange = (
