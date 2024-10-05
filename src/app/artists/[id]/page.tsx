@@ -105,7 +105,7 @@ export default function ArtistDetailsPage({
         if (response.data.success) {
           setArtist(response.data.data);
           const now = new Date();
-          const pastConcerts = response.data.data.concerts
+          const pastConcerts = response.data.concerts
             .filter((concert: Concert) => new Date(concert.date) < now)
             .sort(
               (a: Concert, b: Concert) =>
@@ -114,7 +114,7 @@ export default function ArtistDetailsPage({
             .slice(0, 3);
           setPastConcerts(pastConcerts);
 
-          const nextConcerts = response.data.data.concerts
+          const nextConcerts = response.data.concerts
             .filter((concert: Concert) => new Date(concert.date) > now)
             .sort(
               (a: Concert, b: Concert) =>

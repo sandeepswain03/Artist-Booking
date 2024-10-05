@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/User.model";
+import ConcertModel from "@/models/Concert.model";
 import { isValidObjectId } from "mongoose";
 
 export async function GET(request: Request, { params }: { params: { artistid: string } }) {
@@ -14,13 +15,16 @@ export async function GET(request: Request, { params }: { params: { artistid: st
   }
 
   try {
-    const artist = await UserModel.findById(artistId).populate('concerts');
-
+    const artist = await UserModel.findById(artistId);
     if (!artist) {
       return NextResponse.json({ success: false, message: "Artist not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, data: artist }, { status: 200 });
+    const concerts = await ConcertModel.find({ artistId });
+    console.log(concerts);
+    console.log(artist);
+
+    return NextResponse.json({ success: true, data: artist, concerts }, { status: 200 });
   } catch (error) {
     console.error("Error fetching artist details:", error);
     return NextResponse.json({ success: false, message: "Failed to fetch artist" }, { status: 500 });
