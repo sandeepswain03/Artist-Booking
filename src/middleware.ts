@@ -19,7 +19,7 @@ const restrictedRoutes = [
 ];
 
 export async function middleware(req: NextRequest) {
-  const token = await getToken({ req });
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET, secureCookie: process.env.NODE_ENV === 'production' });
   const url = req.nextUrl;
 
   if (!token) {
